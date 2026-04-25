@@ -1,0 +1,181 @@
+{
+  "schema_version": "0.1",
+  "patient_id": "TOY_TUMOR",
+  "synthetic": true,
+  "intended_subtype": "FN-RMS (synthetic; multiple driver classes for pipeline exercise)",
+  "curator": "Mark Zobeck",
+  "curated_date": "2026-04-25",
+  "coordinate_caveat": "Variants marked APPROX in VCF NOTE field require coordinate verification against MANE/Ensembl 111 during Phase 1 implementation. Phase 1 must succeed on the canonical TP53 R175H, NRAS Q61K, and KRAS G12V coordinates without verification updates.",
+  "variants": [
+    {
+      "id": "rms_isp_var01",
+      "gene": "TP53",
+      "hgvs_p": "p.Arg175His",
+      "expected_classification": "DRIVER",
+      "expected_phase1": {
+        "consequence": "missense_variant",
+        "clinvar_significance": "pathogenic",
+        "cadd_phred_min": 25,
+        "revel_min": 0.7,
+        "alphamissense": "pathogenic",
+        "gnomad_popmax_af_max": 0.0001,
+        "oncokb_oncogenic": true,
+        "composite_pass": true
+      },
+      "expected_phase2": {
+        "foldx_ddg_min": 1.5,
+        "interface_disruption": true,
+        "druggable_pocket": "TP53 wild-type rescue via MDM2 inhibition (idasanutlin, milademetan); WEE1/CHK1 synthetic lethality"
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["WEE1 inhibitor", "CHK1 inhibitor", "MDM2 inhibitor"],
+        "rationale": "Mutant TP53; synthetic lethality via DDR axis."
+      }
+    },
+    {
+      "id": "rms_isp_var02",
+      "gene": "NRAS",
+      "hgvs_p": "p.Gln61Lys",
+      "expected_classification": "DRIVER",
+      "expected_phase1": {
+        "consequence": "missense_variant",
+        "clinvar_significance": "pathogenic",
+        "cadd_phred_min": 22,
+        "revel_min": 0.6,
+        "alphamissense": "pathogenic",
+        "oncokb_oncogenic": true,
+        "composite_pass": true
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["MEK inhibitor", "pan-RAS inhibitor", "MEK + PI3K combination"],
+        "rationale": "RAS hotspot; PTEN status drives single-agent vs combination ranking."
+      }
+    },
+    {
+      "id": "rms_isp_var03",
+      "gene": "KRAS",
+      "hgvs_p": "p.Gly12Val",
+      "expected_classification": "DRIVER",
+      "expected_phase1": {
+        "consequence": "missense_variant",
+        "clinvar_significance": "pathogenic",
+        "cadd_phred_min": 22,
+        "oncokb_oncogenic": true,
+        "composite_pass": true
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["MEK inhibitor", "pan-RAS inhibitor (daraxonrasib)", "SHP2 inhibitor"]
+      }
+    },
+    {
+      "id": "rms_isp_var04",
+      "gene": "MYOD1",
+      "hgvs_p": "p.Leu122Arg",
+      "expected_classification": "DRIVER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "missense_variant",
+        "neomorphic": true,
+        "rms_specific": true,
+        "composite_pass": true
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["BET inhibitor", "PI3K inhibitor (cooperative PIK3CA)", "Differentiation-inducing agents (Tier 3)"]
+      }
+    },
+    {
+      "id": "rms_isp_var05",
+      "gene": "FGFR4",
+      "hgvs_p": "p.Val550Leu",
+      "expected_classification": "DRIVER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "missense_variant",
+        "kinase_domain": true,
+        "composite_pass": true
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["FGFR4-selective inhibitor (FGF401)", "Pan-FGFR inhibitor (erdafitinib)", "Pan-FGFR inhibitor (futibatinib)"]
+      }
+    },
+    {
+      "id": "rms_isp_var06",
+      "gene": "CDKN2A",
+      "hgvs_p": "p.Arg80*",
+      "expected_classification": "DRIVER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "stop_gained",
+        "loss_of_function": true,
+        "composite_pass": true
+      },
+      "expected_phase3": {
+        "synthetic_lethality": ["PRMT5 (if MTAP co-deleted)", "CDK4/6 dependence"]
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["CDK4/6 inhibitor (palbociclib, ribociclib, abemaciclib)", "PRMT5 inhibitor (if MTAP co-deleted)", "MDM2 inhibitor (TP53 wild-type)"]
+      }
+    },
+    {
+      "id": "rms_isp_var07",
+      "gene": "NF1",
+      "hgvs_p": "p.[truncating]",
+      "expected_classification": "DRIVER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "stop_gained",
+        "loss_of_function": true,
+        "ras_gap_disrupted": true,
+        "composite_pass": true
+      },
+      "expected_phase4": {
+        "drug_classes_top3": ["MEK inhibitor (selumetinib FDA-approved peds)", "mTOR inhibitor", "MEK + mTOR combination"]
+      }
+    },
+    {
+      "id": "rms_isp_var08",
+      "gene": "TP53",
+      "expected_classification": "PASSENGER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "intron_variant",
+        "composite_pass": false,
+        "rationale": "Intronic non-splice site; expected to fail composite pathogenicity threshold."
+      }
+    },
+    {
+      "id": "rms_isp_var09",
+      "gene": "NRAS",
+      "expected_classification": "PASSENGER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "synonymous_variant",
+        "composite_pass": false
+      }
+    },
+    {
+      "id": "rms_isp_var10",
+      "gene": "KRAS",
+      "expected_classification": "PASSENGER",
+      "coord_status": "APPROX_verify_in_phase1",
+      "expected_phase1": {
+        "consequence": "synonymous_variant",
+        "gnomad_popmax_af_min": 0.01,
+        "composite_pass": false,
+        "rationale": "High population frequency synonymous; should be filtered as germline-likely."
+      }
+    }
+  ],
+  "expected_subtype_assignment": {
+    "fusion_status": "fusion-negative",
+    "subtype_call": "FN-RMS / RAS-mutant / NF1-loss / CDKN2A-loss / FGFR4-mutant / MYOD1-L122R-positive / TP53-mutant",
+    "rationale": "Synthetic case carries multiple FN-RMS-associated drivers simultaneously; pipeline must report all rather than collapse to one."
+  },
+  "validation_gates": {
+    "phase1": "TP53 R175H + NRAS Q61K + KRAS G12V correctly annotated as pathogenic with high CADD/REVEL/AlphaMissense; passenger variants (var08-10) fail composite threshold.",
+    "phase2": "FoldX ΔΔG > 1.5 kcal/mol for TP53 R175H; AlphaFold DB structures retrievable for all 7 driver-bearing genes.",
+    "phase3": "DepMap query returns RMS-line essentiality for CDK4 (CDKN2A-loss context) and MEK pathway (RAS-mutant context).",
+    "phase4": "For each driver gene, the canonical drug class appears in the top 3 returned drugs.",
+    "phase5": "Top-ranked target-drug pair has composite confidence >= 0.6 with at least 3 contributing components above zero."
+  }
+}

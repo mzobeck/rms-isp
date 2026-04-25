@@ -19,8 +19,9 @@ __pycache__/
 *.Rproj.user/
 
 # Data: NEVER commit raw or processed corpus files. Always pull from source.
-corpus/
-data/
+# Anchored to repo root so tests/data/ (toy fixtures) is unaffected.
+/corpus/
+/data/
 *.bam
 *.fastq.gz
 *.fastq

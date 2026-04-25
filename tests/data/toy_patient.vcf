@@ -1,0 +1,32 @@
+##fileformat=VCFv4.2
+##fileDate=20260425
+##source=RMS-ISP toy patient (hand-curated, not a real tumor)
+##reference=GRCh38
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr5,length=181538259>
+##contig=<ID=chr9,length=138394717>
+##contig=<ID=chr11,length=135086622>
+##contig=<ID=chr12,length=133275309>
+##contig=<ID=chr17,length=83257441>
+##INFO=<ID=GENE,Number=1,Type=String,Description="Affected gene symbol">
+##INFO=<ID=CONSEQUENCE,Number=1,Type=String,Description="Variant consequence (placeholder; canonical VEP call expected)">
+##INFO=<ID=EXPECTED,Number=1,Type=String,Description="Expected pipeline classification: DRIVER or PASSENGER">
+##INFO=<ID=NOTE,Number=1,Type=String,Description="Curator note">
+##INFO=<ID=SOMATIC,Number=0,Type=Flag,Description="Somatic variant">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">
+##CURATOR=Mark Zobeck (PI), 2026-04-25
+##NOTES=Coordinates marked APPROX require verification against MANE/Ensembl 111 during Phase 1 implementation. Toy patient is a synthetic FN-RMS-leaning case intended to exercise multiple driver classes plus passengers.
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TOY_TUMOR
+chr17	7675088	rms_isp_var01	C	T	500	PASS	GENE=TP53;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=R175H_canonical_hotspot_pathogenic;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr1	114713908	rms_isp_var02	G	T	500	PASS	GENE=NRAS;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=Q61K_RAS_hotspot_canonical;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45
+chr12	25245350	rms_isp_var03	C	A	500	PASS	GENE=KRAS;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=G12V_RAS_hotspot_canonical;SOMATIC	GT:AD:DP:AF	0/1:60,40:100:0.40
+chr11	17741189	rms_isp_var04	A	C	500	PASS	GENE=MYOD1;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=L122R_neomorphic_RMS_specific_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45
+chr5	177093374	rms_isp_var05	C	G	500	PASS	GENE=FGFR4;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=V550L_kinase_domain_activating_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr9	21974827	rms_isp_var06	C	T	500	PASS	GENE=CDKN2A;CONSEQUENCE=stop_gained;EXPECTED=DRIVER;NOTE=p.R80_truncating_RB_pathway_loss_APPROX_coord;SOMATIC	GT:AD:DP:AF	1/1:5,95:100:0.95
+chr17	31229189	rms_isp_var07	C	T	500	PASS	GENE=NF1;CONSEQUENCE=stop_gained;EXPECTED=DRIVER;NOTE=truncating_LoF_RAS_GAP_loss_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr17	7676153	rms_isp_var08	C	T	500	PASS	GENE=TP53;CONSEQUENCE=intron_variant;EXPECTED=PASSENGER;NOTE=intronic_benign_negative_control_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45
+chr1	114716126	rms_isp_var09	A	G	500	PASS	GENE=NRAS;CONSEQUENCE=synonymous;EXPECTED=PASSENGER;NOTE=synonymous_negative_control_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr12	25229898	rms_isp_var10	G	A	500	PASS	GENE=KRAS;CONSEQUENCE=synonymous;EXPECTED=PASSENGER;NOTE=common_polymorphism_high_gnomAD_AF_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45
