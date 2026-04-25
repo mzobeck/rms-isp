@@ -10,4 +10,4 @@ Placeholder. To be written at Phase 1 close.
 - Configuration model: profiles for laptop, slurm, aws, gpu.
 - Testing strategy: unit tests per module, integration test on toy patient, golden output diffs.
 
-See `../proj_management/PIPELINE_STANDUP_PLAN.md` for the build plan.
+See `plans/pilot_ccdi_mci/rms_translational_pilot_project.md` (gitignored, lives in the main repo dir) for the canonical build plan.

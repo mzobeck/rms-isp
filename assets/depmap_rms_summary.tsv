@@ -1,0 +1,32 @@
+## RMS-ISP DepMap Dependency Summary (PLACEHOLDER, v0.1)
+## Schema: gene\tn_lines\tmean_chronos_all\tmean_chronos_fp\tmean_chronos_fn\tpct_essential\tdependency_score\tprovenance
+## - mean_chronos_*: mean Chronos score across RMS cell lines (lower = more essential; <-0.5 = essential, <-1.0 = strongly essential)
+## - pct_essential: fraction of RMS lines where Chronos < -0.5
+## - dependency_score: bounded 0..1 derived from mean_chronos (1 = strongest dependency, 0 = no dependency)
+##
+## PROVENANCE: hand-curated v0.1 placeholder values consistent with published DepMap exploration of RMS lines
+## (Dharia 2021 Pediatric DepMap; Olanich 2015 CDK4 RMS; Crose 2012 FGFR4; Gryder 2017 BRD4; Marjon 2016 PRMT5/MTAP).
+## REPLACE with a real DepMap 24Q2+ pull (CRISPR_(DepMapPublic)_v.csv filtered to RMS lineage) before any scientific claim.
+## Cell lines targeted in the real pull: RD, RH4, RH5, RH18, RH30, RH41, SJCRH30, SMS-CTR, CW9019, RMS13, A-204, TE441-T (FP and FN RMS, ~12 lines).
+gene	n_lines	mean_chronos_all	mean_chronos_fp	mean_chronos_fn	pct_essential	dependency_score	provenance
+TP53	12	0.05	0.10	0.00	0.0	0.10	tsg_not_essential
+NRAS	12	-0.20	-0.10	-0.30	0.17	0.30	mutant_dependent
+KRAS	12	-0.15	-0.10	-0.20	0.08	0.25	mutant_dependent
+HRAS	12	-0.10	-0.05	-0.15	0.08	0.20	mutant_dependent
+MYOD1	12	-0.85	-0.70	-1.00	0.75	0.75	rms_lineage_essential
+FGFR4	12	-0.45	-0.30	-0.60	0.50	0.55	rms_essential_subset
+CDKN2A	12	0.10	0.10	0.10	0.0	0.05	tsg_not_essential
+NF1	12	0.05	0.05	0.05	0.0	0.05	tsg_not_essential
+CDK4	12	-0.55	-0.80	-0.30	0.50	0.60	fp_amplified_dependent
+CDK6	12	-0.30	-0.40	-0.20	0.25	0.40	partial_redundancy_with_CDK4
+MTAP	12	-0.10	-0.10	-0.10	0.08	0.15	loss_creates_PRMT5_dep
+MDM2	12	-0.40	-0.50	-0.30	0.33	0.50	tp53wt_dependent
+BRD4	12	-1.10	-1.30	-0.90	0.92	0.85	pan_essential_strong_in_FP
+BRD9	12	-0.55	-0.75	-0.35	0.50	0.60	fp_dependent
+CHD4	12	-0.65	-0.80	-0.50	0.67	0.65	fp_dependent
+PRMT5	12	-0.95	-1.00	-0.90	0.83	0.80	pan_essential_synthetic_lethal_in_MTAP_null
+PAX3	12	-0.75	-1.20	-0.30	0.50	0.70	fp_essential_via_PAX3_FOXO1_fusion
+PAX7	12	-0.20	-0.50	0.00	0.08	0.25	fp_subset_essential
+FOXO1	12	-0.60	-1.10	-0.10	0.42	0.65	fp_essential_via_fusion
+PTEN	12	0.05	0.00	0.10	0.0	0.10	tsg_not_essential
+PIK3CA	12	-0.30	-0.20	-0.40	0.25	0.40	mutant_dependent
