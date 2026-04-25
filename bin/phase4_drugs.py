@@ -49,6 +49,29 @@ def load_drugs(path: Path) -> dict[str, list[dict]]:
     return out
 
 
+def union_drug_maps(primary: Path, extras: list[Path]) -> dict[str, list[dict]]:
+    """Union the primary curated drug map with optional extra sources (e.g.,
+    DGIdb cache). Primary always wins on (gene, drug.lower()) collisions
+    because its mechanism strings drive the case-study scorecard assertions.
+    """
+    merged = load_drugs(primary)
+    seen: set[tuple[str, str]] = {
+        (g, (r.get("drug") or "").strip().lower())
+        for g, rows in merged.items() for r in rows
+    }
+    for path in extras:
+        if not path or not path.exists() or path.stat().st_size == 0:
+            continue
+        for gene, rows in load_drugs(path).items():
+            for r in rows:
+                key = (gene, (r.get("drug") or "").strip().lower())
+                if key in seen:
+                    continue
+                seen.add(key)
+                merged.setdefault(gene, []).append(r)
+    return merged
+
+
 def drug_applies(drug_row: dict, variant: dict) -> bool:
     mech = drug_row.get("mechanism", "")
     hgvsp = variant.get("hgvsp_short", "")
@@ -66,11 +89,14 @@ def score_drug(drug_row: dict) -> float:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", required=True, type=Path)
-    ap.add_argument("--drug-map", required=True, type=Path)
+    ap.add_argument("--drug-map", required=True, type=Path,
+                    help="Primary curated drug-target map.")
+    ap.add_argument("--drug-map-extra", action="append", default=[], type=Path,
+                    help="Optional extra drug-target maps (e.g. DGIdb cache); curated wins on (gene, drug) collisions.")
     ap.add_argument("--out", required=True, type=Path)
     args = ap.parse_args()
 
-    drug_map = load_drugs(args.drug_map)
+    drug_map = union_drug_maps(args.drug_map, args.drug_map_extra)
 
     with args.inp.open() as fh:
         reader = csv.DictReader(fh, delimiter="\t")

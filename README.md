@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.3.0-pilot**: SNV + CNA + fusion inputs, three toy patients, automated case-study scorecard wired into CI. All four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) currently PASS, 8/8 assertions. Pipeline runs in seconds on a laptop, no external API calls or large downloads required. Reference data for Phase 3 (DepMap) and Phase 4 (drug-target map) is curated and bundled in `assets/`; both swap to live data sources without code changes (see `assets/README.md`). Not for clinical use.
+**v0.4.0-pilot**: SNV + CNA + fusion inputs, three toy patients, automated case-study scorecard wired into CI, Phase 4 now unions a live DGIdb cache (198 mechanism-typed interactions across 21 RMS targets) with the curated drug map. All four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) currently PASS, 8/8 assertions. Pipeline still runs in seconds on a laptop offline; refreshing the DGIdb cache requires one network call to `bin/fetch_dgidb.py`. Phase 3 DepMap summary remains a curated PLACEHOLDER. Not for clinical use.
 
 ## Mission
 

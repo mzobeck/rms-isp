@@ -41,13 +41,14 @@ workflow {
     targets_kb_ch  = Channel.value(file(params.targets_kb,     checkIfExists: true))
     depmap_ch      = Channel.value(file(params.depmap_summary, checkIfExists: true))
     drug_map_ch    = Channel.value(file(params.drug_map,       checkIfExists: true))
+    drug_map_extra_ch = Channel.value(file(params.drug_map_extra, checkIfExists: true))
 
     sample_inputs_ch = vcf_ch.map { v -> tuple(params.sample_id, v, file(params.cna), file(params.fusion)) }
 
     PHASE1_ANNOTATE(sample_inputs_ch, targets_kb_ch)
     PHASE2_STRUCTURE(PHASE1_ANNOTATE.out.annotated)
     PHASE3_DEPENDENCY(PHASE2_STRUCTURE.out.structured, depmap_ch, params.subtype)
-    PHASE4_DRUGS(PHASE3_DEPENDENCY.out.dependency, drug_map_ch)
+    PHASE4_DRUGS(PHASE3_DEPENDENCY.out.dependency, drug_map_ch, drug_map_extra_ch)
 
     p5_input_ch = PHASE4_DRUGS.out.drugs
         .combine(vcf_ch)

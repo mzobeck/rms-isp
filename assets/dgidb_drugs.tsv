@@ -1,0 +1,207 @@
+## DGIdb-sourced drug-target interactions (auto-generated; do NOT hand-edit)
+## Source: https://dgidb.org/api/graphql
+## Generated: 2026-04-25 21:19 UTC
+## Genes queried: 21
+## Rows: 198
+## Schema: gene\tdrug\tmechanism\tmax_phase\tpediatric_evidence\tnotes
+## To regenerate: bin/fetch_dgidb.py
+## Phase 4 unions this with assets/drug_target_map.tsv; the curated map wins on (gene, drug) collisions because its mechanism strings drive the case-study scorecard assertions.
+gene	drug	mechanism	max_phase	pediatric_evidence	notes
+CDK4	ribociclib	inhibitor	approved	none	dgidb:rxcui:1873916 | sources=CGI,CIViC,ChEMBL,ClearityFoundationBiomarkers,GuideToPharmacology,MyCancerGenome,TTD,TdgClinicalTrial
+CDK4	r547	inhibitor	phase1	none	dgidb:iuphar.ligand:5707 | sources=ChEMBL,GuideToPharmacology
+CDK4	palbociclib	inhibitor	approved	none	dgidb:rxcui:1601374 | sources=CGI,CIViC,CancerCommons,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,DTC,GuideToPharmacology,MyCancerGenome,MyCancerGenomeClinicalTrial,OncoKB | pmid=24417566
+CDK4	atirmociclib	inhibitor	phase1	none	dgidb:iuphar.ligand:13485 | sources=GuideToPharmacology
+CDK4	voruciclib	inhibitor	phase1	none	dgidb:ncit:C141430 | sources=ChEMBL,GuideToPharmacology,TTD
+CDK4	su9516	inhibitor	phase1	none	dgidb:drugbank:DB03428 | sources=GuideToPharmacology
+CDK4	bsj-03-123	inhibitor	phase1	none	dgidb:iuphar.ligand:10532 | sources=GuideToPharmacology
+CDK4	cp-10	inhibitor	phase1	none	dgidb:iuphar.ligand:11662 | sources=GuideToPharmacology
+CDK4	ro-0505124	inhibitor	phase1	none	dgidb:iuphar.ligand:8203 | sources=DTC,GuideToPharmacology | pmid=16476733
+CDK4	alvocidib	inhibitor	phase1	none	dgidb:ncit:C74940 | sources=ChEMBL,DTC,GuideToPharmacology,MyCancerGenome,TdgClinicalTrial
+CDK4	riviciclib	inhibitor	phase1	none	dgidb:ncit:C64762 | sources=ChEMBL,GuideToPharmacology,TTD
+CDK4	narazaciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:11879 | sources=GuideToPharmacology
+CDK4	milciclib	inhibitor	phase1	none	dgidb:ncit:C148410 | sources=ChEMBL,GuideToPharmacology
+CDK4	abemaciclib	inhibitor	approved	none	dgidb:rxcui:1946825 | sources=CancerCommons,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,GuideToPharmacology,OncoKB,TTD
+CDK4	cdk4 inhibitor iii	inhibitor	phase1	none	dgidb:iuphar.ligand:5952 | sources=GuideToPharmacology
+CDK4	bsj-04-132	inhibitor	phase1	none	dgidb:iuphar.ligand:10531 | sources=GuideToPharmacology
+CDK4	roniciclib	inhibitor	phase1	none	dgidb:ncit:C92579 | sources=CancerCommons,ChEMBL,ClearityFoundationBiomarkers,TTD
+CDK4	cgp74514a	inhibitor	phase1	none	dgidb:iuphar.ligand:5945 | sources=GuideToPharmacology
+CDK4	trilaciclib	inhibitor	approved	none	dgidb:rxcui:2479690 | sources=ChEMBL,GuideToPharmacology,TTD
+CDK4	pha-793887	inhibitor	phase1	none	dgidb:drugbank:DB12686 | sources=ChEMBL,TTD
+CDK4	fascaplysin	inhibitor	phase1	none	dgidb:iuphar.ligand:5969 | sources=GuideToPharmacology
+CDK4	inixaciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:12078 | sources=GuideToPharmacology
+CDK4	at-7519	inhibitor	phase1	none	dgidb:drugbank:DB08142 | sources=ChEMBL
+CDK4	cdk4 inhibitor	inhibitor	phase1	none	dgidb:iuphar.ligand:5950 | sources=GuideToPharmacology
+CDK4	azd5438	inhibitor	phase1	none	dgidb:iuphar.ligand:8473 | sources=ChEMBL
+CDK4	tanuxiciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:11885 | sources=GuideToPharmacology
+CDK4	cdk2 inhibitor iv	inhibitor	phase1	none	dgidb:iuphar.ligand:5949 | sources=GuideToPharmacology
+CDK4	ebvaciclib	inhibitor	phase1	none	dgidb:ncit:C151988 | sources=GuideToPharmacology
+CDK4	bsj-03-204	inhibitor	phase1	none	dgidb:iuphar.ligand:10530 | sources=GuideToPharmacology
+CDK4	ulecaciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:12079 | sources=GuideToPharmacology
+CDK4	purvalanol a	inhibitor	phase1	none	dgidb:iuphar.ligand:6030 | sources=GuideToPharmacology
+CDK4	cdk4 inhibitor ii	inhibitor	phase1	none	dgidb:iuphar.ligand:5951 | sources=GuideToPharmacology
+CDK4	cimpuciclib	inhibitor	phase1	none	dgidb:ncit:C188668 | sources=GuideToPharmacology
+CDK4	cdk inhibitor 4.35	inhibitor	phase1	none	dgidb:iuphar.ligand:10357 | sources=GuideToPharmacology
+CDK4	purvalanol b	inhibitor	phase1	none	dgidb:iuphar.ligand:7806 | sources=GuideToPharmacology
+CDK4	ucn-01	inhibitor	phase1	none	dgidb:chembl:CHEMBL574737 | sources=ChEMBL
+CDK4	trilaciclib dihydrochloride	inhibitor	approved	none	dgidb:rxcui:2479691 | sources=ChEMBL
+CDK4	ag-24322	inhibitor	phase1	none	dgidb:drugbank:DB13035 | sources=ChEMBL
+CDK4	tibremciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:12881 | sources=GuideToPharmacology
+CDK4	rgb-286638	inhibitor	phase1	none	dgidb:iuphar.ligand:7744 | sources=ChEMBL,GuideToPharmacology,TTD
+CDK4	dalpiciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:11189 | sources=GuideToPharmacology
+CDK4	lerociclib	inhibitor	phase1	none	dgidb:ncit:C138165 | sources=GuideToPharmacology,TTD
+CDK4	ribociclib succinate	inhibitor	approved	none	dgidb:rxcui:1873978 | sources=ChEMBL,TTD
+CDK4	bms-387032	inhibitor	phase1	none	dgidb:iuphar.ligand:5670 | sources=GuideToPharmacology
+CDK4	clonidine hydrochloride	inhibitor	approved	none	dgidb:rxcui:142432 | sources=GuideToPharmacology
+CDK4	crozbaciclib	inhibitor	phase1	none	dgidb:iuphar.ligand:12076 | sources=GuideToPharmacology
+CDK4	compound 9b [pmid: 18986805]	inhibitor	phase1	none	dgidb:iuphar.ligand:8160 | sources=GuideToPharmacology
+PTEN	gsk2636771	inhibitor	phase1	none	dgidb:iuphar.ligand:7967 | sources=CKB-CORE,MyCancerGenomeClinicalTrial,OncoKB | pmid=23674493,26117819,26577700
+CHD4	compound 5k [pmid: 23528296]	inhibitor	phase1	none	dgidb:iuphar.ligand:8801 | sources=GuideToPharmacology
+FGFR4	cp-459632	inhibitor	phase1	none	dgidb:chembl:CHEMBL3545300 | sources=ChEMBL
+FGFR4	erdafitinib	inhibitor	approved	none	dgidb:rxcui:2123125 | sources=ChEMBL
+FGFR4	infigratinib phosphate	inhibitor	approved	none	dgidb:ncit:C175088 | sources=ChEMBL
+FGFR4	brivanib alaninate	inhibitor	phase1	none	dgidb:ncit:C53397 | sources=ChEMBL
+FGFR4	ly-2874455	inhibitor	phase1	none	dgidb:drugbank:DB13022 | sources=ChEMBL
+FGFR4	bos172722	inhibitor	phase1	none	dgidb:drugbank:DB15498 | sources=GuideToPharmacology
+FGFR4	nms-p715	inhibitor	phase1	none	dgidb:iuphar.ligand:9401 | sources=GuideToPharmacology
+FGFR4	enmd-981693	inhibitor	phase1	none	dgidb:drugbank:DB16891 | sources=ChEMBL
+FGFR4	orantinib	inhibitor	phase1	none	dgidb:ncit:C1884 | sources=ChEMBL
+FGFR4	az3146	inhibitor	phase1	none	dgidb:iuphar.ligand:9400 | sources=GuideToPharmacology
+FGFR4	brivanib	inhibitor	phase1	none	dgidb:ncit:C67040 | sources=ChEMBL,PharmGKB | pmid=20124951
+FGFR4	infigratinib	inhibitor	approved	none	dgidb:rxcui:2550729 | sources=CancerCommons,ChEMBL
+FGFR4	futibatinib	inhibitor	approved	none	dgidb:rxcui:2628190 | sources=ChEMBL
+FGFR4	fgf401	inhibitor	phase1	none	dgidb:chembl:CHEMBL3908979 | sources=ChEMBL
+FGFR4	hesperadin	inhibitor	phase1	none	dgidb:rxcui:1552358 | sources=DTC | pmid=19035792
+FGFR4	mpi-0479605	inhibitor	phase1	none	dgidb:iuphar.ligand:9399 | sources=GuideToPharmacology
+FGFR4	dovitinib	inhibitor	phase1	none	dgidb:ncit:C76199 | sources=CIViC,ClearityFoundationClinicalTrial
+FGFR4	enmd-2076	inhibitor	phase1	none	dgidb:iuphar.ligand:7885 | sources=ClearityFoundationClinicalTrial
+FGFR4	rogaratinib	inhibitor	phase1	none	dgidb:ncit:C112205 | sources=ChEMBL
+FGFR4	luvixasertib	inhibitor	phase1	none	dgidb:iuphar.ligand:11664 | sources=GuideToPharmacology
+FGFR4	xl-999	inhibitor	phase1	none	dgidb:chembl:CHEMBL5314391 | sources=ChEMBL
+FGFR4	compound 20 [pmid: 30998356]	inhibitor	phase1	none	dgidb:iuphar.ligand:10371 | sources=GuideToPharmacology
+FGFR4	aldafermin	activator	phase1	none	dgidb:ncit:C169769 | sources=ChEMBL
+FGFR4	compound 27f [pmid: 25625617]	inhibitor	phase1	none	dgidb:iuphar.ligand:9238 | sources=GuideToPharmacology
+FGFR4	gne-7915	inhibitor	phase1	none	dgidb:iuphar.ligand:8073 | sources=GuideToPharmacology
+FGFR4	mps1-in-1	inhibitor	phase1	none	dgidb:iuphar.ligand:9271 | sources=GuideToPharmacology
+FGFR4	compound 34h [pmid: 27055065]	inhibitor	phase1	none	dgidb:iuphar.ligand:9169 | sources=GuideToPharmacology
+FGFR4	empesertib	inhibitor	phase1	none	dgidb:ncit:C116074 | sources=GuideToPharmacology
+FGFR4	ro3280	inhibitor	phase1	none	dgidb:iuphar.ligand:9403 | sources=GuideToPharmacology
+FGFR4	nintedanib esylate	inhibitor	approved	none	dgidb:rxcui:1592736 | sources=ChEMBL,ClearityFoundationClinicalTrial
+FGFR4	azd-4547	inhibitor	phase1	none	dgidb:drugbank:DB12247 | sources=ChEMBL
+FGFR4	bay1217389	inhibitor	phase1	none	dgidb:iuphar.ligand:12705 | sources=GuideToPharmacology
+FGFR4	derazantinib	inhibitor	phase1	none	dgidb:ncit:C104267 | sources=ChEMBL
+BRD4	birabresib	inhibitor	phase1	none	dgidb:ncit:C103298 | sources=ChEMBL,TTD
+BRD4	molibresib	inhibitor	phase1	none	dgidb:ncit:C101538 | sources=ChEMBL,TTD
+BRD4	pelabresib	inhibitor	phase1	none	dgidb:ncit:C188265 | sources=ChEMBL,TTD
+BRD4	ro-6870810	inhibitor	phase1	none	dgidb:drugbank:DB15151 | sources=ChEMBL,TTD
+BRD4	ezobresib	inhibitor	phase1	none	dgidb:ncit:C121849 | sources=ChEMBL
+BRD4	apabetalone	inhibitor	phase1	none	dgidb:ncit:C171748 | sources=ChEMBL,TTD
+TP53	eprenetapopt	modulator	phase1	none	dgidb:ncit:C85465 | sources=CIViC,CKB-CORE,ChEMBL,TTD | pmid=21239882,21415220,22965953
+TP53	idasanutlin	inhibitor	phase1	none	dgidb:ncit:C99131 | sources=CKB-CORE,ChEMBL | pmid=31483066,36602782
+TP53	navtemadlin	inhibitor	phase1	none	dgidb:ncit:C116624 | sources=CKB-CORE,ChEMBL | pmid=25567130,26162687,31359240
+TP53	multi-neo-epitope vaccine ose 2101	vaccine	phase1	none	dgidb:ncit:C26645 | sources=TALC
+TP53	siremadlin	inhibitor	phase1	none	dgidb:ncit:C116325 | sources=CKB-CORE,ChEMBL,TTD | pmid=34862243
+TP53	autologous dendritic cells transduced with wild-type p53 adenovirus vaccine	vaccine	phase1	none	dgidb:ncit:C148241 | sources=TALC
+TP53	granisetron	activator	approved	none	dgidb:rxcui:26237 | sources=ClearityFoundationClinicalTrial
+TP53	apg115	inhibitor	phase1	none	dgidb:chembl:CHEMBL4091801 | sources=ChEMBL
+CDK6	at-7519	inhibitor	phase1	none	dgidb:drugbank:DB08142 | sources=ChEMBL
+CDK6	palbociclib	inhibitor	approved	none	dgidb:rxcui:1601374 | sources=CancerCommons,ChEMBL,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial
+CDK6	abemaciclib	inhibitor	approved	none	dgidb:rxcui:1946825 | sources=CancerCommons,ChEMBL,ClearityFoundationClinicalTrial,TTD
+CDK6	trilaciclib dihydrochloride	inhibitor	approved	none	dgidb:rxcui:2479691 | sources=ChEMBL
+CDK6	alvocidib	inhibitor	phase1	none	dgidb:ncit:C74940 | sources=ChEMBL,DTC,MyCancerGenome,TdgClinicalTrial
+CDK6	ribociclib succinate	inhibitor	approved	none	dgidb:rxcui:1873978 | sources=ChEMBL,TTD
+CDK6	pha-793887	inhibitor	phase1	none	dgidb:drugbank:DB12686 | sources=ChEMBL
+CDK6	disprocynium24	inhibitor	phase1	none	dgidb:iuphar.ligand:8826 | sources=GuideToPharmacology
+CDK6	azd5438	inhibitor	phase1	none	dgidb:iuphar.ligand:8473 | sources=ChEMBL
+CDK6	trilaciclib	inhibitor	approved	none	dgidb:rxcui:2479690 | sources=ChEMBL,TTD
+CDK6	roniciclib	inhibitor	phase1	none	dgidb:ncit:C92579 | sources=ChEMBL
+CDK6	ucn-01	inhibitor	phase1	none	dgidb:chembl:CHEMBL574737 | sources=ChEMBL
+CDK6	ribociclib	inhibitor	approved	none	dgidb:rxcui:1873916 | sources=CGI,ChEMBL,MyCancerGenome,TTD,TdgClinicalTrial
+NRAS	salirasib	inhibitor	phase1	none	dgidb:ncit:C71146 | sources=ChEMBL,TTD
+PIK3CA	omipalisib	inhibitor	phase1	none	dgidb:ncit:C88270 | sources=CKB-CORE,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenomeClinicalTrial | pmid=26603258
+PIK3CA	pi-103	inhibitor	phase1	none	dgidb:drugbank:DB17046 | sources=CKB-CORE,MyCancerGenome | pmid=22336586
+PIK3CA	pictilisib	inhibitor	phase1	none	dgidb:ncit:C165479 | sources=CIViC,CKB-CORE,ChEMBL,ClearityFoundationClinicalTrial,DTC,MyCancerGenome,TALC | pmid=23136191,23360348,23674493
+PIK3CA	ds-7423	inhibitor	phase1	none	dgidb:iuphar.ligand:12616 | sources=CKB-CORE,ChEMBL,ClearityFoundationBiomarkers | pmid=24504419
+PIK3CA	infigratinib	inhibitor	approved	none	dgidb:rxcui:2550729 | sources=CKB-CORE,MyCancerGenome | pmid=28119489
+PIK3CA	voxtalisib	inhibitor	phase1	none	dgidb:ncit:C71704 | sources=CKB-CORE,ChEMBL,MyCancerGenome | pmid=24634413
+PIK3CA	samotolisib	inhibitor	phase1	none	dgidb:ncit:C121817 | sources=CKB-CORE,ChEMBL,TTD | pmid=27439478,31880826,33495309
+PIK3CA	copanlisib	inhibitor	approved	none	dgidb:rxcui:1945077 | sources=CIViC,CKB-CORE,CancerCommons,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial,OncoKB,TTD | pmid=24170767,27672108,31624127
+PIK3CA	vs-5584	inhibitor	phase1	none	dgidb:drugbank:DB12986 | sources=CKB-CORE,ChEMBL | pmid=23270925
+PIK3CA	rigosertib	inhibitor	phase1	none	dgidb:ncit:C152216 | sources=TALC,TdgClinicalTrial
+PIK3CA	xl765	inhibitor	phase1	none	dgidb:drugbank:DB05241 | sources=CancerCommons,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,TALC,TdgClinicalTrial
+PIK3CA	taselisib	inhibitor	phase1	none	dgidb:ncit:C116876 | sources=CIViC,CKB-CORE,ChEMBL,MyCancerGenome,OncoKB,TTD | pmid=23662903,26589432,28331003
+PIK3CA	pwt-33579	inhibitor	phase1	none	dgidb:chembl:CHEMBL3545323 | sources=ChEMBL
+PIK3CA	apitolisib	inhibitor	phase1	none	dgidb:ncit:C91731 | sources=CKB-CORE,ChEMBL,MyCancerGenome | pmid=26787751,26951309
+PIK3CA	serabelisib	inhibitor	phase1	none	dgidb:ncit:C98844 | sources=CKB-CORE,ChEMBL,MyCancerGenome,OncoKB,TTD | pmid=28490463
+PIK3CA	pf-04691502	inhibitor	phase1	none	dgidb:drugbank:DB11974 | sources=CKB-CORE,ChEMBL,ClearityFoundationBiomarkers,TALC | pmid=21750219,31516747
+PIK3CA	pki-179	inhibitor	phase1	none	dgidb:drugbank:DB13109 | sources=CKB-CORE,ChEMBL | pmid=20797855
+PIK3CA	buparlisib	inhibitor	phase1	none	dgidb:ncit:C90565 | sources=CKB-CORE,CancerCommons,ChEMBL,ClearityFoundationClinicalTrial,MyCancerGenome,OncoKB,TALC,TTD | pmid=26013318,26909613,27974663
+PIK3CA	pwt-33587	inhibitor	phase1	none	dgidb:chembl:CHEMBL3545006 | sources=ChEMBL
+PIK3CA	zstk474	inhibitor	phase1	none	dgidb:iuphar.ligand:7965 | sources=CKB-CORE,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial | pmid=26137449
+PIK3CA	gsk2636771	inhibitor	phase1	none	dgidb:iuphar.ligand:7967 | sources=MyCancerGenome
+PIK3CA	paxalisib	inhibitor	phase1	none	dgidb:ncit:C116877 | sources=ChEMBL
+PIK3CA	puquitinib mesylate dihydrate	inhibitor	phase1	none	dgidb:chembl:CHEMBL4596972 | sources=ChEMBL
+PIK3CA	wx-037	inhibitor	phase1	none	dgidb:chembl:CHEMBL3545385 | sources=ChEMBL
+PIK3CA	zstk-474	inhibitor	phase1	none	dgidb:drugbank:DB12904 | sources=ChEMBL
+PIK3CA	recilisib	inhibitor	phase1	none	dgidb:ncit:C152168 | sources=ChEMBL
+PIK3CA	gsk-1059615	inhibitor	phase1	none	dgidb:drugbank:DB11962 | sources=ChEMBL
+PIK3CA	sf1126	inhibitor	phase1	none	dgidb:drugbank:DB05210 | sources=MyCancerGenome,TdgClinicalTrial
+PIK3CA	fimepinostat	inhibitor	phase1	none	dgidb:ncit:C104008 | sources=CKB-CORE,ChEMBL | pmid=22693356
+PIK3CA	quercetin	inhibitor	approved	none	dgidb:rxcui:9060 | sources=DTC,MyCancerGenome,NCI | pmid=17045724,22212721
+PIK3CA	bay-1082439	inhibitor	phase1	none	dgidb:chembl:CHEMBL3644672 | sources=ChEMBL
+PIK3CA	sf-1126	inhibitor	phase1	none	dgidb:chembl:CHEMBL2326966 | sources=ChEMBL
+PIK3CA	azd-6482	inhibitor	phase1	none	dgidb:drugbank:DB14980 | sources=ChEMBL
+PIK3CA	pi3k inhibitor bgt226	inhibitor	phase1	none	dgidb:ncit:C74073 | sources=TALC
+PIK3CA	panulisib	inhibitor	phase1	none	dgidb:ncit:C104292 | sources=CKB-CORE,ChEMBL | pmid=25700704
+PIK3CA	inavolisib	inhibitor	approved	none	dgidb:rxcui:2695422 | sources=CKB-CORE,ChEMBL,OncoKB | pmid=31699932,34544753,37916958
+PIK3CA	dactolisib	inhibitor	phase1	none	dgidb:ncit:C74072 | sources=CIViC,CKB-CORE,CancerCommons,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial,TALC | pmid=19029981,21966435,22543857
+PIK3CA	pi3k/mtor kinase inhibitor pf-04691502	inhibitor	phase1	none	dgidb:ncit:C84837 | sources=ClearityFoundationClinicalTrial
+PIK3CA	gedatolisib	inhibitor	phase1	none	dgidb:ncit:C91732 | sources=CKB-CORE,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial | pmid=17314276,21325073,24823695
+PIK3CA	sar260301	inhibitor	phase1	none	dgidb:iuphar.ligand:8793 | sources=CancerCommons
+PIK3CA	sonolisib	inhibitor	phase1	none	dgidb:ncit:C78848 | sources=CKB-CORE,CancerCommons,ChEMBL,MyCancerGenome,MyCancerGenomeClinicalTrial,TALC | pmid=22693357
+PIK3CA	bgt-226	inhibitor	phase1	none	dgidb:iuphar.ligand:7951 | sources=ChEMBL
+PIK3CA	izorlisib	inhibitor	phase1	none	dgidb:ncit:C158603 | sources=CIViC,CKB-CORE,ChEMBL | pmid=21558396,25231405,36913051
+PIK3CA	copanlisib hydrochloride	inhibitor	approved	none	dgidb:ncit:C138994 | sources=ChEMBL
+PIK3CA	pilaralisib	inhibitor	phase1	none	dgidb:ncit:C71705 | sources=CKB-CORE,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenome,TALC | pmid=24166903,25637314
+PIK3CA	buparlisib hydrochloride	inhibitor	phase1	none	dgidb:ncit:C142973 | sources=MyCancerGenomeClinicalTrial
+PIK3CA	alpelisib	inhibitor	approved	none	dgidb:rxcui:2169285 | sources=CIViC,CKB-CORE,CancerCommons,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,FDA,MyCancerGenome,MyCancerGenomeClinicalTrial,OncoKB,PharmGKB,TTD | pmid=24608574,25409150,26013318
+PRMT5	onametostat	inhibitor	phase1	none	dgidb:iuphar.ligand:11749 | sources=GuideToPharmacology
+PRMT5	lly-283	inhibitor	phase1	none	dgidb:iuphar.ligand:9527 | sources=GuideToPharmacology
+PRMT5	pemrametostat	inhibitor	phase1	none	dgidb:ncit:C142177 | sources=ChEMBL,TTD
+PRMT5	mrtx1719	inhibitor	phase1	none	dgidb:iuphar.ligand:12116 | sources=GuideToPharmacology
+PRMT5	ds-437	inhibitor	phase1	none	dgidb:iuphar.ligand:8395 | sources=GuideToPharmacology
+PRMT5	pf-06939999	inhibitor	phase1	none	dgidb:iuphar.ligand:11844 | sources=GuideToPharmacology
+PRMT5	cmp5 [pmid: 25742700]	inhibitor	phase1	none	dgidb:iuphar.ligand:8288 | sources=GuideToPharmacology
+PRMT5	epz015666	inhibitor	phase1	none	dgidb:iuphar.ligand:8287 | sources=GuideToPharmacology
+PRMT5	tng908	inhibitor	phase1	none	dgidb:iuphar.ligand:13320 | sources=GuideToPharmacology
+PRMT5	gsk591	inhibitor	phase1	none	dgidb:iuphar.ligand:8954 | sources=GuideToPharmacology
+MDM2	navtemadlin	inhibitor	phase1	none	dgidb:ncit:C116624 | sources=ChEMBL,TTD
+MDM2	apg115	inhibitor	phase1	none	dgidb:chembl:CHEMBL4091801 | sources=ChEMBL
+MDM2	idasanutlin	inhibitor	phase1	none	dgidb:ncit:C99131 | sources=ChEMBL,TTD
+MDM2	siremadlin	inhibitor	phase1	none	dgidb:ncit:C116325 | sources=ChEMBL,TTD
+HRAS	salirasib	inhibitor	phase1	none	dgidb:ncit:C71146 | sources=ChEMBL
+HRAS	isis 2503	antisense oligonucleotide	phase1	none	dgidb:drugbank:DB16181 | sources=TALC
+KRAS	danoprevir	inhibitor	phase1	none	dgidb:ncit:C171872 | sources=ChEMBL
+KRAS	pelareorep	inhibitor	phase1	none	dgidb:chembl:CHEMBL3545069 | sources=CancerCommons
+KRAS	salirasib	inhibitor	phase1	none	dgidb:ncit:C71146 | sources=CIViC,ChEMBL
+KRAS	narlaprevir	inhibitor	phase1	none	dgidb:ncit:C166554 | sources=ChEMBL
+KRAS	regorafenib	inhibitor	approved	none	dgidb:rxcui:1312397 | sources=MyCancerGenomeClinicalTrial,OncoKB,PharmGKB
+KRAS	selumetinib	inhibitor	approved	none	dgidb:rxcui:2289380 | sources=CGI,CIViC,ClearityFoundationBiomarkers,MyCancerGenomeClinicalTrial
+KRAS	glecaprevir	inhibitor	approved	none	dgidb:rxcui:1940635 | sources=ChEMBL
+KRAS	vaniprevir	inhibitor	phase1	none	dgidb:ncit:C152828 | sources=ChEMBL
+KRAS	sotorasib	inhibitor	approved	none	dgidb:rxcui:2550714 | sources=CIViC,ChEMBL,PharmGKB
+KRAS	telaprevir	inhibitor	approved	none	dgidb:rxcui:1102261 | sources=ChEMBL
+KRAS	ciluprevir	inhibitor	phase1	none	dgidb:ncit:C76016 | sources=ChEMBL
+KRAS	furaprevir	inhibitor	phase1	none	dgidb:ncit:C166437 | sources=ChEMBL
+KRAS	asunaprevir	inhibitor	approved	none	dgidb:rxcui:1652103 | sources=ChEMBL
+KRAS	faldaprevir	inhibitor	phase1	none	dgidb:ncit:C171746 | sources=ChEMBL
+KRAS	adagrasib	inhibitor	approved	none	dgidb:rxcui:2625882 | sources=CIViC,ChEMBL,PharmGKB
+KRAS	sovaprevir	inhibitor	phase1	none	dgidb:ncit:C152411 | sources=ChEMBL
+KRAS	simeprevir sodium	inhibitor	approved	none	dgidb:rxcui:1484518 | sources=ChEMBL
+KRAS	ras peptide cancer vaccine	vaccine	phase1	none	dgidb:ncit:C2438 | sources=TALC
+KRAS	voxilaprevir	inhibitor	approved	none	dgidb:rxcui:1939323 | sources=ChEMBL
+KRAS	vedroprevir	inhibitor	phase1	none	dgidb:ncit:C152843 | sources=ChEMBL
+KRAS	grazoprevir	inhibitor	approved	none	dgidb:rxcui:1734630 | sources=ChEMBL
+KRAS	paritaprevir	inhibitor	approved	none	dgidb:rxcui:1597373 | sources=ChEMBL
+KRAS	gs-9256	inhibitor	phase1	none	dgidb:drugbank:DB12876 | sources=ChEMBL
+KRAS	simvastatin	inhibitor	approved	none	dgidb:rxcui:36567 | sources=MyCancerGenomeClinicalTrial
+KRAS	boceprevir	inhibitor	approved	none	dgidb:rxcui:1102129 | sources=ChEMBL

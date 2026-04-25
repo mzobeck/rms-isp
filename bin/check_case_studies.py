@@ -71,9 +71,15 @@ def run_pipeline(case: dict, *, quiet: bool) -> Path:
     run(["python3", "bin/phase3_dependency.py",
          "--in", str(p2), "--depmap", "assets/depmap_rms_summary.tsv",
          "--subtype", case["subtype"], "--out", str(p3)], quiet=quiet)
-    run(["python3", "bin/phase4_drugs.py",
-         "--in", str(p3), "--drug-map", "assets/drug_target_map.tsv",
-         "--out", str(p4)], quiet=quiet)
+    phase4_cmd = [
+        "python3", "bin/phase4_drugs.py",
+        "--in", str(p3), "--drug-map", "assets/drug_target_map.tsv",
+        "--out", str(p4),
+    ]
+    extra = REPO_ROOT / "assets" / "dgidb_drugs.tsv"
+    if extra.exists() and extra.stat().st_size > 0:
+        phase4_cmd += ["--drug-map-extra", str(extra)]
+    run(phase4_cmd, quiet=quiet)
     run(["python3", "bin/phase5_score.py",
          "--in", str(p4), "--vcf", vcf,
          "--sample-id", sid, "--subtype", case["subtype"],
@@ -178,7 +184,7 @@ def main() -> int:
 
     report: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-        "pipeline_version": "v0.3.0-pilot",
+        "pipeline_version": "v0.4.0-pilot",
         "n_cases": len(cases),
         "cases": [],
         "n_assertions": 0,
