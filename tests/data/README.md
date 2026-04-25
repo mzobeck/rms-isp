@@ -1,8 +1,14 @@
-# Toy Test Patient
+# Toy Test Patients
 
-`toy_patient.vcf` is a hand-curated synthetic FN-RMS-leaning tumor designed to exercise the pipeline across multiple driver classes plus passenger negatives. It is not a real tumor and contains no PHI.
+Three hand-curated synthetic tumors that, taken together, exercise the four pilot case studies from `plans/pilot_ccdi_mci/rms_translational_pilot_project.md` §3. None are real tumors; none contain PHI.
 
-`toy_patient_expected.json` records, per variant, what the pipeline should produce at each phase. Used as the integration test harness.
+| Sample | Profile | Pilot case study | Files |
+|---|---|---|---|
+| `TOY_TUMOR` | FN-RMS, 7 driver SNVs + 3 passengers | 3 (FGFR4) and 4 (RAS/MEK) | `toy_patient.vcf` |
+| `TOY_FP_CDK4` | FP-RMS, PAX3-FOXO1 fusion + CDK4/MDM2 amplification + TP53 R175H | 2 (CDK4 amp → CDK4/6i) | `toy_fp_cdk4amp.{vcf,cna.tsv,fusion.tsv}` |
+| `TOY_MTAP_NULL` | FN-RMS, CDKN2A + MTAP 9p21 homozygous co-deletion | 1 (MTAP/CDKN2A → PRMT5 + CDK4/6i) | `toy_mtap_null.{vcf,cna.tsv,fusion.tsv}` |
+
+`toy_patient_expected.json` records, per variant, what the pipeline should produce at each phase for the original SNV-only fixture. Used as the integration test harness.
 
 ## Contents
 
@@ -17,11 +23,25 @@ Coordinates labeled `APPROX_verify_in_phase1` need verification against MANE/Ens
 
 ## How to use
 
+Run a single sample:
+
 ```bash
-nextflow run main.nf -profile laptop --input tests/data/toy_patient.vcf
+nextflow run main.nf -profile laptop \
+    --input tests/data/toy_fp_cdk4amp.vcf \
+    --cna tests/data/toy_fp_cdk4amp.cna.tsv \
+    --fusion tests/data/toy_fp_cdk4amp.fusion.tsv \
+    --sample_id TOY_FP_CDK4 \
+    --subtype FP
 ```
 
-The CI smoke test runs this on every commit. As phases come online, this same VCF is the integration-test input that exercises the full pipeline end-to-end.
+Run all three toy patients with a cross-sample summary:
+
+```bash
+bin/run_all_toys.sh
+open results/multisample_summary.md
+```
+
+The CI smoke test runs `TOY_TUMOR` on every commit. The other two patients exist to keep pilot case studies 1 and 2 covered as Phase 1 and Phase 4 evolve.
 
 ## Disclosure
 

@@ -1,0 +1,3 @@
+## Empty fusion TSV for TOY_MTAP_NULL (FN-RMS, no driver fusion expected).
+## Schema: sample_id\tgene_5p\tgene_3p\tfusion_name\tfusion_class\tnotes
+sample_id	gene_5p	gene_3p	fusion_name	fusion_class	notes

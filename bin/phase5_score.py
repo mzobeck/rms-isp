@@ -52,6 +52,21 @@ def safe_float(s: str, default: float = 0.0) -> float:
         return default
 
 
+def event_label(r: dict) -> str:
+    """Render a short human-readable label for a row's molecular event."""
+    et = r.get("event_type", "")
+    if et == "snv":
+        return r.get("hgvsp_short") or r.get("consequence", "")
+    if et == "cna":
+        cons = r.get("consequence", "")
+        cn = r.get("copy_number", "")
+        return f"{cons} (CN={cn})" if cn else cons
+    if et == "fusion":
+        partner = r.get("fusion_partner", "")
+        return f"fusion::{partner}" if partner else "fusion"
+    return r.get("hgvsp_short") or r.get("consequence", "")
+
+
 def confidence(row: dict) -> tuple[float, dict[str, float]]:
     components = {
         "variant": safe_float(row.get("variant_score", "0")),
@@ -86,33 +101,31 @@ def render_report(
     lines.append(f"- **Pipeline version**: `{pipeline_version}`")
     lines.append(f"- **Run timestamp (UTC)**: {now}")
     lines.append(f"- **Input VCF**: `{input_path.name}` (sha256[:16] `{input_sha}`)")
-    lines.append(f"- **Variants in**: {n_variants}  ·  drivers {counts.get('DRIVER', 0)}  ·  VUS {counts.get('VUS', 0)}  ·  passengers {counts.get('PASSENGER', 0)}  ·  off-target {counts.get('OFF_TARGET', 0)}")
+    lines.append(f"- **Events in**: {n_variants}  ·  drivers {counts.get('DRIVER', 0)}  ·  VUS {counts.get('VUS', 0)}  ·  passengers {counts.get('PASSENGER', 0)}  ·  off-target {counts.get('OFF_TARGET', 0)}")
     lines.append("")
     lines.append("> v0.1 disclaimer. Phase 3 dependency scores come from a curated PLACEHOLDER summary, not a live DepMap pull. Phase 4 drug list is a curated subset, not a live DGIdb/OpenTargets query. Expression-specificity (weight 0.15) is deferred and contributes 0 — total possible confidence is therefore 0.85, not 1.00. Use to verify pipeline behaviour, not to make clinical decisions.")
     lines.append("")
     lines.append("## Top-ranked target-drug pairs")
     lines.append("")
-    lines.append("| Rank | Gene | Variant | Call | Drug | Mechanism | Phase | Ped | **Confidence** |")
-    lines.append("|---|---|---|---|---|---|---|---|---|")
+    lines.append("| Rank | Gene | Event | Type | Call | Drug | Mechanism | Phase | Ped | **Confidence** |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|")
     for i, r in enumerate(top, 1):
-        variant_label = r.get("hgvsp_short") or r.get("consequence", "")
         lines.append(
-            f"| {i} | **{r['gene']}** | {variant_label} | {r['call']} | "
+            f"| {i} | **{r['gene']}** | {event_label(r)} | {r.get('event_type', '')} | {r['call']} | "
             f"`{r['drug']}` | {r['drug_mechanism']} | {r['drug_max_phase']} | "
             f"{r['drug_pediatric_evidence']} | **{r['confidence']:.3f}** |"
         )
     lines.append("")
-    lines.append("## Per-variant detail")
+    lines.append("## Per-event detail")
     lines.append("")
-    by_variant: dict[str, list[dict]] = {}
+    by_event: dict[str, list[dict]] = {}
     for r in rows:
-        by_variant.setdefault(r["variant_id"], []).append(r)
-    # Sort variant groups by their best confidence score (descending).
-    variant_groups = sorted(by_variant.items(), key=lambda kv: -max(x["confidence"] for x in kv[1]))
-    for vid, vrows in variant_groups:
+        by_event.setdefault(r["event_id"], []).append(r)
+    # Sort event groups by their best confidence score (descending).
+    event_groups = sorted(by_event.items(), key=lambda kv: -max(x["confidence"] for x in kv[1]))
+    for vid, vrows in event_groups:
         head = vrows[0]
-        variant_label = head.get("hgvsp_short") or head.get("consequence", "")
-        lines.append(f"### `{vid}` — {head['gene']} {variant_label}  ({head['call']})")
+        lines.append(f"### `{vid}` — {head['gene']} {event_label(head)}  ({head.get('event_type', '')}, {head['call']})")
         lines.append("")
         lines.append(f"- **Reason**: {head['reason']}")
         lines.append(f"- **Variant score**: {safe_float(head['variant_score']):.2f}  ·  **Structural score**: {safe_float(head['structural_score']):.2f}  ·  **Dependency score**: {safe_float(head['dependency_score']):.2f}")
@@ -194,10 +207,10 @@ def main() -> int:
             w.writerow(r_out)
 
     # Re-derive variant counts and call distribution from the upstream rows
-    # (the long table has duplicates per drug, so dedupe by variant_id).
+    # (the long table has duplicates per drug, so dedupe by event_id).
     seen_variants: dict[str, str] = {}
     for r in rows:
-        seen_variants[r["variant_id"]] = r["call"]
+        seen_variants[r["event_id"]] = r["call"]
     counts: dict[str, int] = {}
     for call in seen_variants.values():
         counts[call] = counts.get(call, 0) + 1

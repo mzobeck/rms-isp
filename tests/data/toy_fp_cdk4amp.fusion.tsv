@@ -1,0 +1,4 @@
+## Synthetic fusion calls for the TOY_FP_CDK4 fixture.
+## Schema: sample_id\tgene_5p\tgene_3p\tfusion_name\tfusion_class\tnotes
+sample_id	gene_5p	gene_3p	fusion_name	fusion_class	notes
+TOY_FP_CDK4	PAX3	FOXO1	PAX3-FOXO1	driver_fusion	t(2;13)(q35;q14); canonical FP-RMS driver fusion. Indirect targeting via BET inhibitors disrupting super-enhancers.

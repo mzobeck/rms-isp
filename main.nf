@@ -22,6 +22,8 @@ log.info """
 RMS-ISP  v${params.pipeline_version}
 ---------------------------------------------------------
 input          : ${params.input}
+cna            : ${params.cna}
+fusion         : ${params.fusion}
 sample_id      : ${params.sample_id}
 subtype        : ${params.subtype}
 outdir         : ${params.outdir}
@@ -33,14 +35,16 @@ profile        : ${workflow.profile}
 """.stripIndent()
 
 workflow {
-    vcf_ch         = Channel.fromPath(params.input, checkIfExists: true)
+    vcf_ch         = Channel.fromPath(params.input,  checkIfExists: true)
+    cna_ch         = Channel.value(file(params.cna,    checkIfExists: true))
+    fusion_ch      = Channel.value(file(params.fusion, checkIfExists: true))
     targets_kb_ch  = Channel.value(file(params.targets_kb,     checkIfExists: true))
     depmap_ch      = Channel.value(file(params.depmap_summary, checkIfExists: true))
     drug_map_ch    = Channel.value(file(params.drug_map,       checkIfExists: true))
 
-    sample_vcf_ch  = vcf_ch.map { v -> tuple(params.sample_id, v) }
+    sample_inputs_ch = vcf_ch.map { v -> tuple(params.sample_id, v, file(params.cna), file(params.fusion)) }
 
-    PHASE1_ANNOTATE(sample_vcf_ch, targets_kb_ch)
+    PHASE1_ANNOTATE(sample_inputs_ch, targets_kb_ch)
     PHASE2_STRUCTURE(PHASE1_ANNOTATE.out.annotated)
     PHASE3_DEPENDENCY(PHASE2_STRUCTURE.out.structured, depmap_ch, params.subtype)
     PHASE4_DRUGS(PHASE3_DEPENDENCY.out.dependency, drug_map_ch)

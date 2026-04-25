@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.1.0-pilot** — first end-to-end runnable version. All five phases execute and produce a ranked therapeutic-hypothesis report on the toy patient in seconds, no external API calls or large downloads required. Reference data for Phase 3 (DepMap) and Phase 4 (drug-target map) is curated and bundled in `assets/`; both swap to live data sources without code changes (see `assets/README.md`). Not for clinical use.
+**v0.2.0-pilot** — end-to-end with SNV + CNA + fusion inputs. Three toy patients exercising all four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) all land their expected drug classes near the top. Runs in seconds on a laptop, no external API calls or large downloads required. Reference data for Phase 3 (DepMap) and Phase 4 (drug-target map) is curated and bundled in `assets/`; both swap to live data sources without code changes (see `assets/README.md`). Not for clinical use.
 
 ## Mission
 
@@ -30,12 +30,19 @@ Each phase ships with positive and negative controls and a defined validation ga
 ## Quickstart
 
 ```bash
+# default: TOY_TUMOR (FN-RMS, SNV-only, exercises case studies 3 + 4)
 nextflow run main.nf -profile laptop
-# or, with explicit overrides:
+
+# CNA + fusion example: TOY_FP_CDK4 (FP-RMS, exercises case study 2)
 nextflow run main.nf -profile laptop \
-    --input tests/data/toy_patient.vcf \
-    --sample_id TOY_TUMOR \
-    --subtype FN
+    --input tests/data/toy_fp_cdk4amp.vcf \
+    --cna tests/data/toy_fp_cdk4amp.cna.tsv \
+    --fusion tests/data/toy_fp_cdk4amp.fusion.tsv \
+    --sample_id TOY_FP_CDK4 \
+    --subtype FP
+
+# Run all three bundled toy patients + cross-sample summary:
+bin/run_all_toys.sh   # writes results/multisample_summary.md
 ```
 
 Outputs land in `results/`:
@@ -52,7 +59,16 @@ results/
 └── pipeline_info/                      Nextflow trace, timeline, report, dag
 ```
 
-The toy-patient report should put a MEK inhibitor at #1 (NRAS Q61K → trametinib/selumetinib) and an FGFR inhibitor in the top 5 (FGFR4 V550L → erdafitinib), with all three passenger variants ranked at the bottom — the eyeball-test for v0.1 correctness.
+### v0.2 eyeball-tests (one per case study)
+
+| Case | Test fixture | Expected top result |
+|---|---|---|
+| 1 (MTAP/PRMT5) | TOY_MTAP_NULL | CDK4/6 inhibitors via CDKN2A loss in top 3 + PRMT5 inhibitors (MRTX1719 class) via MTAP loss in top 7 |
+| 2 (CDK4 amp) | TOY_FP_CDK4 | palbociclib / ribociclib / abemaciclib at #1-3; PAX3-FOXO1 → BET inhibitors in top 6; MDM2 → MDM2 inhibitors close behind |
+| 3 (FGFR4) | TOY_TUMOR | erdafitinib + futibatinib in top 5 |
+| 4 (RAS/MEK) | TOY_TUMOR | trametinib + selumetinib at #1-2 |
+
+All three passenger variants in TOY_TUMOR (TP53 intronic, NRAS/KRAS synonymous) should rank at the bottom of their respective reports.
 
 ## Repository layout
 
