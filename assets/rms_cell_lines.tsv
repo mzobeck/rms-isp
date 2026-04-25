@@ -1,0 +1,30 @@
+## RMS cell lines on DepMap, with FP/FN subtype classification.
+## Source: Cellosaurus search for disease "Rhabdomyosarcoma" with DepMap xrefs,
+## cross-checked against DepMap Public 26Q1 gene_effect.csv (verified each ACH-ID
+## actually exists in the current release). Subtype assignments are from the
+## published RMS cell-line literature (PAX3-FOXO1 / PAX7-FOXO1 fusion presence).
+##
+## Schema: model_id\tcell_line\tcvcl\tsubtype\tfusion\tnotes
+## subtype ∈ {FP, FN, UNK}  (UNK = subtype not confidently classified)
+## fusion = the driver fusion (or "none" for FN lines)
+##
+## Used by bin/fetch_depmap.py to filter gene_effect.csv to RMS rows.
+## bin/fetch_depmap.py validates each ACH-ID against the actual gene_effect.csv
+## and silently drops any ID not present in the current DepMap release.
+##
+## To extend: add a row, then re-run bin/fetch_depmap.py to refresh the summary.
+model_id	cell_line	cvcl	subtype	fusion	notes
+ACH-000169	RD	CVCL_1649	FN	none	embryonal RMS reference; HRAS Q61K
+ACH-000133	Hs729T	CVCL_0871	FN	none	FN-RMS muscle line (aka Hs 729.T)
+ACH-000607	KYM-1	CVCL_3007	FN	none	embryonal RMS
+ACH-001196	SMS-CTR	CVCL_A770	FN	none	FN-RMS
+ACH-002048	RMS-YM	CVCL_A792	FN	none	embryonal RMS
+ACH-000833	Rh30	CVCL_0041	FP	PAX3-FOXO1	alveolar RMS; aka SJCRH30; canonical FP-RMS reference
+ACH-001765	Rh4	CVCL_5916	FP	PAX3-FOXO1	alveolar RMS
+ACH-000100	Rh41	CVCL_2176	FP	PAX3-FOXO1	alveolar RMS; aka JR1
+ACH-001050	CW9019	CVCL_N820	FP	PAX7-FOXO1	alveolar RMS; PAX7-FOXO1 fusion-positive
+ACH-001740	Rh28	CVCL_8752	FP	PAX3-FOXO1	alveolar RMS
+ACH-001745	RhJT	CVCL_VU81	FP	PAX3-FOXO1	alveolar RMS
+ACH-001096	JR	CVCL_RT33	FP	PAX3-FOXO1	alveolar RMS (related to RH-41 lineage)
+ACH-001184	SCMC-RM2	CVCL_A667	UNK	unknown	RMS line, fusion status not confidently classified in literature
+ACH-001750	TTC-442	CVCL_B255	UNK	unknown	RMS line, fusion status uncertain

@@ -19,12 +19,13 @@
 [[case]]
 id          = "case3_fgfr4"
 case_study  = 3
-description = "FGFR4 V550L hotspot in TOY_TUMOR puts FGFR inhibitors in the top 5"
-sample_id   = "TOY_TUMOR"
+description = "FGFR4 V550L hotspot in a single-driver FN-RMS tumor puts FGFR inhibitors at top of the report"
+sample_id   = "TOY_FGFR4"
 subtype     = "FN"
-vcf         = "tests/data/toy_patient.vcf"
+vcf         = "tests/data/toy_fgfr4_only.vcf"
 asserts     = [
-    { kind = "mechanism_in_top_n", mechanism = "FGFR_inhibitor", top_n = 5 },
+    { kind = "mechanism_in_top_n", mechanism = "FGFR_inhibitor", top_n = 3 },
+    { kind = "gene_event_in_top_n", gene = "FGFR4",              top_n = 3 },
 ]
 
 [[case]]

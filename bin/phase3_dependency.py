@@ -56,6 +56,16 @@ def main() -> int:
         "UNKNOWN": "mean_chronos_all",
     }[args.subtype]
 
+    # Oncogene-addiction floor. The DepMap RMS cell-line panel does not always
+    # include lines carrying the relevant activating mutation for every oncogene
+    # (e.g., the panel may have no FGFR4 V550L lines). Panel-level Chronos
+    # therefore understates dependency in a tumor that DOES carry the activating
+    # event. Per the oncogene-addiction literature, a confirmed activating
+    # DRIVER in an oncogene creates a meaningful dependency on that gene
+    # regardless of what wild-type panel members show. We encode this as a
+    # minimum dependency_score for (call=DRIVER, role=oncogene) rows.
+    ONCOGENE_DRIVER_FLOOR = 0.50
+
     for r in rows:
         gene = r.get("gene", "")
         d = depmap.get(gene)
@@ -81,11 +91,15 @@ def main() -> int:
         chronos_all = float(d["mean_chronos_all"])
         bonus = max(0.0, (chronos_all - chronos_used) * 0.3)  # 0.3 per Chronos unit improvement
         score = min(1.0, base + bonus)
-        r["dependency_score"] = f"{score:.3f}"
-        r["dependency_reason"] = (
+        reason = (
             f"{d['provenance']}; Chronos[{args.subtype}]={chronos_used:+.2f}, "
             f"%essential={float(d['pct_essential']) * 100:.0f}%"
         )
+        if r.get("call") == "DRIVER" and r.get("role") == "oncogene" and score < ONCOGENE_DRIVER_FLOOR:
+            reason += f"; oncogene-addiction floor applied (panel score {score:.2f} -> {ONCOGENE_DRIVER_FLOOR:.2f})"
+            score = ONCOGENE_DRIVER_FLOOR
+        r["dependency_score"] = f"{score:.3f}"
+        r["dependency_reason"] = reason
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w", newline="") as fh:
