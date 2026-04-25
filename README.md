@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.5.0-pilot**: Phase 3 now uses **real DepMap 26Q1 Chronos data** for 14 RMS cell lines across the 21 target genes, refreshable via `bin/fetch_depmap.py`. Phase 3 also adds an oncogene-addiction floor on dependency_score for `DRIVER` mutations in oncogenes (panel-level Chronos understates dependency in mutant tumors when the panel lacks the relevant activating event). Four toy patients now exercise all four pilot case studies; case 3 has its own dedicated FGFR4-only fixture. All five cases PASS (9/9 assertions). Phase 4 still unions the curated drug map with a live DGIdb cache. Pipeline runs in seconds on a laptop offline; refreshing DepMap requires a one-time 431 MB Figshare download (cached). Not for clinical use.
+**v0.6.0-pilot**: Phase 4 now upgrades `pediatric_evidence` based on **live ClinicalTrials.gov data** for pediatric RMS trials (374 RMS studies scanned, 310 unique drugs cached). Drugs found in pediatric RMS trials get bumped to `yes_trial` if not already `yes_approved`, with the NCT ID appended for auditability. Phase 3 still runs on real DepMap 26Q1 Chronos data with the oncogene-addiction floor. Phase 4 still unions the curated drug map with the DGIdb cache. All five case studies PASS (9/9 assertions). Pipeline runs in seconds on a laptop offline; the three live caches (DepMap, DGIdb, CT.gov) refresh via dedicated fetcher scripts. Not for clinical use.
 
 ## Mission
 

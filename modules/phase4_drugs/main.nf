@@ -15,17 +15,20 @@ process PHASE4_DRUGS {
     tuple val(sample_id), path(dependency)
     path drug_map
     path drug_map_extra
+    path ctgov_trials
 
     output:
     tuple val(sample_id), path("${sample_id}.phase4.tsv"), emit: drugs
 
     script:
     def extra_arg = drug_map_extra.name == 'NO_EXTRA' ? '' : "--drug-map-extra ${drug_map_extra}"
+    def ctgov_arg = ctgov_trials.name == 'NO_CTGOV' ? '' : "--ctgov-trials ${ctgov_trials}"
     """
     phase4_drugs.py \\
         --in ${dependency} \\
         --drug-map ${drug_map} \\
         ${extra_arg} \\
+        ${ctgov_arg} \\
         --out ${sample_id}.phase4.tsv
     """
 }

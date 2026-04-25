@@ -1,0 +1,323 @@
+## Pediatric RMS clinical trials drug map (auto-generated; do NOT hand-edit)
+## Source: https://clinicaltrials.gov/api/v2/studies
+## Condition query: rhabdomyosarcoma
+## Generated: 2026-04-25 23:25 UTC
+## Studies scanned: 374
+## Drug rows: 310
+## Schema: drug\tn_rms_trials\tmax_phase_in_rms\tany_recruiting\tany_pediatric\texample_nct\texample_title
+##
+## Phase 4 reads this file (when present) and upgrades pediatric_evidence to
+## 'yes_trial' for any drug appearing here with any_pediatric=1, unless its
+## existing pediatric_evidence is already 'yes_approved' (which outranks).
+## To regenerate: bin/fetch_clinicaltrials.py
+drug	n_rms_trials	max_phase_in_rms	any_recruiting	any_pediatric	example_nct	example_title
+cyclophosphamide	41	NA	1	1	NCT02390843	Simvastatin With Topotecan and Cyclophosphamide in Relapsed and/or Refractory Pediatric Solid and CNS Tumors
+ifosfamide	29	NA	1	1	NCT00379457	Combination Chemotherapy in Treating Young Patients With Nonmetastatic Rhabdomyosarcoma
+filgrastim	26	NA	1	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+vincristine sulfate	21	PHASE3	1	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+doxorubicin hydrochloride	20	PHASE3	1	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+etoposide	20	NA	1	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+temozolomide	20	PHASE2	1	1	NCT04337177	Flavored, Oral Irinotecan VAL-413 (Orotecan®) Given With Temozolomide for Treatment of Recurrent Pediatric Solid Tumors
+dactinomycin	18	PHASE3	1	1	NCT00003958	Combination Chemotherapy in Treating Patients With Previously Untreated Rhabdomyosarcoma
+carboplatin	13	NA	1	1	NCT00007813	Peripheral Stem Cell Transplantation Plus Chemotherapy in Treating Patients With Malignant Solid Tumors
+melphalan	13	NA	1	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+irinotecan hydrochloride	12	PHASE3	1	1	NCT03245450	Study Evaluating the Safety and Efficacy of Eribulin Mesilate in Combination With Irinotecan Hydrochloride in Children W
+vincristine	11	PHASE3	1	1	NCT04796012	VITAS: Atezolizumab in Combination With Chemotherapy for Pediatric Relapsed/Refractory Solid Tumors
+busulfan	10	NA	0	1	NCT00006246	Busulfan in Treating Children and Adolescents With Refractory CNS Cancer
+irinotecan	9	PHASE2	1	1	NCT04796012	VITAS: Atezolizumab in Combination With Chemotherapy for Pediatric Relapsed/Refractory Solid Tumors
+thiotepa	8	NA	0	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+doxorubicin	7	PHASE3	1	1	NCT04213794	Heated Intra-peritoneal Chemotherapy With Doxorubicin and Cisplatin for Abdominal for Pelvic Tumors in Pediatric Patient
+cisplatin	5	PHASE2	0	1	NCT04213794	Heated Intra-peritoneal Chemotherapy With Doxorubicin and Cisplatin for Abdominal for Pelvic Tumors in Pediatric Patient
+fludarabine	5	PHASE2	1	1	NCT04897321	B7-H3-Specific Chimeric Antigen Receptor Autologous T-Cell Therapy for Pediatric Patients With Solid Tumors (3CAR)
+gemcitabine	5	PHASE2	0	1	NCT03507491	Nab-paclitaxel in Combination with Gemcitabine for Pediatric Relapsed and Refractory Solid Tumors
+mesna	5	NA	1	1	NCT04897321	B7-H3-Specific Chimeric Antigen Receptor Autologous T-Cell Therapy for Pediatric Patients With Solid Tumors (3CAR)
+sargramostim	5	PHASE3	0	1	NCT00003958	Combination Chemotherapy in Treating Patients With Previously Untreated Rhabdomyosarcoma
+topotecan hydrochloride	5	PHASE3	0	1	NCT00003958	Combination Chemotherapy in Treating Patients With Previously Untreated Rhabdomyosarcoma
+vinorelbine	5	PHASE3	1	1	NCT04299113	Mocetinostat With Vinorelbine in Children, Adolescents & Young Adults With Refractory and/or Recurrent Rhabdomyosarcoma
+vinorelbine tartrate	5	PHASE3	1	1	NCT00379457	Combination Chemotherapy in Treating Young Patients With Nonmetastatic Rhabdomyosarcoma
+cixutumumab	4	PHASE2	0	1	NCT00720174	Cixutumumab and Doxorubicin Hydrochloride in Treating Patients With Unresectable, Locally Advanced, or Metastatic Soft T
+cyclosporine	4	NA	0	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+methotrexate	4	NA	0	1	NCT00253552	G-CSF-Treated Donor Bone Marrow Transplant in Treating Patients With Hematologic Disorders
+methylprednisolone	4	PHASE2	0	1	NCT00112645	Donor Stem Cell Transplant in Treating Young Patients With Relapsed or Refractory Solid Tumors
+nivolumab	4	PHASE2	1	1	NCT05302921	Neoadjuvant Dual Checkpoint Inhibition and Cryoablation in Relapsed/Refractory Pediatric Solid Tumors
+pazopanib	4	PHASE3	1	1	NCT02180867	Radiation Therapy With or Without Combination Chemotherapy or Pazopanib Before Surgery in Treating Patients With Newly D
+sirolimus	4	PHASE2	1	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+temsirolimus	4	PHASE3	1	1	NCT01614795	Cixutumumab and Temsirolimus in Treating Younger Patients With Recurrent or Refractory Sarcoma
+therapeutic allogeneic lymphocytes	4	PHASE2	0	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+topotecan	4	PHASE2	1	1	NCT02390843	Simvastatin With Topotecan and Cyclophosphamide in Relapsed and/or Refractory Pediatric Solid and CNS Tumors
+anti-thymocyte globulin	3	PHASE2	0	1	NCT00617929	Antithymocyte Globulin, Clofarabine, and Rituximab in Treating Patients After an Unsuccessful Stem Cell Transplant
+dasatinib	3	PHASE2	0	1	NCT03041701	Insulin-like Growth Factor 1 Receptor (IGF-1R) Antibody AMG479 (Ganitumab) in Combination With the Src Family Kinase (SF
+docetaxel	3	PHASE2	0	1	NCT05116800	Phase 2 Study of 9-ING-41 With Chemotherapy in Sarcoma
+epirubicin hydrochloride	3	PHASE3	0	1	NCT00025441	Combination Chemotherapy in Treating Children With Metastatic Rhabdomyosarcoma or Other Malignant Mesenchymal Tumors
+everolimus	3	PHASE2	0	1	NCT00187174	Everolimus for Treating Pediatric Patients With Recurrent or Refractory Tumors
+fludarabine phosphate	3	PHASE2	0	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+g-csf	3	NA	0	1	NCT01505569	Auto Transplant for High Risk or Relapsed Solid or CNS Tumors
+imatinib mesylate	3	PHASE2	0	1	NCT00154388	Phase II Study of Imatinib Mesylate in Patients With Life Threatening Malignant Rare Diseases
+nab-paclitaxel	3	PHASE2	0	1	NCT01962103	Study to Find a Safe Dose and Show Early Clinical Activity of Weekly Nab-paclitaxel in Pediatric Patients With Recurrent
+olaparib	3	PHASE2	1	1	NCT03233204	Olaparib in Treating Patients With Relapsed or Refractory Advanced Solid Tumors, Non-Hodgkin Lymphoma, or Histiocytic Di
+palbociclib	3	PHASE2	1	1	NCT03709680	Study Of Palbociclib Combined With Chemotherapy In Pediatric Patients With Recurrent/Refractory Solid Tumors
+pegfilgrastim	3	PHASE3	1	1	NCT06709495	Phase 1/2 Trial to Evaluate the Safety and Efficacy of PEEL-224 in Combination With Vincristine and Temozolomide in Adol
+tacrolimus	3	PHASE2	1	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+trabectedin	3	PHASE2	0	1	NCT00070109	Trabectedin in Treating Young Patients With Recurrent or Refractory Soft Tissue Sarcoma or Ewing's Family of Tumors
+9-ing-41	2	PHASE2	0	1	NCT05116800	Phase 2 Study of 9-ING-41 With Chemotherapy in Sarcoma
+abemaciclib	2	PHASE2	0	1	NCT02644460	Abemaciclib in Children With DIPG or Recurrent/Refractory Solid Tumors
+actinomycin d	2	PHASE2	1	1	NCT04388839	Evolutionary Therapy for Rhabdomyosarcoma
+bevacizumab	2	PHASE2	1	1	NCT01871766	Risk-Adapted Focal Proton Beam Radiation and/or Surgery in Patients With Low, Intermediate and High Risk Rhabdomyosarcom
+brostallicin	2	PHASE2	0	1	NCT00041249	Brostallicin in Treating Patients With Locally Advanced or Metastatic Soft Tissue Sarcoma
+cabozantinib	2	PHASE2	1	1	NCT05135975	A Study of Cabozantinib as a Maintenance Agent to Prevent Progression or Recurrence in High-Risk Pediatric Solid Tumors
+cytomegalovirus pp65-specific cytotoxic t lymphocytes	2	PHASE1	0	1	NCT00509691	Vaccine Therapy in Treating Patients Who Have Undergone a Donor Stem Cell Transplant and Have Cytomegalovirus Infection 
+ensartinib	2	PHASE2	1	1	NCT03155620	Targeted Therapy Directed by Genetic Testing in Treating Pediatric Patients With Relapsed or Refractory Advanced Solid T
+erdafitinib	2	PHASE2	1	1	NCT03210714	Erdafitinib in Treating Patients With Relapsed or Refractory Advanced Solid Tumors, Non-Hodgkin Lymphoma, or Histiocytic
+etoposide phosphate	2	PHASE2	1	1	NCT00788125	Dasatinib, Ifosfamide, Carboplatin, and Etoposide in Treating Young Patients With Metastatic or Recurrent Malignant Soli
+exatecan mesylate	2	PHASE2	0	1	NCT00055939	Exatecan Mesylate in Treating Children With Relapsed or Refractory Rhabdomyosarcoma
+glutamine	2	NA	0	1	NCT00365768	Glutamine in Treating Neuropathy Caused by Vincristine in Young Patients With Lymphoma, Leukemia, or Solid Tumors
+gm-csf	2	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+indocyanine green	2	PHASE4	1	1	NCT04084067	Indocyanine Green (ICG) Guided Tumor Resection
+ipilimumab	2	PHASE2	0	1	NCT05302921	Neoadjuvant Dual Checkpoint Inhibition and Cryoablation in Relapsed/Refractory Pediatric Solid Tumors
+itraconazole	2	NA	0	1	NCT00079222	Voriconazole Compared With Itraconazole in Preventing Fungal Infections in Patients Undergoing Allogeneic Hematopoietic 
+ivosidenib	2	PHASE2	1	1	NCT04195555	Ivosidenib in Treating Patients With Advanced Solid Tumors, Lymphoma, or Histiocytic Disorders With IDH1 Mutations (A Pe
+ixabepilone	2	PHASE2	0	1	NCT00331643	Ixabepilone in Treating Young Patients With Refractory Solid Tumors
+larotrectinib sulfate	2	PHASE2	1	1	NCT03213704	Larotrectinib in Treating Patients With Relapsed or Refractory Advanced Solid Tumors, Non-Hodgkin Lymphoma, or Histiocyt
+lyso-thermosensitive liposomal doxorubicin	2	PHASE2	0	1	NCT02536183	A Phase I Study of Lyso-thermosensitive Liposomal Doxorubicin and MR-HIFU for Pediatric Refractory Solid Tumors
+mycophenolate mofetil	2	PHASE3	0	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+myeloid growth factor	2	PHASE2	1	1	NCT02390843	Simvastatin With Topotecan and Cyclophosphamide in Relapsed and/or Refractory Pediatric Solid and CNS Tumors
+oxaliplatin	2	PHASE2	0	1	NCT00101270	Oxaliplatin and Irinotecan in Treating Young Patients With Refractory Solid Tumors or Lymphomas
+pazopanib hydrochloride	2	PHASE3	1	1	NCT02180867	Radiation Therapy With or Without Combination Chemotherapy or Pazopanib Before Surgery in Treating Patients With Newly D
+peel-224	2	PHASE2	1	1	NCT06721689	PEEL-224, Vincristine and Temozolomide in Pediatric Solid Tumors
+prednisone	2	PHASE2	0	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+recombinant human thrombopoietin	2	PHASE2	0	1	NCT00187109	Recombinant Human Thrombopoietin in Children Receiving Ifosfamide, Carboplatin, and Etoposide Chemotherapy
+regorafenib	2	PHASE2	1	1	NCT02048371	SARC024: A Blanket Protocol to Study Oral Regorafenib in Patients With Selected Sarcoma Subtypes
+ribociclib	2	PHASE1	0	1	NCT05429502	Study of Efficacy and Safety of Ribociclib (LEE011) in Combination With Topotecan and Temozolomide (TOTEM) in Pediatric 
+samotolisib	2	PHASE2	1	1	NCT03155620	Targeted Therapy Directed by Genetic Testing in Treating Pediatric Patients With Relapsed or Refractory Advanced Solid T
+sc-car.gpc3xil15.21 car t cells	2	PHASE1	1	1	NCT07148050	Immunotherapy for Solid Tumor Malignancies in Pediatrics Using Interleukin-15 and -21 Armored Glypican-3-specific Chimer
+selpercatinib	2	PHASE2	1	1	NCT04320888	Selpercatinib for the Treatment of Advanced Solid Tumors, Lymphomas, or Histiocytic Disorders With Activating RET Gene A
+sorafenib	2	PHASE2	1	1	NCT01518413	Dose Escalation Study of Sorafenib and Irinotecan Combination Therapy in Pediatric Patients With Solid Tumors
+sorafenib tosylate	2	PHASE2	0	1	NCT01502410	Sorafenib Tosylate in Treating Younger Patients With Relapsed or Refractory Rhabdomyosarcoma, Wilms Tumor, Liver Cancer,
+tazemetostat	2	PHASE2	1	1	NCT03155620	Targeted Therapy Directed by Genetic Testing in Treating Pediatric Patients With Relapsed or Refractory Advanced Solid T
+tipifarnib	2	PHASE2	1	1	NCT04284774	Tipifarnib for the Treatment of Advanced Solid Tumors, Lymphoma, or Histiocytic Disorders With HRAS Gene Alterations, a 
+ulixertinib	2	PHASE2	1	1	NCT03698994	Ulixertinib in Treating Patients With Advanced Solid Tumors, Non-Hodgkin Lymphoma, or Histiocytic Disorders With MAPK Pa
+vemurafenib	2	PHASE2	1	1	NCT03220035	Vemurafenib in Treating Patients With Relapsed or Refractory Advanced Solid Tumors, Non-Hodgkin Lymphoma, or Histiocytic
+voriconazole	2	NA	0	1	NCT00066599	Voriconazole in Preventing Fungal Infections in Children With Neutropenia After Chemotherapy
+131i-omburtamab	1	NA	0	1	NCT05064306	131I-omburtamab for the Treatment of Central Nervous System/Leptomeningeal Neoplasms in Children and Young Adults
+^1^1c-methionine	1	PHASE2	1	1	NCT01871766	Risk-Adapted Focal Proton Beam Radiation and/or Surgery in Patients With Low, Intermediate and High Risk Rhabdomyosarcom
+abt-751	1	PHASE1	0	1	NCT00036959	ABT-751 in Treating Young Patients With Refractory Solid Tumors
+acyclovir	1	PHASE3	0	1	NCT00045292	Valacyclovir in Preventing Cytomegalovirus Infection in Patients Who Are Undergoing Donor Stem Cell Transplantation
+acyclovir sodium	1	PHASE3	0	1	NCT00045292	Valacyclovir in Preventing Cytomegalovirus Infection in Patients Who Are Undergoing Donor Stem Cell Transplantation
+adavosertib	1	PHASE2	0	1	NCT02095132	Adavosertib and Irinotecan Hydrochloride in Treating Younger Patients With Relapsed or Refractory Solid Tumors
+adr-529	1	PHASE2	0	1	NCT00001335	New Therapeutic Strategies for Patients With Ewing's Sarcoma Family of Tumors, High Risk Rhabdomyosarcoma, and Neuroblas
+adriamycin	1	PHASE2	0	1	NCT00165139	Intensive Chemo-Radiotherapy With Peripheral Blood Progenitor Cell Rescue for Children With Advanced Neuroblastoma and S
+afatinib	1	PHASE2	0	1	NCT02372006	Trial of Afatinib in Pediatric Tumours
+albumin-paclitaxel injection	1	PHASE2	1	0	NCT06684327	Multi-cohort, Single-arm Phase II Study of Albumin-paclitaxel, Ifosfamide, and Cisplatin in the Treatment of Rare Advanc
+aldesleukin	1	PHASE2	0	1	NCT00003408	Biological Therapy Following Chemotherapy and Peripheral Stem Cell Transplantation in Treating Patients With Cancer
+alemtuzumab	1	PHASE1	0	1	NCT01625351	A Study of CD45RA+ Depleted Haploidentical Stem Cell Transplantation in Children With Relapsed or Refractory Solid Tumor
+alisertib	1	PHASE2	0	1	NCT01154816	Alisertib in Treating Young Patients With Recurrent or Refractory Solid Tumors or Leukemia
+alt803	1	PHASE1	0	0	NCT02890758	Phase I Trial of Universal Donor NK Cell Therapy in Combination With ALT803
+alvocidib	1	PHASE1	0	1	NCT00012181	Flavopiridol in Treating Children With Relapsed or Refractory Solid Tumors or Lymphomas
+amifostine trihydrate	1	PHASE1	0	1	NCT00003926	Amifostine to Protect From Side Effects of PSCT in Treating Patients With Solid Tumors
+anlotinib+cyclophosphamide+vinorelbine	1	PHASE2	0	1	NCT07137884	Anlotinib Hydrochloride Capsules in Maintenance Treatment for Intermediate-High Risk Rhabdomyosarcoma in Children
+anti-seizure prophylaxis	1	NA	0	1	NCT01505569	Auto Transplant for High Risk or Relapsed Solid or CNS Tumors
+apatinib mesylate tablets	1	PHASE2	0	1	NCT03868852	Efficacy and Safety of Radiotherapy Combined With Apatinib Mesylate in the Treatment of Rhabdomyosarcoma in Children
+arsenic trioxide	1	PHASE2	0	1	NCT00024258	Arsenic Trioxide in Treating Patients With Advanced Neuroblastoma or Other Childhood Solid Tumors
+atezolizumab	1	PHASE2	1	1	NCT04796012	VITAS: Atezolizumab in Combination With Chemotherapy for Pediatric Relapsed/Refractory Solid Tumors
+atra+vac	1	PHASE2	0	1	NCT07355855	A Clinical Study on the Efficacy and Safety of All-trans Retinoic Acid Combined With VAC Regimen in the Treatment of Int
+atra+vac+anlotinib	1	PHASE2	0	1	NCT07355855	A Clinical Study on the Efficacy and Safety of All-trans Retinoic Acid Combined With VAC Regimen in the Treatment of Int
+autologous dendritic cell vaccine	1	PHASE2	0	0	NCT01883518	Autologous Dendritic Cell Vaccine in Patients With Soft Tissue Sarcoma
+autologous dendritic cell vaccine with adjuvant	1	PHASE1	0	1	NCT01241162	Decitabine Followed by a Cancer Antigen Vaccine for Patients With Neuroblastoma and Sarcoma
+autologous stem cell infusion	1	NA	0	1	NCT01505569	Auto Transplant for High Risk or Relapsed Solid or CNS Tumors
+b7-h3 car t cells	1	PHASE1	1	1	NCT04897321	B7-H3-Specific Chimeric Antigen Receptor Autologous T-Cell Therapy for Pediatric Patients With Solid Tumors (3CAR)
+b7-h3-car t cells	1	PHASE1	1	1	NCT07222735	Hypofractionated Radiation in Combination With B7-H3-CAR T Cells for Pediatric Patients With Relapsed/Refractory Sarcoma
+becatecarin	1	PHASE2	0	1	NCT00006102	Rebeccamycin Analogue in Treating Children With Solid Tumors or Non-Hodgkin's Lymphoma
+bevacizumab [avastin]	1	PHASE2	0	1	NCT00643565	A Study of Avastin (Bevacizumab) in Combination With Standard Chemotherapy in Children and Adolescents With Sarcoma.
+bi 2536	1	PHASE2	0	0	NCT00526149	BI 2536 in Treating Patients With Recurrent or Metastatic Solid Tumors
+bortezomib	1	PHASE2	0	0	NCT00027716	Bortezomib in Treating Patients With Advanced or Metastatic Sarcoma
+cabozantinib s-malate	1	PHASE2	1	1	NCT02867592	Cabozantinib-S-Malate in Treating Younger Patients With Recurrent, Refractory, or Newly Diagnosed Sarcomas, Wilms Tumor,
+captopril	1	PHASE3	0	1	NCT00004230	Captopril in Treating Patients Undergoing Bone Marrow or Stem Cell Transplantation
+caspofungin acetate	1	NA	0	1	NCT00020527	Caspofungin Acetate in Treating Children With Fever and Neutropenia
+cd3-depleted/cd56+ selected natural killer cells collected from apheresis products	1	PHASE2	0	1	NCT01386619	NK DLI in Patients After Human Leukocyte Antigen (HLA)-Haploidentical Hematopoietic Stem Cell Transplantation (HSCT)
+cd40 ligand	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+celecoxib	1	PHASE2	1	1	NCT02574728	Sirolimus in Combination With Metronomic Chemotherapy in Children With Recurrent and/or Refractory Solid and CNS Tumors
+ceritinib	1	PHASE1	0	1	NCT01742286	Phase I Study of LDK378 in Pediatric, Malignancies With a Genetic Alteration in Anaplastic Lymphoma Kinase (ALK)
+cetuximab	1	PHASE1	1	1	NCT06865664	FGFR4 Chimeric Antigen Receptor (CAR) T Cells in Children and Young Adults With Recurrent or Refractory Rhabdomyosarcoma
+chemotherapy	1	PHASE1	0	1	NCT00002863	Cryosurgery in Treating Patients With Soft Tissue Sarcoma
+chpp of cisplatin	1	PHASE1	0	1	NCT00436657	Continuous Hyperthermic Peritoneal Perfusion (CHPP) With Cisplatin for Children With Peritoneal Cancer
+civ chemotherapy	1	PHASE2	1	1	NCT06816771	Evaluation of the Efficacy and Safety of Pazopanib in Combination with TGI/CIV for Recurrent or Refractory Rhabdomyosarc
+clofarabine	1	PHASE2	0	1	NCT00617929	Antithymocyte Globulin, Clofarabine, and Rituximab in Treating Patients After an Unsuccessful Stem Cell Transplant
+clr 131	1	PHASE1	1	1	NCT03478462	Dose Escalation Study of CLR 131 in Pediatric Relapsed/Refractory Malignant Tumors Including Neuroblastoma and Sarcomas
+cobolimab	1	PHASE2	1	1	NCT06521567	A Study of Cobolimab Plus Dostarlimab in Pediatric and Young Adult Participants With Cancer
+combined chemotherapy with trabectedin followed by irinotecan	1	NA	0	1	NCT02509234	Trabectedin and Irinotecan for Refractory Pediatric Sarcomas
+copanlisib (bay806946)	1	PHASE2	0	1	NCT03458728	Safety, Tolerability, Efficacy and Pharmacokinetics of Copanlisib in Pediatric Patients
+copper gluconate	1	PHASE1	1	1	NCT05210374	Disulfiram With Copper Gluconate and Liposomal Doxorubicin in Treatment-Refractory Sarcomas
+crizotinib (pf-02341066)	1	PHASE2	0	1	NCT01524926	CREATE: Cross-tumoral Phase 2 With Crizotinib
+cyclophosphamide pill	1	PHASE2	1	1	NCT04388839	Evolutionary Therapy for Rhabdomyosarcoma
+cyclophosphamide+vinorelbine	1	PHASE2	0	1	NCT07137884	Anlotinib Hydrochloride Capsules in Maintenance Treatment for Intermediate-High Risk Rhabdomyosarcoma in Children
+cyproheptadine hydrochloride	1	PHASE3	0	1	NCT01132547	Cyproheptadine in Preventing Weight Loss in Children Receiving Chemotherapy for Cancer
+cytomegalovirus ie-1-specific cytotoxic t lymphocytes	1	PHASE1	0	1	NCT00769613	Emergency Use of Donor Lymphocytes in Treating Patients Who Have Undergone Donor Stem Cell Transplant and Have Cytomegal
+dexrazoxane	1	PHASE2	1	1	NCT01871766	Risk-Adapted Focal Proton Beam Radiation and/or Surgery in Patients With Low, Intermediate and High Risk Rhabdomyosarcom
+dexrazoxane hydrochloride	1	PHASE2	1	1	NCT00077285	Irinotecan and Carboplatin as Upfront Window Therapy in Treating Patients With Newly Diagnosed Intermediate-Risk or High
+dinutuximab	1	PHASE2	0	1	NCT04238819	A Study of Abemaciclib (LY2835219) in Combination With Other Anti-Cancer Treatments in Children and Young Adult Particip
+dinutuximab beta	1	PHASE3	1	1	NCT06669013	Chemo-immunotherapy in Patients Under 18 Years of Age With Bone and Soft Tissue Sarcomas
+disulfiram	1	PHASE1	1	1	NCT05210374	Disulfiram With Copper Gluconate and Liposomal Doxorubicin in Treatment-Refractory Sarcomas
+donor nk cell infusion	1	PHASE2	0	1	NCT02100891	Phase 2 STIR Trial: Haploidentical Transplant and Donor Natural Killer Cells for Solid Tumors
+dostarlimab	1	PHASE2	1	1	NCT06521567	A Study of Cobolimab Plus Dostarlimab in Pediatric and Young Adult Participants With Cancer
+doxorubicin hcl liposomal injection	1	PHASE1	0	1	NCT02557854	HIFU Hyperthermia With Liposomal Doxorubicin (DOXIL) for Relapsed or Refractory Pediatric and Young Adult Solid Tumors
+doxorubicin hcl liposome	1	PHASE1	0	1	NCT00019630	Liposomal Doxorubicin in Treating Children With Refractory Solid Tumors
+doxorubicin hydrochloride liposome+irinotecan	1	PHASE2	1	1	NCT05457829	Doxorubicin Hydrochloride Liposome Combined With Irinotecan (AI Regimen) Versus VIT Regimen in the Treatment of First Re
+doxorubicin, cytoxan	1	PHASE4	0	1	NCT00339118	EpSSG (European Soft Tissue Sarcoma Study Group) Protocol for Non-Metastatic Rhabdomyosarcoma in Children
+e7 peptide	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+ef-1 peptide	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+ef-2 peptide	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+elimusertib	1	PHASE2	1	1	NCT05071209	Elimusertib for the Treatment of Relapsed or Refractory Solid Tumors
+enoblituzumab	1	PHASE1	0	1	NCT02982941	Enoblituzumab (MGA271) in Children With B7-H3-expressing Solid Tumors
+env-101 (taladegib)	1	PHASE2	0	0	NCT05199584	A Study Evaluating the Safety and Efficacy of ENV-101 (Taladegib) in Patients With Advanced Solid Tumors Harboring PTCH1
+eribulin mesilate	1	PHASE2	0	1	NCT03245450	Study Evaluating the Safety and Efficacy of Eribulin Mesilate in Combination With Irinotecan Hydrochloride in Children W
+eribulin mesylate	1	PHASE2	0	1	NCT03441360	Study to Assess Safety and Preliminary Activity of Eribulin Mesylate in Pediatric Participants With Relapsed/Refractory 
+erlotinib	1	PHASE2	0	1	NCT02689336	Erlotinib in Combination With Temozolomide in Treating Relapsed/Recurrent/Refractory Pediatric Solid Tumors
+erlotinib hydrochloride	1	PHASE1	0	1	NCT00077454	Erlotinib and Temozolomide in Treating Young Patients With Recurrent or Refractory Solid Tumors
+etanercept	1	PHASE2	0	1	NCT00309907	Etanercept in Treating Young Patients With Idiopathic Pneumonia Syndrome After Undergoing a Donor Stem Cell Transplant
+etoposide (vp-16)	1	PHASE2	0	1	NCT00165139	Intensive Chemo-Radiotherapy With Peripheral Blood Progenitor Cell Rescue for Children With Advanced Neuroblastoma and S
+expanded , activated nk cells	1	PHASE2	0	1	NCT02409576	Pilot Study of Expanded , Activated Haploidentical Natural Killer Cell Infusions for Sarcomas
+f-18 fluorodeoxyglucose	1	PHASE2	0	1	NCT00043979	Stem Cell Transplantation in Patients With High-Risk and Recurrent Pediatric Sarcomas
+feraheme	1	PHASE2	0	1	NCT01336803	Differentiation of Bone Sarcomas and Osteomyelitis With Ferumoxytol-Enhanced MRI
+fgfr4-car t cells	1	PHASE1	1	1	NCT06865664	FGFR4 Chimeric Antigen Receptor (CAR) T Cells in Children and Young Adults With Recurrent or Refractory Rhabdomyosarcoma
+filgrastim, peg-filgrastim	1	PHASE2	1	1	NCT06023641	Treatment of Newly Diagnosed Rhabdomyosarcoma Using Molecular Risk Stratification and Liposomal Irinotecan Based Therapy
+filgrastim-sd/01	1	PHASE1	0	1	NCT00004853	Comparison of Filgrastim and Filgrastim SD/01in Boosting White Cell Counts After Intensive Chemotherapy
+fluconazole	1	PHASE3	0	1	NCT00003883	Itraconazole Compared With Fluconazole to Prevent Infections in Patients Undergoing Peripheral Stem Cell or Bone Marrow 
+g-csf (granulocyte-colony stimulating factor)	1	PHASE2	0	1	NCT00165139	Intensive Chemo-Radiotherapy With Peripheral Blood Progenitor Cell Rescue for Children With Advanced Neuroblastoma and S
+gallium nitrate	1	PHASE1	0	1	NCT00002543	Gallium Nitrate in Treating Children With Brain Tumor, Neuroblastoma, Rhabdomyosarcoma, Non-Hodgkin's Lymphoma, or Refra
+gamma 1b potential expansion	1	PHASE1	0	1	NCT00428272	HGS-ETR2 to Treat Children With Solid Tumors
+gamma-secretase inhibitor ro4929097	1	PHASE2	0	0	NCT01154452	Vismodegib and Gamma-Secretase/Notch Signalling Pathway Inhibitor RO4929097 in Treating Patients With Advanced or Metast
+ganitumab	1	PHASE2	0	1	NCT03041701	Insulin-like Growth Factor 1 Receptor (IGF-1R) Antibody AMG479 (Ganitumab) in Combination With the Src Family Kinase (SF
+gemcitabine hydrochloride	1	PHASE2	0	0	NCT01532687	Gemcitabine With or Without Pazopanib in Treating Patients With Refractory Soft Tissue Sarcoma
+genistein	1	PHASE2	0	1	NCT02624388	Study of Genistein in Pediatric Oncology Patients (UVA-Gen001)
+glutamic acid	1	PHASE3	0	1	NCT00369564	Glutamic Acid in Reducing Nerve Damage Caused by Vincristine in Young Patients With Cancer
+graft versus host disease prophylaxis/therapy	1	NA	0	1	NCT00003538	Prevention of Graft-Versus-Host Disease in Patients Undergoing Bone Marrow Transplantation
+heparin	1	NA	0	1	NCT00378781	Heparin or M-EDTA in Preventing Catheter-Related Infections and Blockages in Patients at High Risk for a Catheter-Relate
+hsv1716	1	PHASE1	0	1	NCT00931931	HSV1716 in Patients With Non-Central Nervous System (Non-CNS) Solid Tumors
+hyperthermic intraperitoneal chemotherapy	1	EARLY_PHASE1	0	1	NCT04213794	Heated Intra-peritoneal Chemotherapy With Doxorubicin and Cisplatin for Abdominal for Pelvic Tumors in Pediatric Patient
+ifosfamide, oncovin, actinomycine d, epirubicine, carboplatinum, etoposide	1	PHASE3	0	1	NCT00162695	Rhabdomyosarcoma and Malignant Soft Tissue Tumours of Childhood
+il-2	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+il-4	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+imc-a12 (cixutumumab)	1	PHASE2	0	1	NCT00668148	A Five-Tier, Open-Label Study of IMC-A12 in Advanced Sarcoma
+imetelstat sodium	1	PHASE2	0	1	NCT02011126	Imetelstat Sodium in Treating Younger Patients With Relapsed or Refractory Solid Tumors
+indinavir sulfate	1	PHASE2	0	1	NCT00001566	A Pilot Study of Autologous T-Cell Transplantation With Vaccine Driven Expansion of Anti-Tumor Effectors After Cytoreduc
+interferon gamma 1b in combination	1	PHASE1	0	1	NCT00428272	HGS-ETR2 to Treat Children With Solid Tumors
+iodine i 131 moab 8h9	1	PHASE1	0	1	NCT00089245	Radiolabeled MAB Therapy in Patients With Refractory, Recurrent, or Advanced CNS or Leptomeningeal Cancer
+irinotecan (camptosar), gefitinib (iressa)	1	PHASE1	0	1	NCT00132158	ZD1839 and Oral Irinotecan in Treating Young Patients With Refractory Solid Tumors
+irinotecan (irinotecan cell pharm®)	1	PHASE1	0	1	NCT02085148	A Phase I Dose Finding Study in Children With Solid Tumors Recurrent or Refractory to Standard Therapy
+isolated perfusion	1	PHASE3	0	1	NCT00002641	Surgery With or Without Chemotherapy in Treating Patients With Soft Tissue Sarcoma
+ivocizumab	1	PHASE2	1	0	NCT06683846	Ivonescimab in the Treatment of Multiple Advanced Tumors
+lapine t-lymphocyte immune globulin	1	PHASE2	0	1	NCT04530487	Donor Stem Cell Transplant After Chemotherapy for the Treatment of Recurrent or Refractory High-Risk Solid Tumors in Ped
+lde225	1	PHASE2	0	1	NCT01125800	A Phase I Dose Finding and Safety Study of Oral LDE225 in Children and a Phase II Portion to Assess Preliminary Efficacy
+lenvatinib	1	PHASE2	0	1	NCT03245151	Study of Lenvatinib in Combination With Everolimus in Recurrent and Refractory Pediatric Solid Tumors, Including Central
+leucovorin calcium	1	PHASE2	0	1	NCT00003273	Chemotherapy Followed by Peripheral Stem Cell Transplantation in Treating Children With Newly Diagnosed Brain Tumor
+lexatumumab alone	1	PHASE1	0	1	NCT00428272	HGS-ETR2 to Treat Children With Solid Tumors
+lexatumumab in combination	1	PHASE1	0	1	NCT00428272	HGS-ETR2 to Treat Children With Solid Tumors
+lipegfilgrastim	1	PHASE1	0	1	NCT01585649	PK/PD of XM22 in Children With Ewing Family of Tumors or Rhabdomyosarcoma
+liposomal amphotericin b	1	PHASE3	0	1	NCT00003938	Liposomal Amphotericin B in Treating Granulocytopenia and Persistent Unexplained Fever in Cancer Patients
+liposomal doxorubicin (doxil)	1	PHASE1	1	1	NCT05210374	Disulfiram With Copper Gluconate and Liposomal Doxorubicin in Treatment-Refractory Sarcomas
+liposomal irinotecan	1	PHASE2	1	1	NCT06023641	Treatment of Newly Diagnosed Rhabdomyosarcoma Using Molecular Risk Stratification and Liposomal Irinotecan Based Therapy
+liposomal irinotecan, vincristine, temozolomide, and optional anlotinib	1	PHASE2	0	1	NCT07444918	Liposomal Irinotecan, Vincristine, Temozolomide, and Anlotinib for R/R Pediatric Solid Tumors
+lithium carbonate	1	NA	0	0	NCT00408681	Lithium Carbonate in Treating Patients With Acute Intestinal Graft-Versus-Host-Disease (GVHD) After Donor Stem Cell Tran
+ln-145/ln-144	1	PHASE1	1	1	NCT06566092	Study of Autologous Tumor-Infiltrating Lymphocytes in Pediatric, Adolescent, and Young Adult Participants
+lorvotuzumab mertansine	1	PHASE2	0	1	NCT02452554	Lorvotuzumab Mertansine in Treating Younger Patients With Relapsed or Refractory Wilms Tumor, Rhabdomyosarcoma, Neurobla
+lutetium lu 177-edotreotide	1	PHASE1	1	1	NCT06441331	Phase I Trial to Determine the Dose and Evaluate the PK and Safety of Lutetium Lu 177 Edotreotide Therapy in Pediatric P
+ly2940680	1	PHASE1	0	1	NCT01697514	A Study of LY2940680 in Pediatric Medulloblastoma or Rhabdomyosarcoma
+mage-a1, mage-a3, and ny-eso-1 vaccine	1	PHASE1	0	1	NCT00944580	A Vaccine Study for High Risk Cancers
+masct-i	1	PHASE2	1	0	NCT06277154	MASCT-I Combined With Doxorubicin and Ifosfamide for First-line Treatment of Advanced Soft Tissue Sarcoma
+methionine	1	PHASE2	1	1	NCT00840047	Methionine PET/CT Studies In Patients With Cancer
+metronomic cyclophosphamide	1	PHASE1	0	1	NCT01661400	Anti-Angiogenic Therapy Post Transplant (ASCR) for Pediatric Solid Tumors
+minocycline-edta	1	NA	0	1	NCT00378781	Heparin or M-EDTA in Preventing Catheter-Related Infections and Blockages in Patients at High Risk for a Catheter-Relate
+mm-398 (irinotecan sucrosofate liposome injection) plus cyclophosphamide	1	PHASE1	0	1	NCT02013336	Phase 1 Dose-escalating Study of MM-398 (Irinotecan Sucrosofate Liposome Injection) Plus Intravenous Cyclophosphamide in
+mocetinostat	1	PHASE1	1	1	NCT04299113	Mocetinostat With Vinorelbine in Children, Adolescents & Young Adults With Refractory and/or Recurrent Rhabdomyosarcoma
+mrna tumor vaccine therapy	1	EARLY_PHASE1	0	1	NCT06932861	Exploratory Study of Personalized mRNA Vaccine in Patients With Refractory Rhabdomyosarcoma
+nanoplexed poly i:c bo-112	1	PHASE1	1	0	NCT04420975	Nivolumab and BO-112 Before Surgery for the Treatment of Resectable Soft Tissue Sarcoma
+natural killer (nk) cell infusion	1	PHASE1	0	1	NCT01287104	A Phase I Study of NK Cell Infusion Following Allogeneic Peripheral Blood Stem Cell Transplantation From Related or Matc
+natural killer (nk) cells	1	PHASE1	0	0	NCT02890758	Phase I Trial of Universal Donor NK Cell Therapy in Combination With ALT803
+nivolumab injectable product	1	PHASE1	1	1	NCT04995003	HER2 Chimeric Antigen Receptor (CAR) T Cells in Combination With Checkpoint Blockade in Patients With Advanced Sarcoma
+nktr-214	1	PHASE2	0	1	NCT04730349	A Study of Bempegaldesleukin (BEMPEG: NKTR-214) in Combination With Nivolumab in Children, Adolescents and Young Adults 
+o6-benzylguanine	1	PHASE1	0	1	NCT00020150	Temozolomide and O6-benzylguanine in Treating Children With Solid Tumors
+onivyde	1	PHASE2	1	1	NCT04901702	Study of Onivyde With Talazoparib or Temozolomide in Children With Recurrent Solid Tumors and Ewing Sarcoma
+paclitaxel	1	NA	0	1	NCT01505569	Auto Transplant for High Risk or Relapsed Solid or CNS Tumors
+palivizumab	1	PHASE3	0	1	NCT00014391	Ribavirin With or Without Monoclonal Antibody Therapy in Treating Patients Who Develop RSV Pneumonia Following Periphera
+pegylated liposomal doxorubicin hydrochloride	1	PHASE1	0	0	NCT00030784	Liposomal Doxorubicin Plus Ifosfamide in Treating Patients With Advanced or Metastatic Soft Tissue Sarcoma
+pembrolizumab	1	PHASE1	1	1	NCT04483778	B7H3 CAR T Cell Immunotherapy for Recurrent/Refractory Solid Tumors in Children and Young Adults
+pembrolizumab injectable product	1	PHASE1	1	1	NCT04995003	HER2 Chimeric Antigen Receptor (CAR) T Cells in Combination With Checkpoint Blockade in Patients With Advanced Sarcoma
+pemetrexed	1	PHASE2	0	1	NCT00520936	A Study of Pemetrexed in Children With Recurrent Cancer
+pen-866	1	PHASE2	0	1	NCT04890093	Vincristine and Temozolomide in Combination With PEN-866 for Adolescents and Young Adults With Relapsed or Refractory So
+peptide vaccine ipx	1	PHASE2	1	1	NCT06094101	Personalized Vaccination in Fusion+ Sarcoma Patients (PerVision)
+perifosine	1	PHASE2	0	0	NCT00053794	Perifosine in Treating Patients With Metastatic or Locally Advanced Soft Tissue Sarcoma
+peripheral blood lymphocyte therapy	1	PHASE2	0	1	NCT00003887	Lymphocyte Infusion in Treating Patients With Relapsed Cancer After Bone Marrow or Peripheral Stem Cell Transplantation
+polyvinylpyrrolidone-sodium hyaluronate gel	1	NA	0	1	NCT00349024	Polyvinylpyrrolidone-Sodium Hyaluronate Gel in Reducing Pain From Oral Mucositis in Young Patients With Cancer
+prexasertib	1	PHASE2	0	1	NCT04095221	A Study of the Drugs Prexasertib, Irinotecan, and Temozolomide in People With Desmoplastic Small Round Cell Tumor and Rh
+pucotenlimab	1	PHASE2	1	1	NCT06456892	Effectiveness of Pucotenlimab Combined With Standard Chemotherapy Regimen
+pxfk peptide	1	PHASE2	0	1	NCT00001564	A Pilot Study of Tumor-Specific Peptide Vaccination and IL-2 With or Without Autologous T Cell Transplantation in Recurr
+realgar-indigo naturalis formulation	1	PHASE2	0	1	NCT05708391	Radiotherapy Combined With Realgar-Indigo Naturalis Formula (RIF) in the Treatment of Rhabdomyosarcoma(RMS) in Children
+recombinant interferon alfa	1	PHASE2	0	1	NCT00003408	Biological Therapy Following Chemotherapy and Peripheral Stem Cell Transplantation in Treating Patients With Cancer
+recombinant interleukin-11	1	PHASE2	0	1	NCT00004157	Interleukin-11 Plus Filgrastim Prior to Peripheral Stem Cell Transplantation in Patients With Non-Hodgkin's Lymphoma, Ho
+recombinant vaccinia gm-csf; rac vac gm-csf (jx-594)	1	PHASE1	0	1	NCT01169584	Safety Study of Recombinant Vaccinia Virus to Treat Refractory Solid Tumors in Pediatric Patients
+regorafenib (bay73-4506)	1	PHASE1	0	1	NCT02085148	A Phase I Dose Finding Study in Children With Solid Tumors Recurrent or Refractory to Standard Therapy
+rg1507	1	PHASE2	0	1	NCT00642941	A Study of R1507 in Participants With Recurrent or Refractory Sarcoma
+rhil-7	1	PHASE2	0	1	NCT00923351	Therapy to Treat Ewing's Sarcoma, Rhabdomyosarcoma or Neuroblastoma
+ribavirin	1	PHASE3	0	1	NCT00014391	Ribavirin With or Without Monoclonal Antibody Therapy in Treating Patients Who Develop RSV Pneumonia Following Periphera
+rituximab	1	PHASE2	0	1	NCT00617929	Antithymocyte Globulin, Clofarabine, and Rituximab in Treating Patients After an Unsuccessful Stem Cell Transplant
+romidepsin	1	PHASE2	0	0	NCT00112463	Depsipeptide (Romidepsin) in Treating Patients With Metastatic or Unresectable Soft Tissue Sarcoma
+saracatinib	1	PHASE2	0	0	NCT00659360	AZD0530 in Treating Patients With Recurrent Locally Advanced or Metastatic Soft Tissue Sarcoma
+second generation 4-1bbζ b7h3-egfrt-dhfr	1	PHASE1	1	1	NCT04483778	B7H3 CAR T Cell Immunotherapy for Recurrent/Refractory Solid Tumors in Children and Young Adults
+second generation 4-1bbζ b7h3-egfrt-dhfr(selected) and a second generation 4-1bbζ cd19-her2tg	1	PHASE1	1	1	NCT04483778	B7H3 CAR T Cell Immunotherapy for Recurrent/Refractory Solid Tumors in Children and Young Adults
+second generation 4-1bbζ egfr806-egfrt	1	PHASE1	1	1	NCT03618381	EGFR806 CAR T Cell Immunotherapy for Recurrent/Refractory Solid Tumors in Children and Young Adults
+second generation 4-1bbζ egfr806-egfrt and a second generation 4 1bbζ cd19-her2tg	1	PHASE1	1	1	NCT03618381	EGFR806 CAR T Cell Immunotherapy for Recurrent/Refractory Solid Tumors in Children and Young Adults
+selective antigen specific dtβrii-expressing t cells combined with b7-h3 car t cells	1	PHASE1	1	1	NCT07172958	Selective Antigen Specific T Cells and CAR T Cells in Subjects With Relapsed/Refractory Embryonal Tumors (SABRE)
+selinexor	1	PHASE2	1	1	NCT06239272	NRSTS2021, A Risk Adapted Study Evaluating Maintenance Pazopanib, Limited Margin, Dose-Escalated Radiation Therapy and S
+selumetinib sulfate	1	PHASE2	1	1	NCT03155620	Targeted Therapy Directed by Genetic Testing in Treating Pediatric Patients With Relapsed or Refractory Advanced Solid T
+seneca valley virus (biological agent)	1	PHASE1	0	0	NCT00314925	Safety Study of Seneca Valley Virus in Patients With Solid Tumors With Neuroendocrine Features
+seneca valley virus-001	1	PHASE1	0	1	NCT01048892	Seneca Valley Virus-001 and Cyclophosphamide in Treating Young Patients With Relapsed or Refractory Neuroblastoma, Rhabd
+sequential chemotherapy - 3 courses of ai	1	PHASE2	0	0	NCT03651375	Hypofractionated Radiotherapy With Sequential Chemotherapy in Marginally Resectable Soft Tissue Sarcomas of Extremities 
+silmitasertib	1	PHASE2	1	1	NCT06541262	Silmitasertib (CX-4945) in Combination With Chemotherapy for Relapsed Refractory Solid Tumors
+simvastatin	1	PHASE1	0	1	NCT02390843	Simvastatin With Topotecan and Cyclophosphamide in Relapsed and/or Refractory Pediatric Solid and CNS Tumors
+soblidotin	1	PHASE2	0	1	NCT00064220	Soblidotin in Treating Patients With Advanced or Metastatic Soft Tissue Sarcoma
+sodium thiosulfate	1	EARLY_PHASE1	0	1	NCT04213794	Heated Intra-peritoneal Chemotherapy With Doxorubicin and Cisplatin for Abdominal for Pelvic Tumors in Pediatric Patient
+standard chemotherapy	1	PHASE2	0	1	NCT00643565	A Study of Avastin (Bevacizumab) in Combination With Standard Chemotherapy in Children and Adolescents With Sarcoma.
+stem cell infusion	1	PHASE1	0	1	NCT01287104	A Phase I Study of NK Cell Infusion Following Allogeneic Peripheral Blood Stem Cell Transplantation From Related or Matc
+stem cells	1	PHASE1	0	1	NCT01625351	A Study of CD45RA+ Depleted Haploidentical Stem Cell Transplantation in Children With Relapsed or Refractory Solid Tumor
+sunitinib malate	1	PHASE2	0	0	NCT00474994	Sunitinib in Treating Patients With Metastatic, Locally Advanced, or Locally Recurrent Sarcomas
+supersaturated calcium phosphate rinse	1	PHASE3	0	1	NCT01305200	Supersaturated Calcium Phosphate Rinse in Preventing Oral Mucositis in Young Patients Undergoing Autologous or Donor Ste
+surufatinib in combination with gemcitabine	1	PHASE2	0	1	NCT05093322	A Study of Surufatinib in Combination With Gemcitabine in Pediatric, Adolescent, and Young Adult Patients With Recurrent
+taa-specific ctls	1	PHASE1	0	1	NCT02239861	TAA-Specific CTLS for Solid Tumors (TACTASOM)
+taclonex ointment	1	PHASE4	0	0	NCT00924950	Taclonex Ointment With Hydrogel Patch Occlusion for the Treatment of Psoriasis
+taclonex ointment and hydrogel patch	1	PHASE4	0	0	NCT00924950	Taclonex Ointment With Hydrogel Patch Occlusion for the Treatment of Psoriasis
+talabostat mesylate	1	PHASE1	0	1	NCT00303940	Talabostat Combined With Temozolomide or Carboplatin in Treating Young Patients With Relapsed or Refractory Brain Tumors
+talazoparib	1	PHASE2	1	1	NCT04901702	Study of Onivyde With Talazoparib or Temozolomide in Children With Recurrent Solid Tumors and Ewing Sarcoma
+tanespimycin	1	PHASE1	0	1	NCT00093821	Tanespimycin in Treating Young Patients With Recurrent or Refractory Leukemia or Solid Tumors
+tb-403 100mg/kg	1	PHASE1	0	1	NCT02748135	A Study of TB-403 in Pediatric Subjects With Relapsed or Refractory Medulloblastoma
+tb-403 175mg/kg	1	PHASE1	0	1	NCT02748135	A Study of TB-403 in Pediatric Subjects With Relapsed or Refractory Medulloblastoma
+tb-403 20mg/kg	1	PHASE1	0	1	NCT02748135	A Study of TB-403 in Pediatric Subjects With Relapsed or Refractory Medulloblastoma
+tb-403 50mg/kg	1	PHASE1	0	1	NCT02748135	A Study of TB-403 in Pediatric Subjects With Relapsed or Refractory Medulloblastoma
+tc99m tilmanocept	1	PHASE2	0	1	NCT02509598	A Study of Lymphoseek® as a Lymphoid Tissue Targeting Agent in Pediatric Patients With Melanoma, Rhabdomyosarcoma, or Ot
+temozolomide (tmz)	1	PHASE2	1	1	NCT06721689	PEEL-224, Vincristine and Temozolomide in Pediatric Solid Tumors
+temozolomide+irinotecan+vincristine	1	PHASE2	1	1	NCT05457829	Doxorubicin Hydrochloride Liposome Combined With Irinotecan (AI Regimen) Versus VIT Regimen in the Treatment of First Re
+temsirolimus plus liposomal doxorubicin	1	PHASE2	0	1	NCT00949325	Safety and Efficacy Study of Torisel and Liposomal Doxorubicin for Patients With Recurrent Sarcoma
+tgi chemotherapy	1	PHASE2	1	1	NCT06816771	Evaluation of the Efficacy and Safety of Pazopanib in Combination with TGI/CIV for Recurrent or Refractory Rhabdomyosarc
+thalidomide	1	PHASE1	0	1	NCT01661400	Anti-Angiogenic Therapy Post Transplant (ASCR) for Pediatric Solid Tumors
+therapeutic autologous dendritic cells	1	PHASE2	0	1	NCT00001566	A Pilot Study of Autologous T-Cell Transplantation With Vaccine Driven Expansion of Anti-Tumor Effectors After Cytoreduc
+tirapazamine	1	PHASE2	0	1	NCT00025363	Comparison of Chemotherapy Regimens in Treating Children With Relapsed or Progressive Rhabdomyosarcoma
+trabectedin (ecteinascidin-743, et-743, yondelis [r])	1	PHASE1	0	1	NCT01453283	Tabectedin to Treat Children and Adolescents With Cancer
+traumeel s	1	NA	0	1	NCT00080873	Traumeel® S in Preventing and Treating Mucositis in Young Patients Undergoing Stem Cell Transplantation
+trofosfamide, idarubicin, etoposide	1	PHASE3	0	1	NCT00876031	Trial for Localised High-risk Rhabdomyosarcoma and Rhabdomyosarcoma-like Soft Tissue Sarcoma
+tumor lysate/klh pulsed dendritic cell vaccine	1	PHASE2	0	1	NCT00923351	Therapy to Treat Ewing's Sarcoma, Rhabdomyosarcoma or Neuroblastoma
+tumor purged/cd25 depleted lymphocytes	1	PHASE2	0	1	NCT00923351	Therapy to Treat Ewing's Sarcoma, Rhabdomyosarcoma or Neuroblastoma
+tumor purged/cd25 depleted lymphocytes with tumor lysate/klh pulsed dendritic cell vaccine	1	PHASE2	0	1	NCT00923351	Therapy to Treat Ewing's Sarcoma, Rhabdomyosarcoma or Neuroblastoma
+ursodiol	1	NA	0	1	NCT01505569	Auto Transplant for High Risk or Relapsed Solid or CNS Tumors
+val-413	1	PHASE1	1	1	NCT04337177	Flavored, Oral Irinotecan VAL-413 (Orotecan®) Given With Temozolomide for Treatment of Recurrent Pediatric Solid Tumors
+valacyclovir	1	PHASE3	0	1	NCT00045292	Valacyclovir in Preventing Cytomegalovirus Infection in Patients Who Are Undergoing Donor Stem Cell Transplantation
+valproic acid	1	PHASE1	0	1	NCT01204450	Temsirolimus and Valproic Acid in Treating Young Patients With Relapsed Neuroblastoma, Bone Sarcoma, or Soft Tissue Sarc
+vegf inhibitor ptc299	1	PHASE1	0	1	NCT01158300	PTC299 in Treating Young Patients With Refractory or Recurrent Primary Central Nervous System Tumors
+vincristine (cellcristin®)	1	PHASE1	0	1	NCT02085148	A Phase I Dose Finding Study in Children With Solid Tumors Recurrent or Refractory to Standard Therapy
+vincristine sulfate liposome	1	PHASE2	0	1	NCT01055314	Temozolomide, Cixutumumab, and Combination Chemotherapy in Treating Patients With Metastatic Rhabdomyosarcoma
+vincristine, irinotecan	1	PHASE2	0	1	NCT01355445	Vincristine and Irinotecan With or Without Temozolomide in Children and Adults With Refractory/Relapsed Rhabdomyosarcoma
+vincristine, irinotecan, temozolomide	1	PHASE2	0	1	NCT01355445	Vincristine and Irinotecan With or Without Temozolomide in Children and Adults With Refractory/Relapsed Rhabdomyosarcoma
+vinorelbine, cyclofosfamide	1	PHASE2	0	1	NCT00180947	Study of Vinorelbine and Cyclofosfamide Among Patients With Refractory Tumours or in Relapse
+vismodegib	1	PHASE2	0	0	NCT01154452	Vismodegib and Gamma-Secretase/Notch Signalling Pathway Inhibitor RO4929097 in Treating Patients With Advanced or Metast
+vital blue dye (optional)	1	PHASE2	0	1	NCT02509598	A Study of Lymphoseek® as a Lymphoid Tissue Targeting Agent in Pediatric Patients With Melanoma, Rhabdomyosarcoma, or Ot
+vorinostat	1	PHASE1	1	1	NCT04308330	Vorinostat in Combination With Chemotherapy in Relapsed/Refractory Solid Tumors and CNS Malignancies
+zoledronate	1	PHASE1	1	1	NCT02508038	Alpha/Beta CD19+ Depleted Haploidentical Transplantation + Zometa for Pediatric Hematologic Malignancies and Solid Tumor
+zoledronic acid	1	PHASE2	1	1	NCT06625190	Alpha/Beta T and B Cell Depletion With Zoledronic Acid for Solid Tumors

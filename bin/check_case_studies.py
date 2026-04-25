@@ -79,6 +79,9 @@ def run_pipeline(case: dict, *, quiet: bool) -> Path:
     extra = REPO_ROOT / "assets" / "dgidb_drugs.tsv"
     if extra.exists() and extra.stat().st_size > 0:
         phase4_cmd += ["--drug-map-extra", str(extra)]
+    ctgov = REPO_ROOT / "assets" / "ctgov_rms_drugs.tsv"
+    if ctgov.exists() and ctgov.stat().st_size > 0:
+        phase4_cmd += ["--ctgov-trials", str(ctgov)]
     run(phase4_cmd, quiet=quiet)
     run(["python3", "bin/phase5_score.py",
          "--in", str(p4), "--vcf", vcf,
@@ -184,7 +187,7 @@ def main() -> int:
 
     report: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-        "pipeline_version": "v0.5.0-pilot",
+        "pipeline_version": "v0.6.0-pilot",
         "n_cases": len(cases),
         "cases": [],
         "n_assertions": 0,
