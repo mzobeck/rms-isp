@@ -1,0 +1,7 @@
+## Synthetic CNA calls for the TOY_FP_CDK4 fixture.
+## Schema: sample_id\tgene\tevent\tcopy_number\tnotes
+## event ∈ {amplification, homozygous_deletion, focal_gain, focal_loss}
+sample_id	gene	event	copy_number	notes
+TOY_FP_CDK4	CDK4	amplification	8	12q13-14 amplification; recurrent in FP-RMS; pilot case study 2.
+TOY_FP_CDK4	MDM2	amplification	5	co-amplified with CDK4 at 12q14; targetable when TP53 wild-type.
+TOY_FP_CDK4	CDK6	focal_gain	3	low-level gain; subthreshold for DRIVER.

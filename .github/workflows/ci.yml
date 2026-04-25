@@ -7,7 +7,28 @@ on:
     branches: [main]
 
 jobs:
-  scaffold-smoke-test:
+  case-study-scorecard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11 (tomllib)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run case-study scorecard (Python-only, no Nextflow)
+        run: |
+          python3 bin/check_case_studies.py --quiet
+
+      - name: Upload scorecard artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecard
+          path: results/scorecard.*
+
+  nextflow-end-to-end:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,37 +39,49 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install Nextflow
         run: |
           curl -s https://get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
           nextflow -v
 
-      - name: Run scaffold smoke test
+      - name: Run pipeline on TOY_TUMOR (default fixture)
+        run: |
+          nextflow run main.nf -profile laptop --outdir results/
+
+      - name: Verify expected report files
+        run: |
+          test -f results/phase1/TOY_TUMOR.phase1.tsv
+          test -f results/phase5/TOY_TUMOR.phase5.tsv
+          test -f results/phase5/TOY_TUMOR.report.md
+          head -20 results/phase5/TOY_TUMOR.report.md
+
+      - name: Run pipeline on TOY_FP_CDK4 (CNA + fusion fixture)
         run: |
           nextflow run main.nf -profile laptop \
-            --input tests/data/toy_patient.vcf \
+            --input  tests/data/toy_fp_cdk4amp.vcf \
+            --cna    tests/data/toy_fp_cdk4amp.cna.tsv \
+            --fusion tests/data/toy_fp_cdk4amp.fusion.tsv \
+            --sample_id TOY_FP_CDK4 \
+            --subtype FP \
             --outdir results/
 
-      - name: Verify expected output exists
+      - name: Verify CNA + fusion fixture report
         run: |
-          test -f results/hello.txt
-          cat results/hello.txt
-
-      - name: Lint shell scripts
-        run: |
-          if compgen -G "scripts/*.sh" > /dev/null; then
-            sudo apt-get install -y shellcheck
-            shellcheck scripts/*.sh
-          fi
+          test -f results/phase5/TOY_FP_CDK4.report.md
+          head -25 results/phase5/TOY_FP_CDK4.report.md
 
   markdown-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check for em dashes in repo markdown
+      - name: Check for em dashes in committed markdown
         run: |
-          # Project style: never use em dashes
           if grep -rn --include='*.md' '—' .; then
             echo "Em dashes found. Replace with commas, semicolons, colons, or separate sentences."
             exit 1

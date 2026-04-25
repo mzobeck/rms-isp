@@ -1,0 +1,18 @@
+##fileformat=VCFv4.2
+##fileDate=20260425
+##source=RMS-ISP toy patient TOY_MTAP_NULL (hand-curated FN-RMS exercising case study 1; not a real tumor; no PHI)
+##reference=GRCh38
+##contig=<ID=chr1,length=248956422>
+##INFO=<ID=GENE,Number=1,Type=String,Description="Affected gene symbol">
+##INFO=<ID=CONSEQUENCE,Number=1,Type=String,Description="Variant consequence (placeholder; canonical VEP call expected)">
+##INFO=<ID=EXPECTED,Number=1,Type=String,Description="Expected pipeline classification: DRIVER or PASSENGER">
+##INFO=<ID=NOTE,Number=1,Type=String,Description="Curator note">
+##INFO=<ID=SOMATIC,Number=0,Type=Flag,Description="Somatic variant">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">
+##CURATOR=Mark Zobeck (PI), 2026-04-25
+##NOTES=Synthetic FN-RMS designed to test pilot case study 1 (MTAP/CDKN2A 9p21 co-deletion -> PRMT5 synthetic lethality). The 9p21 co-deletion lives in the companion CNA TSV; one passenger SNV is included as a negative control.
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TOY_MTAP_NULL
+chr1	114716126	tmn_var01	A	G	500	PASS	GENE=NRAS;CONSEQUENCE=synonymous;EXPECTED=PASSENGER;NOTE=synonymous_negative_control_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50

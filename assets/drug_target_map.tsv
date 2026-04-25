@@ -1,0 +1,68 @@
+## RMS-ISP Drug-Target Map (curated, v0.1)
+## Schema: gene\tdrug\tmechanism\tmax_phase\tpediatric_evidence\tnotes
+## - max_phase: approved | phase3 | phase2 | phase1 | preclinical
+## - pediatric_evidence: yes_approved | yes_trial | adult_only | none
+## Source: hand-curated from v2 COG proposal drug list, Molecular Targets Platform spot checks (2025), and FDA pediatric labeling.
+## REPLACE with live DGIdb v5 + OpenTargets + ClinicalTrials.gov queries before any clinical-facing output.
+## Conditional restrictions are encoded in the `notes` column (e.g., adagrasib applies only to KRAS G12C); Phase 4 honours them.
+gene	drug	mechanism	max_phase	pediatric_evidence	notes
+CDK4	palbociclib	CDK4/6_inhibitor	approved	yes_trial	COG palbociclib trial; SARC-024.
+CDK4	ribociclib	CDK4/6_inhibitor	approved	yes_trial	pediatric solid tumor trials.
+CDK4	abemaciclib	CDK4/6_inhibitor	approved	yes_trial	pediatric trials in CNS and sarcoma.
+CDK6	palbociclib	CDK4/6_inhibitor	approved	yes_trial	co-target with CDK4.
+CDK6	ribociclib	CDK4/6_inhibitor	approved	yes_trial	co-target with CDK4.
+CDK6	abemaciclib	CDK4/6_inhibitor	approved	yes_trial	co-target with CDK4.
+CDKN2A	palbociclib	CDK4/6_inhibitor	approved	yes_trial	loss creates CDK4/6 dependence; indirect target.
+CDKN2A	ribociclib	CDK4/6_inhibitor	approved	yes_trial	loss creates CDK4/6 dependence; indirect target.
+CDKN2A	abemaciclib	CDK4/6_inhibitor	approved	yes_trial	loss creates CDK4/6 dependence; indirect target.
+FGFR4	erdafitinib	pan_FGFR_inhibitor	approved	adult_only	FDA-approved (urothelial); pediatric data limited.
+FGFR4	futibatinib	pan_FGFR_inhibitor	approved	adult_only	FDA-approved (cholangiocarcinoma).
+FGFR4	roblitinib	FGFR4_selective	phase2	adult_only	formerly FGF401.
+FGFR4	fisogatinib	FGFR4_selective	phase2	adult_only	formerly BLU-554.
+FGFR4	BLU9931	FGFR4_selective	preclinical	none	tool compound.
+MTAP	MRTX1719	MTA_cooperative_PRMT5_inhibitor	phase2	adult_only	synthetic lethal in MTAP-null tumors.
+MTAP	AG-270	PRMT5_inhibitor	phase1	adult_only	indirect via PRMT5 dependency.
+MTAP	JNJ-64619178	PRMT5_inhibitor	phase1	adult_only	indirect via PRMT5 dependency.
+MTAP	AMG-193	MTA_cooperative_PRMT5_inhibitor	phase1	adult_only	synthetic lethal in MTAP-null.
+PRMT5	MRTX1719	MTA_cooperative_PRMT5_inhibitor	phase2	adult_only	preferential activity in MTAP-null.
+PRMT5	AG-270	PRMT5_inhibitor	phase1	adult_only	first-in-class PRMT5i.
+PRMT5	JNJ-64619178	PRMT5_inhibitor	phase1	adult_only	first-in-class PRMT5i.
+NRAS	trametinib	MEK_inhibitor	approved	yes_approved	pediatric NF1 PN approval.
+NRAS	cobimetinib	MEK_inhibitor	approved	yes_trial	pediatric trials.
+NRAS	selumetinib	MEK_inhibitor	approved	yes_approved	pediatric NF1 PN approval.
+NRAS	binimetinib	MEK_inhibitor	approved	yes_trial	pediatric trials.
+NRAS	daraxonrasib	pan_RAS_inhibitor	phase1	adult_only	RMC-6236; broad RAS activity.
+KRAS	trametinib	MEK_inhibitor	approved	yes_approved	downstream of KRAS.
+KRAS	selumetinib	MEK_inhibitor	approved	yes_approved	downstream of KRAS.
+KRAS	cobimetinib	MEK_inhibitor	approved	yes_trial	downstream of KRAS.
+KRAS	adagrasib	KRAS_G12C_inhibitor	approved	adult_only	G12C-only; pipeline must restrict.
+KRAS	sotorasib	KRAS_G12C_inhibitor	approved	adult_only	G12C-only; pipeline must restrict.
+KRAS	daraxonrasib	pan_RAS_inhibitor	phase1	adult_only	pan-RAS coverage.
+HRAS	tipifarnib	farnesyltransferase_inhibitor	phase2	adult_only	HRAS-selective via FTase dependency.
+HRAS	trametinib	MEK_inhibitor	approved	yes_approved	downstream MEKi.
+HRAS	selumetinib	MEK_inhibitor	approved	yes_approved	downstream MEKi.
+NF1	selumetinib	MEK_inhibitor	approved	yes_approved	pediatric NF1 PN FDA approval; drives the case.
+NF1	trametinib	MEK_inhibitor	approved	yes_approved	NF1-driven RAS activation rationale.
+NF1	mirdametinib	MEK_inhibitor	phase2	yes_trial	pediatric NF1 trials.
+PTEN	alpelisib	PI3K_alpha_inhibitor	approved	adult_only	PI3K + MEK combination rationale.
+PTEN	ipatasertib	AKT_inhibitor	phase3	adult_only	downstream of PTEN loss.
+PTEN	capivasertib	AKT_inhibitor	approved	adult_only	approved in HR+ breast.
+PIK3CA	alpelisib	PI3K_alpha_inhibitor	approved	adult_only	direct target.
+PIK3CA	inavolisib	PI3K_alpha_inhibitor	approved	adult_only	direct target.
+PIK3CA	ipatasertib	AKT_inhibitor	phase3	adult_only	downstream of PIK3CA.
+MDM2	idasanutlin	MDM2_inhibitor	phase2	yes_trial	requires TP53 wildtype.
+MDM2	milademetan	MDM2_inhibitor	phase2	yes_trial	requires TP53 wildtype.
+MDM2	navtemadlin	MDM2_inhibitor	phase2	adult_only	requires TP53 wildtype.
+BRD4	birabresib	BET_inhibitor	phase1	adult_only	formerly OTX-015.
+BRD4	molibresib	BET_inhibitor	phase1	adult_only	pan-BET inhibitor.
+BRD4	mivebresib	BET_inhibitor	phase1	adult_only	pan-BET inhibitor.
+BRD4	pelabresib	BET_inhibitor	phase3	adult_only	myelofibrosis.
+BRD9	CFT-8634	BRD9_degrader	phase1	adult_only	targeted protein degrader.
+BRD9	FHD-609	BRD9_degrader	phase1	adult_only	targeted protein degrader.
+TP53	adavosertib	WEE1_inhibitor	phase2	yes_trial	synthetic lethal in TP53-mutant.
+TP53	prexasertib	CHK1_inhibitor	phase2	yes_trial	synthetic lethal in TP53-mutant.
+TP53	zotiraciclib	CDK9_inhibitor	phase2	adult_only	indirect TP53-mutant context.
+PAX3	birabresib	BET_inhibitor_indirect	phase1	adult_only	disrupts PAX3-FOXO1 super-enhancers.
+PAX3	molibresib	BET_inhibitor_indirect	phase1	adult_only	disrupts PAX3-FOXO1 super-enhancers.
+PAX7	birabresib	BET_inhibitor_indirect	phase1	adult_only	disrupts PAX7-FOXO1 super-enhancers.
+FOXO1	birabresib	BET_inhibitor_indirect	phase1	adult_only	disrupts fusion super-enhancers.

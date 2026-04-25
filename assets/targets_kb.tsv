@@ -1,0 +1,32 @@
+## RMS-ISP Target Knowledge Base
+## Schema: gene\tuniprot\trole\thotspots\tloss_of_function_target\toncogenic_amplification\tlof_via_deletion\tnotes
+## - hotspots: comma-separated AA changes (HGVSp short) considered DRIVER when seen as missense
+## - loss_of_function_target: 1 if any truncating/frameshift/stop_gained SNV/indel should be classified DRIVER
+## - oncogenic_amplification: 1 if a copy-number AMPLIFICATION event should be classified DRIVER
+## - lof_via_deletion: 1 if a copy-number HOMOZYGOUS_DELETION event should be classified DRIVER
+## - role: oncogene | tsg | tf | enzyme | epigenetic | metabolic | fusion_partner
+## Source: hand-curated v0.1 by Mark Zobeck from the v2 COG proposal target set in conf/targets.yaml.
+## Hotspot residues drawn from the literature cited in plans/pilot_ccdi_mci/rms_translational_pilot_project.md case studies and standard RMS reviews (Shern 2014/2021, Crose 2012, Olanich 2015).
+## Amplification / deletion target flags drawn from pilot case studies §3 and §11 (CDK4 12q13-14 amp; CDKN2A/MTAP 9p21 co-deletion; MDM2 amp in TP53-wt; MYCN amp in neuroblastoma but reported in some RMS).
+gene	uniprot	role	hotspots	loss_of_function_target	oncogenic_amplification	lof_via_deletion	notes
+TP53	P04637	tsg	R175H,R248Q,R273H,R248W,R282W,R249S,Y220C,R213X,G245S	1	0	1	Mut creates WEE1/CHK1 synthetic-lethal dependency.
+NRAS	P01111	oncogene	Q61K,Q61L,Q61R,Q61H,G12D,G12V,G13D	0	0	0	RAS family hotspot mutations activate MAPK.
+KRAS	P01116	oncogene	G12V,G12D,G12C,G12R,G13D,Q61H,Q61L	0	0	0	G12C-specific inhibitors apply only to G12C.
+HRAS	P01112	oncogene	Q61L,Q61R,G12V,G13R	0	0	0	HRAS-selective tipifarnib applicable.
+MYOD1	P15172	tf	L122R	0	0	0	Neomorphic; cooperates with PIK3CA; defines a high-risk FN-RMS subtype.
+FGFR4	P22455	oncogene	V550L,V550E,V550M,N535K,N535D,K535N	0	1	0	Kinase-domain activating mutations in ~10% RMS (Shern 2014); rare amplification reported.
+CDKN2A	P42771	tsg		1	0	1	9p21 homozygous loss in 15-20% FN-RMS; creates CDK4/6 dependence; co-deletes MTAP.
+NF1	P21359	tsg		1	0	1	LoF activates RAS-MAPK; selumetinib FDA-approved for pediatric NF1.
+CDK4	P11802	oncogene	R24C,R24H	0	1	0	12q13-14 amplification in ~10% FP-RMS; CDK4/6 inhibitors directly applicable.
+CDK6	Q00534	oncogene		0	1	0	Compensatory partner of CDK4; rare amplification.
+MTAP	Q13126	metabolic		1	0	1	Co-deleted with CDKN2A at 9p21; loss creates PRMT5 synthetic lethality.
+MDM2	Q00987	oncogene		0	1	0	Targetable when amplified in TP53-wildtype tumors; 12q amp co-occurs with CDK4.
+BRD4	O60885	epigenetic		0	0	0	Co-occupies 95% of PAX3-FOXO1 super-enhancers.
+BRD9	Q9H8M2	epigenetic		0	0	0	BAF-complex member; potential FP-RMS dependency.
+CHD4	Q14839	epigenetic		0	0	0	NuRD complex at 90% of fusion-bound super-enhancers; no clinical inhibitor.
+PRMT5	O14744	enzyme		0	0	0	Synthetic lethal in MTAP-null tumors.
+PAX3	P23760	fusion_partner		0	0	0	PAX3-FOXO1 fusion driver in FP-RMS; targeted indirectly via super-enhancer disruption.
+PAX7	P23759	fusion_partner		0	0	0	PAX7-FOXO1 fusion driver in a subset of FP-RMS.
+FOXO1	Q12778	fusion_partner		0	0	0	Fusion partner in FP-RMS; not directly druggable.
+PTEN	P60484	tsg	R130G,R130Q,R233X	1	0	1	Loss potentiates RAS signaling; PI3K + MEK combination rationale.
+PIK3CA	P42336	oncogene	E542K,E545K,H1047R,H1047L,Q546K	0	1	0	Activating mutations in FN-RMS subsets; rare amplification.

@@ -1,0 +1,5 @@
+## Synthetic CNA calls for the TOY_MTAP_NULL fixture.
+## Schema: sample_id\tgene\tevent\tcopy_number\tnotes
+sample_id	gene	event	copy_number	notes
+TOY_MTAP_NULL	CDKN2A	homozygous_deletion	0	9p21 homozygous loss; ~15-20% FN-RMS; creates CDK4/6 dependence.
+TOY_MTAP_NULL	MTAP	homozygous_deletion	0	Co-deleted with CDKN2A at 9p21; loss creates PRMT5 synthetic lethality. Pilot case study 1.

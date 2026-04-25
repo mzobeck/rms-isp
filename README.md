@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-Pre-alpha. Pilot in progress. Not for clinical use.
+**v0.4.0-pilot**: SNV + CNA + fusion inputs, three toy patients, automated case-study scorecard wired into CI, Phase 4 now unions a live DGIdb cache (198 mechanism-typed interactions across 21 RMS targets) with the curated drug map. All four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) currently PASS, 8/8 assertions. Pipeline still runs in seconds on a laptop offline; refreshing the DGIdb cache requires one network call to `bin/fetch_dgidb.py`. Phase 3 DepMap summary remains a curated PLACEHOLDER. Not for clinical use.
 
 ## Mission
 
@@ -30,10 +30,51 @@ Each phase ships with positive and negative controls and a defined validation ga
 ## Quickstart
 
 ```bash
-nextflow run main.nf -profile laptop --input tests/data/toy_patient.vcf
+# default: TOY_TUMOR (FN-RMS, SNV-only, exercises case studies 3 + 4)
+nextflow run main.nf -profile laptop
+
+# CNA + fusion example: TOY_FP_CDK4 (FP-RMS, exercises case study 2)
+nextflow run main.nf -profile laptop \
+    --input tests/data/toy_fp_cdk4amp.vcf \
+    --cna tests/data/toy_fp_cdk4amp.cna.tsv \
+    --fusion tests/data/toy_fp_cdk4amp.fusion.tsv \
+    --sample_id TOY_FP_CDK4 \
+    --subtype FP
+
+# Run all three bundled toy patients + cross-sample summary:
+bin/run_all_toys.sh   # writes results/multisample_summary.md
 ```
 
-This runs the toy RMS test patient end-to-end and produces a sample report. Used as the integration test in CI.
+Outputs land in `results/`:
+
+```
+results/
+├── phase1/TOY_TUMOR.phase1.tsv         annotated variants (DRIVER / VUS / PASSENGER calls)
+├── phase2/TOY_TUMOR.phase2.tsv         + AlphaFold structural reference + structural score
+├── phase3/TOY_TUMOR.phase3.tsv         + DepMap dependency score (subtype-aware)
+├── phase4/TOY_TUMOR.phase4.tsv         + matched drugs (long format, one row per variant-drug)
+├── phase5/
+│   ├── TOY_TUMOR.phase5.tsv            + confidence score and per-component scores
+│   └── TOY_TUMOR.report.md             ranked therapeutic-hypothesis report (human-readable)
+└── pipeline_info/                      Nextflow trace, timeline, report, dag
+```
+
+### Case-study scorecard
+
+Pilot acceptance criteria (per `plans/pilot_ccdi_mci/rms_translational_pilot_project.md` §3) are encoded in `tests/cases.toml` and asserted by `bin/check_case_studies.py`. CI runs the scorecard on every push and blocks merge if any assertion regresses.
+
+```bash
+python3 bin/check_case_studies.py
+open results/scorecard.md
+```
+
+| Pilot # | Test fixture | Asserts |
+|---|---|---|
+| 1 (MTAP/PRMT5) | TOY_MTAP_NULL | PRMT5 inhibitors in top 7, CDK4/6 inhibitors in top 3 |
+| 2 (CDK4 amp) | TOY_FP_CDK4 | CDK4/6 inhibitors in top 3, CDK4 in top 3, BET inhibitors in top 6 |
+| 3 (FGFR4) | TOY_TUMOR | FGFR inhibitors in top 5 |
+| 4 (RAS/MEK) | TOY_TUMOR | MEK inhibitors at #1-2 |
+| general | TOY_TUMOR | All 3 passengers below 0.10 confidence |
 
 ## Repository layout
 
@@ -66,7 +107,7 @@ Data sources retain their original licenses; see `LICENSES.md`.
 
 ## Project context
 
-Part of the Zobeck Lab "in silico translational pipeline" program at Baylor College of Medicine / Texas Children's Hospital. See `../../proj_management/README.md` for the full project overview, aims, timeline, and `../../proj_management/PIPELINE_STANDUP_PLAN.md` for the step-by-step build plan.
+Part of the Zobeck Lab "in silico translational pipeline" program at Baylor College of Medicine / Texas Children's Hospital. The canonical build plan is `plans/pilot_ccdi_mci/rms_translational_pilot_project.md`; the surrounding data landscape is in `plans/pilot_ccdi_mci/ccdi_mci_data_overview.md`. The `plans/` folder is gitignored.
 
 ## PI
 
