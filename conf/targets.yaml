@@ -1,0 +1,60 @@
+# Initial RMS target list for Phase 2 structural modeling and Phase 4 drug matching.
+# Sourced from v2 COG STS proposal and AI Translational Platform v2 case study section.
+# Edit cautiously: every change here is an ADR-worthy scope decision.
+
+targets:
+  # Fusion oncoproteins (FP-RMS)
+  - gene: PAX3
+    rationale: "PAX3-FOXO1 fusion driver in FP-RMS; indirect targets via super-enhancer disruption (BET, KDM3B/4B)."
+  - gene: PAX7
+    rationale: "PAX7-FOXO1 fusion driver in a subset of FP-RMS."
+  - gene: FOXO1
+    rationale: "Fusion partner in FP-RMS; not directly druggable but central to pathway logic."
+
+  # Cell cycle / RB axis
+  - gene: CDK4
+    rationale: "12q13-14 amplification in ~10% FP-RMS; CDK4/6 inhibitors directly applicable."
+  - gene: CDK6
+    rationale: "Compensatory partner of CDK4; CDK4/6 inhibitor target."
+  - gene: CDKN2A
+    rationale: "Homozygous 9p21 deletion in 15-20% FN-RMS; loss creates CDK4/6 dependence."
+  - gene: MTAP
+    rationale: "Co-deleted with CDKN2A at 9p21; PRMT5 synthetic lethality."
+  - gene: MDM2
+    rationale: "Targetable when amplified in TP53 wild-type tumors; MDM2 inhibitors (idasanutlin, milademetan)."
+
+  # RAS-MAPK
+  - gene: NRAS
+    rationale: "Activating hotspot mutations in FN-RMS; pan-RAS inhibitors (daraxonrasib) and MEK inhibitors."
+  - gene: KRAS
+    rationale: "RAS family; MEK inhibitor target."
+  - gene: HRAS
+    rationale: "RAS family; MEK inhibitor target."
+  - gene: NF1
+    rationale: "LoF activates RAS-MAPK; selumetinib FDA-approved in pediatric NF1 setting."
+
+  # PI3K-AKT-mTOR
+  - gene: PTEN
+    rationale: "Loss potentiates RAS signaling; PI3K + MEK combination rationale."
+  - gene: PIK3CA
+    rationale: "Activating mutations in subsets; PI3K inhibitor target."
+
+  # RTKs
+  - gene: FGFR4
+    rationale: "Activating kinase-domain mutations (V550, N535) in ~10% RMS; FGFR4-selective inhibitors (FGF401)."
+
+  # Transcription / epigenetics
+  - gene: MYOD1
+    rationale: "L122R neomorphic mutation in ~3% FN-RMS; cooperative PIK3CA mutations; differentiation logic."
+  - gene: BRD4
+    rationale: "Co-occupies 95% of PAX3-FOXO1 super-enhancers; BET inhibitor target."
+  - gene: BRD9
+    rationale: "BAF-complex member; potential FP-RMS dependency."
+  - gene: CHD4
+    rationale: "NuRD complex at 90% of fusion-bound super-enhancers; Tier 3 (no clinical inhibitor)."
+  - gene: PRMT5
+    rationale: "MTAP-deleted synthetic lethality; MRTX1719/AG-270/JNJ-64619178."
+
+  # Stress response
+  - gene: TP53
+    rationale: "Mutated in ~4% RMS, HR > 6; WEE1/CHK1 synthetic lethality."

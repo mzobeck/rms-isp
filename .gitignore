@@ -1,0 +1,57 @@
+# Nextflow
+.nextflow*
+work/
+results/
+.nf-test/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.env
+.python-version
+
+# R
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj.user/
+
+# Data: NEVER commit raw or processed corpus files. Always pull from source.
+corpus/
+data/
+*.bam
+*.fastq.gz
+*.fastq
+*.fq
+*.fq.gz
+*.bcf
+*.vcf.gz
+*.vcf.gz.tbi
+
+# Allow toy test data
+!tests/data/toy_patient.vcf
+!tests/data/toy_patient_expected.json
+
+# Containers
+*.sif
+*.tar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Output
+*.log
+*.html
+*.svg
+*.pdf
+!docs/**/*.svg
+!docs/**/*.pdf
