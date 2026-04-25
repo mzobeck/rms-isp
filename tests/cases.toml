@@ -1,0 +1,79 @@
+# Pilot case-study acceptance criteria for the RMS-ISP pipeline.
+#
+# Each [[case]] entry pins one toy-patient fixture to the case study it
+# exercises and the rank-and-mechanism expectations the pipeline must hit.
+# This file is the source of truth for the assertions in
+# bin/check_case_studies.py and the CI workflow. Edits here have scientific
+# implications -- treat changes as ADR-worthy.
+#
+# Assertion kinds:
+#   { kind = "mechanism_in_top_n", mechanism = "<substr>", top_n = N }
+#       Passes if any drug row in the top-N has drug_mechanism containing
+#       the substring (case-sensitive). Use for "drug class X must rank in
+#       top N" expectations.
+#   { kind = "gene_event_in_top_n", gene = "<symbol>", top_n = N }
+#       Passes if the gene appears in the top-N rows.
+#   { kind = "passenger_below", max_confidence = X }
+#       Passes if every PASSENGER-call row has confidence < X.
+
+[[case]]
+id          = "case3_fgfr4"
+case_study  = 3
+description = "FGFR4 V550L hotspot in TOY_TUMOR puts FGFR inhibitors in the top 5"
+sample_id   = "TOY_TUMOR"
+subtype     = "FN"
+vcf         = "tests/data/toy_patient.vcf"
+asserts     = [
+    { kind = "mechanism_in_top_n", mechanism = "FGFR_inhibitor", top_n = 5 },
+]
+
+[[case]]
+id          = "case4_ras_mek"
+case_study  = 4
+description = "NRAS Q61K and KRAS G12V drivers put MEK inhibitors at #1-2"
+sample_id   = "TOY_TUMOR"
+subtype     = "FN"
+vcf         = "tests/data/toy_patient.vcf"
+asserts     = [
+    { kind = "mechanism_in_top_n", mechanism = "MEK_inhibitor", top_n = 2 },
+]
+
+[[case]]
+id          = "toy_tumor_passengers"
+case_study  = "general"
+description = "All TOY_TUMOR passengers score below 0.10 confidence"
+sample_id   = "TOY_TUMOR"
+subtype     = "FN"
+vcf         = "tests/data/toy_patient.vcf"
+asserts     = [
+    { kind = "passenger_below", max_confidence = 0.10 },
+]
+
+[[case]]
+id          = "case2_cdk4_amp"
+case_study  = 2
+description = "CDK4 amplification in TOY_FP_CDK4 puts CDK4/6 inhibitors in the top 3 and BET inhibitors via PAX3-FOXO1 in top 6"
+sample_id   = "TOY_FP_CDK4"
+subtype     = "FP"
+vcf         = "tests/data/toy_fp_cdk4amp.vcf"
+cna         = "tests/data/toy_fp_cdk4amp.cna.tsv"
+fusion      = "tests/data/toy_fp_cdk4amp.fusion.tsv"
+asserts     = [
+    { kind = "mechanism_in_top_n", mechanism = "CDK4/6_inhibitor", top_n = 3 },
+    { kind = "gene_event_in_top_n", gene = "CDK4",                top_n = 3 },
+    { kind = "mechanism_in_top_n", mechanism = "BET_inhibitor",   top_n = 6 },
+]
+
+[[case]]
+id          = "case1_mtap_prmt5"
+case_study  = 1
+description = "MTAP+CDKN2A 9p21 co-deletion puts PRMT5 inhibitors in the top 7 and CDK4/6 inhibitors in the top 3"
+sample_id   = "TOY_MTAP_NULL"
+subtype     = "FN"
+vcf         = "tests/data/toy_mtap_null.vcf"
+cna         = "tests/data/toy_mtap_null.cna.tsv"
+fusion      = "tests/data/toy_mtap_null.fusion.tsv"
+asserts     = [
+    { kind = "mechanism_in_top_n", mechanism = "PRMT5_inhibitor",  top_n = 7 },
+    { kind = "mechanism_in_top_n", mechanism = "CDK4/6_inhibitor", top_n = 3 },
+]

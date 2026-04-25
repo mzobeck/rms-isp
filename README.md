@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.2.0-pilot** — end-to-end with SNV + CNA + fusion inputs. Three toy patients exercising all four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) all land their expected drug classes near the top. Runs in seconds on a laptop, no external API calls or large downloads required. Reference data for Phase 3 (DepMap) and Phase 4 (drug-target map) is curated and bundled in `assets/`; both swap to live data sources without code changes (see `assets/README.md`). Not for clinical use.
+**v0.3.0-pilot**: SNV + CNA + fusion inputs, three toy patients, automated case-study scorecard wired into CI. All four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) currently PASS, 8/8 assertions. Pipeline runs in seconds on a laptop, no external API calls or large downloads required. Reference data for Phase 3 (DepMap) and Phase 4 (drug-target map) is curated and bundled in `assets/`; both swap to live data sources without code changes (see `assets/README.md`). Not for clinical use.
 
 ## Mission
 
@@ -59,16 +59,22 @@ results/
 └── pipeline_info/                      Nextflow trace, timeline, report, dag
 ```
 
-### v0.2 eyeball-tests (one per case study)
+### Case-study scorecard
 
-| Case | Test fixture | Expected top result |
+Pilot acceptance criteria (per `plans/pilot_ccdi_mci/rms_translational_pilot_project.md` §3) are encoded in `tests/cases.toml` and asserted by `bin/check_case_studies.py`. CI runs the scorecard on every push and blocks merge if any assertion regresses.
+
+```bash
+python3 bin/check_case_studies.py
+open results/scorecard.md
+```
+
+| Pilot # | Test fixture | Asserts |
 |---|---|---|
-| 1 (MTAP/PRMT5) | TOY_MTAP_NULL | CDK4/6 inhibitors via CDKN2A loss in top 3 + PRMT5 inhibitors (MRTX1719 class) via MTAP loss in top 7 |
-| 2 (CDK4 amp) | TOY_FP_CDK4 | palbociclib / ribociclib / abemaciclib at #1-3; PAX3-FOXO1 → BET inhibitors in top 6; MDM2 → MDM2 inhibitors close behind |
-| 3 (FGFR4) | TOY_TUMOR | erdafitinib + futibatinib in top 5 |
-| 4 (RAS/MEK) | TOY_TUMOR | trametinib + selumetinib at #1-2 |
-
-All three passenger variants in TOY_TUMOR (TP53 intronic, NRAS/KRAS synonymous) should rank at the bottom of their respective reports.
+| 1 (MTAP/PRMT5) | TOY_MTAP_NULL | PRMT5 inhibitors in top 7, CDK4/6 inhibitors in top 3 |
+| 2 (CDK4 amp) | TOY_FP_CDK4 | CDK4/6 inhibitors in top 3, CDK4 in top 3, BET inhibitors in top 6 |
+| 3 (FGFR4) | TOY_TUMOR | FGFR inhibitors in top 5 |
+| 4 (RAS/MEK) | TOY_TUMOR | MEK inhibitors at #1-2 |
+| general | TOY_TUMOR | All 3 passengers below 0.10 confidence |
 
 ## Repository layout
 

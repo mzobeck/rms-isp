@@ -10,7 +10,7 @@ These three TSVs are the **curated reference data** that lets the pipeline run e
 
 ## Why these are bundled rather than fetched
 
-The pilot plan (§4 Aim 1, §11 Risk 1) is explicit that we should ship a runnable end-to-end pipeline before chasing data fidelity. These three files let the toy-patient integration test pass on any laptop with no network access, no API keys, and no cache downloads. They also document, in TSV form, exactly what shape the real upstream resources need to be reduced to before they enter the scoring engine — so the swap is a column-conformant file replacement, not a code change.
+The pilot plan (§4 Aim 1, §11 Risk 1) is explicit that we should ship a runnable end-to-end pipeline before chasing data fidelity. These three files let the toy-patient integration test pass on any laptop with no network access, no API keys, and no cache downloads. They also document, in TSV form, exactly what shape the real upstream resources need to be reduced to before they enter the scoring engine; so the swap is a column-conformant file replacement, not a code change.
 
 ## What MUST be true before a real-data swap
 

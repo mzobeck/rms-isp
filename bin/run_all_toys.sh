@@ -83,3 +83,11 @@ echo
 echo "==========================================="
 echo "Wrote multisample summary to $SUMMARY"
 cat "$SUMMARY"
+
+echo
+echo "==========================================="
+echo "Running case-study scorecard"
+python3 bin/check_case_studies.py --quiet
+echo
+echo "Wrote scorecard to results/scorecard.md"
+cat results/scorecard.md
