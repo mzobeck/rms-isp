@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.9.0-pilot**: All five components of the published Phase 5 confidence formula are now live data. **Real OpenPedCan v15 RNA-seq** (16 RMS vs 4108 other pediatric samples) fills the 0.15 expression weight, computed as per-gene log2(TPM+1) z-score RMS-vs-other. FGFR4 lights up at z=+5.66 (lineage-specific), MYOD1 at z=+9.33 (canonical RMS marker). Toy cohort grew to 6 fixtures (added a single-driver RAS-MEK fixture for case 4) and all 10 scorecard assertions PASS. Real-tumor cohort still 36 samples; mechanism distribution unchanged in shape but confidence scores now reflect real expression evidence. Not for clinical use.
+**v0.10.0-pilot**: Pipeline now **runs in Docker** by default. `containers/build.sh` builds `rms-isp/base:0.10.0` (python:3.11-slim + procps for Nextflow's task metric collection); the five per-phase Dockerfiles extend it and document the v0.11+ overlay points (VEP for phase 1, Boltz/Chai GPU image for phase 2, etc.). `-profile laptop` enables Docker; `-profile laptop_nodocker` falls back to host Python for environments without a Docker daemon. All 10 scorecard assertions still PASS. Phase 5 confidence formula remains fully live (DepMap + OpenPedCan + DGIdb + ClinicalTrials.gov). Not for clinical use.
 
 ## Mission
 
@@ -30,8 +30,14 @@ Each phase ships with positive and negative controls and a defined validation ga
 ## Quickstart
 
 ```bash
-# default: TOY_TUMOR (FN-RMS, SNV-only, exercises case studies 3 + 4)
+# one-time: build the Docker image
+containers/build.sh
+
+# default: TOY_TUMOR (FN-RMS, SNV-only, exercises case studies 3 + 4) in Docker
 nextflow run main.nf -profile laptop
+
+# without Docker (slower, but no daemon needed)
+nextflow run main.nf -profile laptop_nodocker
 
 # CNA + fusion example: TOY_FP_CDK4 (FP-RMS, exercises case study 2)
 nextflow run main.nf -profile laptop \

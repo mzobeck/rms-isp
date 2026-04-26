@@ -27,7 +27,7 @@ MANIFEST = REPO_ROOT / "data" / "target_rt" / "manifest.tsv"
 OUT_DIR = REPO_ROOT / "results" / "target_rt"
 COHORT_TSV = REPO_ROOT / "results" / "target_rt_cohort_summary.tsv"
 COHORT_MD = REPO_ROOT / "results" / "target_rt_cohort_summary.md"
-PIPELINE_VERSION = "v0.9.0-pilot"
+PIPELINE_VERSION = "v0.10.0-pilot"
 
 
 def run(cmd: list[str]) -> None:

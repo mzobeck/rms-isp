@@ -193,7 +193,7 @@ def main() -> int:
 
     report: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-        "pipeline_version": "v0.9.0-pilot",
+        "pipeline_version": "v0.10.0-pilot",
         "n_cases": len(cases),
         "cases": [],
         "n_assertions": 0,
