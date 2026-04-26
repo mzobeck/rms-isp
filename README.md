@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.4.0-pilot**: SNV + CNA + fusion inputs, three toy patients, automated case-study scorecard wired into CI, Phase 4 now unions a live DGIdb cache (198 mechanism-typed interactions across 21 RMS targets) with the curated drug map. All four pilot case studies (FGFR4, RAS/MEK, CDK4 amp, MTAP/PRMT5) currently PASS, 8/8 assertions. Pipeline still runs in seconds on a laptop offline; refreshing the DGIdb cache requires one network call to `bin/fetch_dgidb.py`. Phase 3 DepMap summary remains a curated PLACEHOLDER. Not for clinical use.
+**v0.10.0-pilot**: Pipeline now **runs in Docker** by default. `containers/build.sh` builds `rms-isp/base:0.10.0` (python:3.11-slim + procps for Nextflow's task metric collection); the five per-phase Dockerfiles extend it and document the v0.11+ overlay points (VEP for phase 1, Boltz/Chai GPU image for phase 2, etc.). `-profile laptop` enables Docker; `-profile laptop_nodocker` falls back to host Python for environments without a Docker daemon. All 10 scorecard assertions still PASS. Phase 5 confidence formula remains fully live (DepMap + OpenPedCan + DGIdb + ClinicalTrials.gov). Not for clinical use.
 
 ## Mission
 
@@ -30,8 +30,14 @@ Each phase ships with positive and negative controls and a defined validation ga
 ## Quickstart
 
 ```bash
-# default: TOY_TUMOR (FN-RMS, SNV-only, exercises case studies 3 + 4)
+# one-time: build the Docker image
+containers/build.sh
+
+# default: TOY_TUMOR (FN-RMS, SNV-only, exercises case studies 3 + 4) in Docker
 nextflow run main.nf -profile laptop
+
+# without Docker (slower, but no daemon needed)
+nextflow run main.nf -profile laptop_nodocker
 
 # CNA + fusion example: TOY_FP_CDK4 (FP-RMS, exercises case study 2)
 nextflow run main.nf -profile laptop \

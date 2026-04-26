@@ -19,23 +19,25 @@
 [[case]]
 id          = "case3_fgfr4"
 case_study  = 3
-description = "FGFR4 V550L hotspot in TOY_TUMOR puts FGFR inhibitors in the top 5"
-sample_id   = "TOY_TUMOR"
+description = "FGFR4 V550L hotspot in a single-driver FN-RMS tumor puts FGFR inhibitors at top of the report"
+sample_id   = "TOY_FGFR4"
 subtype     = "FN"
-vcf         = "tests/data/toy_patient.vcf"
+vcf         = "tests/data/toy_fgfr4_only.vcf"
 asserts     = [
-    { kind = "mechanism_in_top_n", mechanism = "FGFR_inhibitor", top_n = 5 },
+    { kind = "mechanism_in_top_n", mechanism = "FGFR_inhibitor", top_n = 3 },
+    { kind = "gene_event_in_top_n", gene = "FGFR4",              top_n = 3 },
 ]
 
 [[case]]
 id          = "case4_ras_mek"
 case_study  = 4
-description = "NRAS Q61K and KRAS G12V drivers put MEK inhibitors at #1-2"
-sample_id   = "TOY_TUMOR"
+description = "NRAS Q61K hotspot in a single-driver FN-RMS tumor puts MEK inhibitors at top of the report"
+sample_id   = "TOY_RAS_MEK"
 subtype     = "FN"
-vcf         = "tests/data/toy_patient.vcf"
+vcf         = "tests/data/toy_ras_mek.vcf"
 asserts     = [
     { kind = "mechanism_in_top_n", mechanism = "MEK_inhibitor", top_n = 2 },
+    { kind = "gene_event_in_top_n", gene = "NRAS",              top_n = 2 },
 ]
 
 [[case]]

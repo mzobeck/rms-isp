@@ -72,6 +72,73 @@ def union_drug_maps(primary: Path, extras: list[Path]) -> dict[str, list[dict]]:
     return merged
 
 
+def load_ctgov_trials(path: Path | None) -> list[dict]:
+    """Load the CT.gov pediatric-RMS trial map (output of bin/fetch_clinicaltrials.py).
+
+    Returns a list of dicts; matching is done via substring later because
+    CT.gov drug names sometimes carry suffixes ('selumetinib sulfate') or
+    prefixes ('apo-trametinib') that exact match misses.
+    """
+    if not path or not path.exists() or path.stat().st_size == 0:
+        return []
+    out: list[dict] = []
+    with path.open() as fh:
+        reader = csv.DictReader((ln for ln in fh if not ln.startswith("##")), delimiter="\t")
+        for row in reader:
+            if row.get("any_pediatric", "0") != "1":
+                continue
+            out.append({
+                "drug_norm": (row.get("drug") or "").strip().lower(),
+                "n_trials": row.get("n_rms_trials", ""),
+                "max_phase": row.get("max_phase_in_rms", ""),
+                "any_recruiting": row.get("any_recruiting", "0") == "1",
+                "example_nct": row.get("example_nct", ""),
+            })
+    return out
+
+
+def ctgov_lookup(drug_name: str, trials: list[dict]) -> dict | None:
+    """Find a CT.gov entry whose drug name overlaps with the given drug.
+
+    We match by either substring direction so generic-name variants
+    (e.g., 'selumetinib' vs 'selumetinib sulfate') still hit.
+    """
+    n = drug_name.strip().lower()
+    if not n:
+        return None
+    for t in trials:
+        ct_name = t["drug_norm"]
+        if not ct_name:
+            continue
+        if ct_name == n or ct_name in n or n in ct_name:
+            return t
+    return None
+
+
+def apply_ctgov_upgrade(row: dict, trials: list[dict]) -> None:
+    """In-place upgrade of pediatric_evidence and drug_notes based on CT.gov.
+
+    Rule: drug found in pediatric RMS trial -> pediatric_evidence becomes
+    'yes_trial', UNLESS already 'yes_approved' (which outranks).
+    The NCT ID is appended to drug_notes for auditability.
+    """
+    drug = row.get("drug", "")
+    if not drug:
+        return
+    hit = ctgov_lookup(drug, trials)
+    if not hit:
+        return
+    current = row.get("drug_pediatric_evidence", "")
+    if current != "yes_approved":
+        row["drug_pediatric_evidence"] = "yes_trial"
+    note = f"ctgov:{hit['example_nct']} ({hit['n_trials']} RMS trials"
+    if hit["any_recruiting"]:
+        note += ", recruiting"
+    note += ")"
+    existing = row.get("drug_notes", "")
+    row["drug_notes"] = f"{existing} | {note}" if existing else note
+
+
 def drug_applies(drug_row: dict, variant: dict) -> bool:
     mech = drug_row.get("mechanism", "")
     hgvsp = variant.get("hgvsp_short", "")
@@ -93,10 +160,13 @@ def main() -> int:
                     help="Primary curated drug-target map.")
     ap.add_argument("--drug-map-extra", action="append", default=[], type=Path,
                     help="Optional extra drug-target maps (e.g. DGIdb cache); curated wins on (gene, drug) collisions.")
+    ap.add_argument("--ctgov-trials", type=Path, default=None,
+                    help="Optional CT.gov pediatric RMS trial map (output of bin/fetch_clinicaltrials.py); upgrades pediatric_evidence for drugs found in pediatric RMS trials.")
     ap.add_argument("--out", required=True, type=Path)
     args = ap.parse_args()
 
     drug_map = union_drug_maps(args.drug_map, args.drug_map_extra)
+    ctgov_trials = load_ctgov_trials(args.ctgov_trials)
 
     with args.inp.open() as fh:
         reader = csv.DictReader(fh, delimiter="\t")
@@ -139,8 +209,11 @@ def main() -> int:
             row["drug_mechanism"] = drug["mechanism"]
             row["drug_max_phase"] = drug["max_phase"]
             row["drug_pediatric_evidence"] = drug["pediatric_evidence"]
-            row["drug_evidence_score"] = f"{score_drug(drug):.3f}"
             row["drug_notes"] = drug.get("notes", "")
+            # CT.gov upgrade can promote pediatric_evidence; do it BEFORE scoring
+            # so the upgraded value flows into drug_evidence_score.
+            apply_ctgov_upgrade(row, ctgov_trials)
+            row["drug_evidence_score"] = f"{score_drug({**drug, 'pediatric_evidence': row['drug_pediatric_evidence']}):.3f}"
             out_rows.append(row)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

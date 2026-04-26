@@ -52,7 +52,7 @@ jobs:
 
       - name: Run pipeline on TOY_TUMOR (default fixture)
         run: |
-          nextflow run main.nf -profile laptop --outdir results/
+          nextflow run main.nf -profile laptop_nodocker --outdir results/
 
       - name: Verify expected report files
         run: |
@@ -63,7 +63,7 @@ jobs:
 
       - name: Run pipeline on TOY_FP_CDK4 (CNA + fusion fixture)
         run: |
-          nextflow run main.nf -profile laptop \
+          nextflow run main.nf -profile laptop_nodocker \
             --input  tests/data/toy_fp_cdk4amp.vcf \
             --cna    tests/data/toy_fp_cdk4amp.cna.tsv \
             --fusion tests/data/toy_fp_cdk4amp.fusion.tsv \

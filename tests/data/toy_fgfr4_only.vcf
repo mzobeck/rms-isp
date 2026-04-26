@@ -1,0 +1,22 @@
+##fileformat=VCFv4.2
+##fileDate=20260425
+##source=RMS-ISP toy patient TOY_FGFR4 (hand-curated FN-RMS for pilot case study 3; not a real tumor; no PHI)
+##reference=GRCh38
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr5,length=181538259>
+##contig=<ID=chr12,length=133275309>
+##INFO=<ID=GENE,Number=1,Type=String,Description="Affected gene symbol">
+##INFO=<ID=CONSEQUENCE,Number=1,Type=String,Description="Variant consequence (placeholder; canonical VEP call expected)">
+##INFO=<ID=EXPECTED,Number=1,Type=String,Description="Expected pipeline classification: DRIVER or PASSENGER">
+##INFO=<ID=NOTE,Number=1,Type=String,Description="Curator note">
+##INFO=<ID=SOMATIC,Number=0,Type=Flag,Description="Somatic variant">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">
+##CURATOR=Mark Zobeck (PI), 2026-04-25
+##NOTES=Synthetic FN-RMS designed to test pilot case study 3 (FGFR4 V550L kinase-domain mutation -> FGFR inhibitors). Sole actionable driver is FGFR4 V550L; passengers are added as negative controls. This represents the ~10% of RMS tumors that carry FGFR4 hotspot mutations as their primary therapeutic vulnerability without competing driver pathways.
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TOY_FGFR4
+chr5	177093374	tfgfr4_var01	C	G	500	PASS	GENE=FGFR4;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=V550L_kinase_domain_activating_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr1	114716126	tfgfr4_var02	A	G	500	PASS	GENE=NRAS;CONSEQUENCE=synonymous;EXPECTED=PASSENGER;NOTE=synonymous_negative_control_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr12	25229898	tfgfr4_var03	G	A	500	PASS	GENE=KRAS;CONSEQUENCE=synonymous;EXPECTED=PASSENGER;NOTE=common_polymorphism_high_gnomAD_AF_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45

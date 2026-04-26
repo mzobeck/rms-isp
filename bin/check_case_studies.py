@@ -68,9 +68,15 @@ def run_pipeline(case: dict, *, quiet: bool) -> Path:
          "--sample-id", sid, "--out", str(p1)], quiet=quiet)
     run(["python3", "bin/phase2_structure.py",
          "--in", str(p1), "--out", str(p2)], quiet=quiet)
-    run(["python3", "bin/phase3_dependency.py",
-         "--in", str(p2), "--depmap", "assets/depmap_rms_summary.tsv",
-         "--subtype", case["subtype"], "--out", str(p3)], quiet=quiet)
+    phase3_cmd = [
+        "python3", "bin/phase3_dependency.py",
+        "--in", str(p2), "--depmap", "assets/depmap_rms_summary.tsv",
+        "--subtype", case["subtype"], "--out", str(p3),
+    ]
+    expr = REPO_ROOT / "assets" / "openpedcan_expression_summary.tsv"
+    if expr.exists() and expr.stat().st_size > 0:
+        phase3_cmd += ["--expression", str(expr)]
+    run(phase3_cmd, quiet=quiet)
     phase4_cmd = [
         "python3", "bin/phase4_drugs.py",
         "--in", str(p3), "--drug-map", "assets/drug_target_map.tsv",
@@ -79,6 +85,9 @@ def run_pipeline(case: dict, *, quiet: bool) -> Path:
     extra = REPO_ROOT / "assets" / "dgidb_drugs.tsv"
     if extra.exists() and extra.stat().st_size > 0:
         phase4_cmd += ["--drug-map-extra", str(extra)]
+    ctgov = REPO_ROOT / "assets" / "ctgov_rms_drugs.tsv"
+    if ctgov.exists() and ctgov.stat().st_size > 0:
+        phase4_cmd += ["--ctgov-trials", str(ctgov)]
     run(phase4_cmd, quiet=quiet)
     run(["python3", "bin/phase5_score.py",
          "--in", str(p4), "--vcf", vcf,
@@ -184,7 +193,7 @@ def main() -> int:
 
     report: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-        "pipeline_version": "v0.4.0-pilot",
+        "pipeline_version": "v0.10.0-pilot",
         "n_cases": len(cases),
         "cases": [],
         "n_assertions": 0,
