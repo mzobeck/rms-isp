@@ -192,6 +192,12 @@ def render_report(
         lines.append(f"- **Reason**: {head['reason']}")
         lines.append(f"- **Variant score**: {safe_float(head['variant_score']):.2f}  ·  **Structural score**: {safe_float(head['structural_score']):.2f}  ·  **Dependency score**: {safe_float(head['dependency_score']):.2f}")
         lines.append(f"- **Dependency context**: {head.get('dependency_reason', '')}")
+        ot_score = head.get("opentargets_score", "")
+        ot_disease = head.get("opentargets_disease", "")
+        if ot_score:
+            lines.append(f"- **OpenTargets disease association**: "
+                         f"score={ot_score}  ·  matched={ot_disease or '(none)'} "
+                         f"(informational; not in confidence formula)")
         if head.get("alphafold_url"):
             lines.append(f"- **Structural reference**: [{head['uniprot']}]({head['alphafold_url']})")
         lines.append("")

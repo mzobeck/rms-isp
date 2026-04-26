@@ -67,6 +67,8 @@ def run_pipeline(sample: dict) -> dict | None:
     expr = REPO_ROOT / "assets" / "openpedcan_expression_summary.tsv"
     if expr.exists() and expr.stat().st_size > 0:
         phase3_cmd += ["--expression", str(expr)]
+    # v0.17: enable OpenTargets disease-association lookup. EFO_0002918 = rhabdomyosarcoma.
+    phase3_cmd += ["--opentargets-efo-id", "EFO_0002918"]
     run(phase3_cmd)
     run(["python3", "bin/phase4_drugs.py", "--in", str(p3),
          "--drug-map", "assets/drug_target_map.tsv",

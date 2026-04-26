@@ -154,6 +154,7 @@ def best_drug_per_gene(
                 "sample_id": sid,
                 "event": r.get("hgvsp_short") or r.get("consequence", ""),
                 "confidence": conf,
+                "opentargets_score": r.get("opentargets_score", ""),
             }
             existing = by_gene.get(gene)
             # Prefer higher phase; break ties by higher confidence.
@@ -212,6 +213,7 @@ def build_portfolio(
             "sample_count": len(sample_ids),
             "sample_ids": sorted(sample_ids),
             "tier": tier,
+            "opentargets_score": drug_entry.get("opentargets_score", ""),
         })
     tier_rank = {"1": 0, "2": 1, "3": 2, "": 3}
     out.sort(key=lambda r: (tier_rank.get(r["tier"], 99), -r["max_prevalence"], r["gene"]))
@@ -264,15 +266,16 @@ def render_portfolio_md(
             L.append("")
             continue
         L.append("| Gene | Best drug | Phase | Ped evidence | Mechanism | "
-                 "Max prev | FN | FP | ALL | Samples |")
-        L.append("|---|---|---|---|---|---|---|---|---|---|")
+                 "Max prev | FN | FP | ALL | Samples | OT score |")
+        L.append("|---|---|---|---|---|---|---|---|---|---|---|")
         for r in rows:
+            ot = r.get("opentargets_score", "") or "-"
             L.append(
                 f"| **{r['gene']}** | `{r['drug']}` | {r['max_phase']} | "
                 f"{r['pediatric_evidence']} | {r['drug_mechanism']} | "
                 f"{r['max_prevalence']:.0%} | {r['prevalence_FN']:.0%} | "
                 f"{r['prevalence_FP']:.0%} | {r['prevalence_ALL']:.0%} | "
-                f"{r['sample_count']} |"
+                f"{r['sample_count']} | {ot} |"
             )
         L.append("")
 
