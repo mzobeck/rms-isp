@@ -37,6 +37,31 @@ WEIGHTS = {
 }
 
 
+def tier_for_row(call: str, max_phase: str) -> str:
+    """Per-row therapeutic tier per the v2-expanded plan §5.
+
+    Tier 1 (validate now)   : FDA-approved drug for a DRIVER variant.
+    Tier 2 (validate soon)  : late-phase clinical (phase 2/3) drug for a DRIVER variant.
+    Tier 3 (characterize)   : early-phase or preclinical drug for a DRIVER variant.
+    "" (untiered)           : variant call is not DRIVER.
+
+    The v2 plan also conditions Tiers 1 and 2 on cohort prevalence (>5 percent
+    of subtype for Tier 1, >3 percent for Tier 2). That pass is cohort-level
+    and is layered on top of these per-row tiers by the cohort runner; v0.14
+    ships per-row only.
+    """
+    if call != "DRIVER":
+        return ""
+    mp = (max_phase or "").lower()
+    if mp == "approved":
+        return "1"
+    if mp in ("phase2", "phase3"):
+        return "2"
+    if mp in ("phase1", "preclinical"):
+        return "3"
+    return "3"  # unrecognized phases default to Tier 3 (most conservative)
+
+
 def file_sha256(path: Path) -> str:
     h = hashlib.sha256()
     with path.open("rb") as fh:
@@ -105,13 +130,50 @@ def render_report(
     lines.append("")
     lines.append("> Engineering output, not medical advice. Phase 3 dependency uses real DepMap 26Q1 Chronos with an oncogene-addiction floor for activated drivers; Phase 3 expression uses real OpenPedCan v15 RNA-seq (RMS vs other pediatric, log2 TPM z-score) when available. Phase 4 unions the curated drug map with live DGIdb interactions and ClinicalTrials.gov pediatric-RMS trial upgrades. Use to verify pipeline behaviour and triage hypotheses; do not use for clinical decisions.")
     lines.append("")
+    lines.append("## Therapeutic tier summary")
+    lines.append("")
+    lines.append("Per-row tiers per the v2-expanded plan §5 (FDA-approved -> Tier 1; phase 2/3 -> Tier 2; phase 1 / preclinical -> Tier 3). Cohort-prevalence gating is a v0.15 follow-up.")
+    lines.append("")
+    tier_groups: dict[str, list[dict]] = {"1": [], "2": [], "3": []}
+    for r in rows:
+        t = r.get("tier", "")
+        if t in tier_groups:
+            tier_groups[t].append(r)
+    tier_titles = {
+        "1": "Tier 1 (validate now): FDA-approved drug for a DRIVER variant",
+        "2": "Tier 2 (validate soon): phase 2/3 drug for a DRIVER variant",
+        "3": "Tier 3 (characterize): phase 1 or preclinical only",
+    }
+    any_tiered = False
+    for t in ("1", "2", "3"):
+        group = tier_groups[t]
+        if not group:
+            continue
+        any_tiered = True
+        lines.append(f"### {tier_titles[t]}")
+        lines.append("")
+        lines.append("| Gene | Event | Drug | Mechanism | Phase | Ped | **Confidence** |")
+        lines.append("|---|---|---|---|---|---|---|")
+        for r in group[:10]:
+            lines.append(
+                f"| **{r['gene']}** | {event_label(r)} | `{r['drug']}` | "
+                f"{r['drug_mechanism']} | {r['drug_max_phase']} | "
+                f"{r['drug_pediatric_evidence']} | **{r['confidence']:.3f}** |"
+            )
+        if len(group) > 10:
+            lines.append(f"| ... | | | | | | _{len(group) - 10} more in this tier_ |")
+        lines.append("")
+    if not any_tiered:
+        lines.append("_No DRIVER variants in this sample; nothing to tier._")
+        lines.append("")
     lines.append("## Top-ranked target-drug pairs")
     lines.append("")
-    lines.append("| Rank | Gene | Event | Type | Call | Drug | Mechanism | Phase | Ped | **Confidence** |")
-    lines.append("|---|---|---|---|---|---|---|---|---|---|")
+    lines.append("| Rank | Tier | Gene | Event | Type | Call | Drug | Mechanism | Phase | Ped | **Confidence** |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
     for i, r in enumerate(top, 1):
+        tier_cell = r.get("tier", "") or "-"
         lines.append(
-            f"| {i} | **{r['gene']}** | {event_label(r)} | {r.get('event_type', '')} | {r['call']} | "
+            f"| {i} | {tier_cell} | **{r['gene']}** | {event_label(r)} | {r.get('event_type', '')} | {r['call']} | "
             f"`{r['drug']}` | {r['drug_mechanism']} | {r['drug_max_phase']} | "
             f"{r['drug_pediatric_evidence']} | **{r['confidence']:.3f}** |"
         )
@@ -186,11 +248,16 @@ def main() -> int:
         rows = list(reader)
         in_cols = list(reader.fieldnames or [])
 
-    out_cols = in_cols + ["confidence", "component_variant", "component_structural", "component_dependency", "component_expression", "component_drug"]
+    out_cols = in_cols + [
+        "confidence", "tier",
+        "component_variant", "component_structural", "component_dependency",
+        "component_expression", "component_drug",
+    ]
 
     for r in rows:
         score, comps = confidence(r)
         r["confidence"] = score
+        r["tier"] = tier_for_row(r.get("call", ""), r.get("drug_max_phase", ""))
         for k, v in comps.items():
             r[f"component_{k}"] = f"{v:.3f}"
 
