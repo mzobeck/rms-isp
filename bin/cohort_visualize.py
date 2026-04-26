@@ -351,7 +351,13 @@ def render_per_sample_heatmap(
     cell_w = 16
     cell_h = 18
     pad_top = 70
-    pad_bottom = 60 if show_labels else 30
+    if show_labels:
+        # Rotated -60deg, projected vertical extent of an N-char label at 10pt
+        # is roughly N * 6 * sin(60deg) ~= 5.2 * N pixels. Add a 15px margin.
+        max_label_chars = max((len(s["sample_id"]) for s in samples), default=0)
+        pad_bottom = int(max_label_chars * 5.2) + 15
+    else:
+        pad_bottom = 30
     pad_left = 90
     pad_right = 10
     stripe_h = 10
