@@ -100,7 +100,7 @@ def load_manifest(path: Path) -> list[dict]:
     return out
 
 
-def write_cohort_md(rows: list[dict]) -> None:
+def write_cohort_md(rows: list[dict], viz: dict | None = None) -> None:
     L: list[str] = []
     L.append("# RMS-ISP TARGET-RT Cohort Summary")
     L.append("")
@@ -127,6 +127,25 @@ def write_cohort_md(rows: list[dict]) -> None:
     L.append("|---|---|")
     for mech, c in mech_counts.most_common():
         L.append(f"| {mech} | {c} |")
+    L.append("")
+    L.append("## Mechanism distribution")
+    L.append("")
+    if viz and viz.get("mechanisms"):
+        L.append('<img src="target_rt/cohort_mechanisms.svg" alt="Top mechanism counts across the cohort">')
+    elif viz is None:
+        L.append("Visualizations failed to render this run; see job log.")
+    L.append("")
+    L.append("## Per-target cohort druggability")
+    L.append("")
+    if viz and viz.get("druggability"):
+        L.append('<img src="target_rt/cohort_druggability.svg" alt="Per-target druggability fraction by subtype">')
+    L.append("")
+    L.append("## Per-sample heatmap")
+    L.append("")
+    if viz and viz.get("per_sample"):
+        L.append('<img src="target_rt/cohort_per_sample.svg" alt="Per-sample druggability heatmap">')
+    elif viz and viz.get("n_samples", 0) > 0:
+        L.append(f"Suppressed at N={viz['n_samples']}; see per-target chart above for cohort-level patterns.")
     L.append("")
     L.append("## Subtype distribution among samples with target hits")
     L.append("")
@@ -192,7 +211,21 @@ def main() -> int:
             w.writeheader()
             w.writerows(cohort)
 
-    write_cohort_md(cohort)
+    viz_status: dict | None = None
+    try:
+        sys.path.insert(0, str(REPO_ROOT / "bin"))
+        import cohort_visualize
+        viz_status = cohort_visualize.main(
+            cohort_tsv=COHORT_TSV,
+            target_rt_dir=OUT_DIR,
+            out_dir=OUT_DIR,
+            targets_kb=REPO_ROOT / "assets" / "targets_kb.tsv",
+        )
+    except Exception as exc:
+        import traceback
+        print(f"cohort_visualize failed (continuing): {exc}", file=sys.stderr)
+        traceback.print_exc()
+    write_cohort_md(cohort, viz=viz_status)
     print(f"wrote {COHORT_MD}", file=sys.stderr)
     print()
     print(COHORT_MD.read_text())

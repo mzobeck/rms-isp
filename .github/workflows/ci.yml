@@ -17,6 +17,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Run cohort_visualize unit tests
+        run: |
+          python3 -m unittest tests.test_cohort_visualize -v
+
       - name: Run case-study scorecard (Python-only, no Nextflow)
         run: |
           python3 bin/check_case_studies.py --quiet

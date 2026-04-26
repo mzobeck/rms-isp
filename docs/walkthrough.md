@@ -192,7 +192,7 @@ Three things to know when navigating:
 In rough priority order:
 
 1. **Real VEP for phase 1.** Replaces the curated GENE/CONSEQUENCE shortcut with a proper VEP+OncoKB annotation. The v0.10 containerization makes this realistic; the cache is around 50 GB and would live behind `containers/phase1.Dockerfile`.
-2. **Cohort-level visualizations.** Static HTML or PNG over `results/target_rt_cohort_summary.tsv`: mechanism distribution and a gene-by-sample heatmap.
+2. **Cohort-level visualizations** (shipped v0.11). Static SVG charts embedded in `results/target_rt_cohort_summary.md`: mechanism distribution, per-target druggability (gene by subtype, scales to any N), and a per-sample heatmap rendered for cohorts up to 100 samples. Implementation in `bin/cohort_visualize.py`.
 3. **Boltz-1 / Chai-1 mutant prediction in phase 2.** GPU-bound, gates on the `gpu` profile. Run on a shortlist of top-N target-drug pairs per tumor rather than every event.
 4. **Live OpenTargets in phase 4.** Was deferred at v0.6 because the v4 schema does not expose drugs directly on `Target`. Adds disease-association evidence to drug ranking.
 
