@@ -1,0 +1,4 @@
+sample_id	gene	confidence	drug	drug_mechanism
+SAMP_B	CDK4	0.701	palbociclib	CDK4/6_inhibitor
+SAMP_B	CDK4	0.685	abemaciclib	CDK4/6_inhibitor
+SAMP_B	FGFR4	0.42	erdafitinib	pan_FGFR_inhibitor

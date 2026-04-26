@@ -1,0 +1,3 @@
+sample_id	gene	confidence	drug	drug_mechanism
+SAMP_C	NRAS	0.654	trametinib	MEK_inhibitor
+SAMP_C	NRAS	0.611	binimetinib	MEK_inhibitor
