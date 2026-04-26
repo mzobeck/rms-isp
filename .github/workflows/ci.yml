@@ -25,6 +25,10 @@ jobs:
         run: |
           python3 -m unittest tests.test_annotators -v
 
+      - name: Run phase 5 tier-classifier unit tests
+        run: |
+          python3 -m unittest tests.test_phase5_tier -v
+
       - name: Run case-study scorecard (Python-only, no Nextflow)
         run: |
           python3 bin/check_case_studies.py --quiet

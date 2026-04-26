@@ -92,6 +92,7 @@ def run_pipeline(sample: dict) -> dict | None:
         "top_mechanism": top.get("drug_mechanism", ""),
         "top_confidence": top.get("confidence", ""),
         "top_call": top.get("call", ""),
+        "top_tier": top.get("tier", ""),
     }
 
 
@@ -117,12 +118,24 @@ def write_cohort_md(rows: list[dict], viz: dict | None = None) -> None:
     L.append("")
     L.append("## Top recommendation per sample")
     L.append("")
-    L.append("| Sample | Study | Subtype | Events | Top gene | Top event | Call | Top drug | Mechanism | Confidence |")
-    L.append("|---|---|---|---|---|---|---|---|---|---|")
+    L.append("| Sample | Study | Subtype | Events | Top gene | Top event | Call | Tier | Top drug | Mechanism | Confidence |")
+    L.append("|---|---|---|---|---|---|---|---|---|---|---|")
     for r in rows:
         events = f"{r.get('n_muts',0)}m/{r.get('n_cnas',0)}c/{r.get('n_fusions',0)}f"
         study_short = r.get('study','').replace('rms_','').replace('_2014','14').replace('_2023','23')
-        L.append(f"| `{r['sample_id']}` | {study_short} | {r['subtype']} | {events} | **{r['top_gene']}** | {r['top_event']} | {r['top_call']} | `{r['top_drug']}` | {r['top_mechanism']} | {r['top_confidence']} |")
+        tier_cell = r.get('top_tier','') or '-'
+        L.append(f"| `{r['sample_id']}` | {study_short} | {r['subtype']} | {events} | **{r['top_gene']}** | {r['top_event']} | {r['top_call']} | {tier_cell} | `{r['top_drug']}` | {r['top_mechanism']} | {r['top_confidence']} |")
+    L.append("")
+    L.append("## Top-1 tier rollup")
+    L.append("")
+    L.append("Per-row tier of each sample's rank-1 hit. v0.14 ships per-row tiers (FDA-approved -> 1, phase 2/3 -> 2, phase 1 / preclinical -> 3); v0.15 will add cohort-prevalence gating per the v2 plan §5.")
+    L.append("")
+    tier_counts = Counter((r.get("top_tier") or "untiered") for r in rows)
+    L.append("| Tier | Samples |")
+    L.append("|---|---|")
+    for tier_label in ("1", "2", "3", "untiered"):
+        if tier_counts.get(tier_label, 0) > 0:
+            L.append(f"| {tier_label} | {tier_counts[tier_label]} |")
     L.append("")
     L.append("## Mechanism prevalence across the cohort")
     L.append("")
