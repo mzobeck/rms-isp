@@ -31,12 +31,13 @@ asserts     = [
 [[case]]
 id          = "case4_ras_mek"
 case_study  = 4
-description = "NRAS Q61K and KRAS G12V drivers put MEK inhibitors at #1-2"
-sample_id   = "TOY_TUMOR"
+description = "NRAS Q61K hotspot in a single-driver FN-RMS tumor puts MEK inhibitors at top of the report"
+sample_id   = "TOY_RAS_MEK"
 subtype     = "FN"
-vcf         = "tests/data/toy_patient.vcf"
+vcf         = "tests/data/toy_ras_mek.vcf"
 asserts     = [
     { kind = "mechanism_in_top_n", mechanism = "MEK_inhibitor", top_n = 2 },
+    { kind = "gene_event_in_top_n", gene = "NRAS",              top_n = 2 },
 ]
 
 [[case]]

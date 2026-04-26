@@ -72,7 +72,7 @@ def confidence(row: dict) -> tuple[float, dict[str, float]]:
         "variant": safe_float(row.get("variant_score", "0")),
         "structural": safe_float(row.get("structural_score", "0")),
         "dependency": safe_float(row.get("dependency_score", "0")),
-        "expression": 0.0,  # deferred in v0.1
+        "expression": safe_float(row.get("expression_score", "0")),
         "drug": safe_float(row.get("drug_evidence_score", "0")),
     }
     score = sum(WEIGHTS[k] * components[k] for k in WEIGHTS)
@@ -103,7 +103,7 @@ def render_report(
     lines.append(f"- **Input VCF**: `{input_path.name}` (sha256[:16] `{input_sha}`)")
     lines.append(f"- **Events in**: {n_variants}  ·  drivers {counts.get('DRIVER', 0)}  ·  VUS {counts.get('VUS', 0)}  ·  passengers {counts.get('PASSENGER', 0)}  ·  off-target {counts.get('OFF_TARGET', 0)}")
     lines.append("")
-    lines.append("> v0.1 disclaimer. Phase 3 dependency scores come from a curated PLACEHOLDER summary, not a live DepMap pull. Phase 4 drug list is a curated subset, not a live DGIdb/OpenTargets query. Expression-specificity (weight 0.15) is deferred and contributes 0 — total possible confidence is therefore 0.85, not 1.00. Use to verify pipeline behaviour, not to make clinical decisions.")
+    lines.append("> Engineering output, not medical advice. Phase 3 dependency uses real DepMap 26Q1 Chronos with an oncogene-addiction floor for activated drivers; Phase 3 expression uses real OpenPedCan v15 RNA-seq (RMS vs other pediatric, log2 TPM z-score) when available. Phase 4 unions the curated drug map with live DGIdb interactions and ClinicalTrials.gov pediatric-RMS trial upgrades. Use to verify pipeline behaviour and triage hypotheses; do not use for clinical decisions.")
     lines.append("")
     lines.append("## Top-ranked target-drug pairs")
     lines.append("")
@@ -150,8 +150,7 @@ def render_report(
     lines.append("")
     lines.append("```")
     for k, w in WEIGHTS.items():
-        deferred = "  (deferred in v0.1, contributes 0)" if k == "expression" else ""
-        lines.append(f"  {k:<12s} weight = {w:.2f}{deferred}")
+        lines.append(f"  {k:<12s} weight = {w:.2f}")
     lines.append("")
     lines.append("  confidence = sum(weight_k * component_k) for k in {variant, structural, dependency, expression, drug}")
     lines.append("```")
@@ -160,7 +159,7 @@ def render_report(
     lines.append("- **variant**: 1.0 for known hotspots and LoF in tumor suppressors, 0.4-0.6 for protein-altering VUS in target genes, 0 for passengers.")
     lines.append("- **structural**: 1.0 for hotspot residues with reference AlphaFold structures, 0.6 for VUS missense, 0.4 for LoF in TSGs, 0 otherwise.")
     lines.append("- **dependency**: derived from DepMap Chronos scores across RMS cell lines (mean and FP/FN-stratified), with subtype-aware bonus when the requested subtype is more dependent than the all-RMS mean.")
-    lines.append("- **expression**: deferred in v0.1.")
+    lines.append("- **expression**: log2(TPM+1) z-score of RMS vs other pediatric cancer RNA-seq from OpenPedCan v15; clipped to [0,1] so a gene must be at least 2 standard deviations above the cross-disease mean to score 1.0.")
     lines.append("- **drug**: phase_weight × pediatric_evidence_weight from the curated drug-target map.")
     lines.append("")
     lines.append("---")

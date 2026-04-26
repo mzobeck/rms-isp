@@ -40,6 +40,7 @@ workflow {
     fusion_ch      = Channel.value(file(params.fusion, checkIfExists: true))
     targets_kb_ch  = Channel.value(file(params.targets_kb,     checkIfExists: true))
     depmap_ch      = Channel.value(file(params.depmap_summary, checkIfExists: true))
+    expression_ch  = Channel.value(file(params.expression,     checkIfExists: true))
     drug_map_ch    = Channel.value(file(params.drug_map,       checkIfExists: true))
     drug_map_extra_ch = Channel.value(file(params.drug_map_extra, checkIfExists: true))
     ctgov_trials_ch   = Channel.value(file(params.ctgov_trials,   checkIfExists: true))
@@ -48,7 +49,7 @@ workflow {
 
     PHASE1_ANNOTATE(sample_inputs_ch, targets_kb_ch)
     PHASE2_STRUCTURE(PHASE1_ANNOTATE.out.annotated)
-    PHASE3_DEPENDENCY(PHASE2_STRUCTURE.out.structured, depmap_ch, params.subtype)
+    PHASE3_DEPENDENCY(PHASE2_STRUCTURE.out.structured, depmap_ch, expression_ch, params.subtype)
     PHASE4_DRUGS(PHASE3_DEPENDENCY.out.dependency, drug_map_ch, drug_map_extra_ch, ctgov_trials_ch)
 
     p5_input_ch = PHASE4_DRUGS.out.drugs

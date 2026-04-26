@@ -12,16 +12,19 @@ process PHASE3_DEPENDENCY {
     input:
     tuple val(sample_id), path(structured)
     path depmap_summary
+    path expression_summary
     val subtype
 
     output:
     tuple val(sample_id), path("${sample_id}.phase3.tsv"), emit: dependency
 
     script:
+    def expr_arg = expression_summary.name == 'NO_EXPR' ? '' : "--expression ${expression_summary}"
     """
     phase3_dependency.py \\
         --in ${structured} \\
         --depmap ${depmap_summary} \\
+        ${expr_arg} \\
         --subtype ${subtype} \\
         --out ${sample_id}.phase3.tsv
     """

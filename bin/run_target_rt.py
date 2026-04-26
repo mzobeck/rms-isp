@@ -27,7 +27,7 @@ MANIFEST = REPO_ROOT / "data" / "target_rt" / "manifest.tsv"
 OUT_DIR = REPO_ROOT / "results" / "target_rt"
 COHORT_TSV = REPO_ROOT / "results" / "target_rt_cohort_summary.tsv"
 COHORT_MD = REPO_ROOT / "results" / "target_rt_cohort_summary.md"
-PIPELINE_VERSION = "v0.8.0-pilot"
+PIPELINE_VERSION = "v0.9.0-pilot"
 
 
 def run(cmd: list[str]) -> None:
@@ -57,9 +57,13 @@ def run_pipeline(sample: dict) -> dict | None:
          "--targets-kb", "assets/targets_kb.tsv",
          "--sample-id", sid, "--out", str(p1)])
     run(["python3", "bin/phase2_structure.py", "--in", str(p1), "--out", str(p2)])
-    run(["python3", "bin/phase3_dependency.py", "--in", str(p2),
-         "--depmap", "assets/depmap_rms_summary.tsv",
-         "--subtype", subtype, "--out", str(p3)])
+    phase3_cmd = ["python3", "bin/phase3_dependency.py", "--in", str(p2),
+                  "--depmap", "assets/depmap_rms_summary.tsv",
+                  "--subtype", subtype, "--out", str(p3)]
+    expr = REPO_ROOT / "assets" / "openpedcan_expression_summary.tsv"
+    if expr.exists() and expr.stat().st_size > 0:
+        phase3_cmd += ["--expression", str(expr)]
+    run(phase3_cmd)
     run(["python3", "bin/phase4_drugs.py", "--in", str(p3),
          "--drug-map", "assets/drug_target_map.tsv",
          "--drug-map-extra", "assets/dgidb_drugs.tsv",
@@ -140,7 +144,7 @@ def write_cohort_md(rows: list[dict]) -> None:
     L.append("")
     L.append("**Proves**: the pipeline ingests SNV + CNA + fusion data from real-world RMS tumors without code changes. PAX-FOXO1 fusion calls and CDK4 / MDM2 amplifications surface FP-RMS samples that v0.7 missed because it only saw SNVs. The cohort-level mechanism distribution (BET inhibitors for FP fusions, MEK inhibitors for FN RAS-MAPK, CDK4/6 inhibitors for amplifications, FGFR inhibitors for FGFR4 hotspots) recapitulates the textbook RMS subtype-to-therapy logic without any retuning of the scoring formula.")
     L.append("")
-    L.append("**Does not prove**: that the recommended drugs would help these specific patients. Confidence scores are still bounded by the deferred expression component (Phase 5 weight 0.15 contributing 0). The drug-evidence formula treats every approved-and-pediatric-trial drug equivalently, ignoring depth of pediatric data. Real clinical translation requires drug-level review by the COG STS committee.")
+    L.append("**Does not prove**: that the recommended drugs would help these specific patients. The drug-evidence formula treats every approved-and-pediatric-trial drug equivalently, ignoring depth of pediatric data. Expression scoring is RMS-vs-other-pediatric only, not RMS-vs-normal-muscle, so genes highly expressed in normal myogenesis (MYOD1, MYOG, etc.) score high regardless of whether they are druggable. Real clinical translation requires drug-level review by the COG STS committee.")
     COHORT_MD.parent.mkdir(parents=True, exist_ok=True)
     COHORT_MD.write_text("\n".join(L) + "\n")
 

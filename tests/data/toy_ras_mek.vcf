@@ -1,0 +1,22 @@
+##fileformat=VCFv4.2
+##fileDate=20260426
+##source=RMS-ISP toy patient TOY_RAS_MEK (hand-curated FN-RMS for pilot case study 4; not a real tumor; no PHI)
+##reference=GRCh38
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr5,length=181538259>
+##contig=<ID=chr12,length=133275309>
+##INFO=<ID=GENE,Number=1,Type=String,Description="Affected gene symbol">
+##INFO=<ID=CONSEQUENCE,Number=1,Type=String,Description="Variant consequence (placeholder; canonical VEP call expected)">
+##INFO=<ID=EXPECTED,Number=1,Type=String,Description="Expected pipeline classification: DRIVER or PASSENGER">
+##INFO=<ID=NOTE,Number=1,Type=String,Description="Curator note">
+##INFO=<ID=SOMATIC,Number=0,Type=Flag,Description="Somatic variant">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Read depth">
+##FORMAT=<ID=AF,Number=1,Type=Float,Description="Allele frequency">
+##CURATOR=Mark Zobeck (PI), 2026-04-26
+##NOTES=Synthetic FN-RMS designed to test pilot case study 4 (NRAS Q61K hotspot -> MEK inhibitors). Sole actionable driver is NRAS Q61K; passengers are added as negative controls. Represents the substantial fraction of FN-RMS that present with a single RAS-MAPK lineage activation event without competing FGFR4 / PI3K hotspots.
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TOY_RAS_MEK
+chr1	114713908	tras_var01	G	T	500	PASS	GENE=NRAS;CONSEQUENCE=missense;EXPECTED=DRIVER;NOTE=Q61K_RAS_hotspot_canonical;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45
+chr5	177093374	tras_var02	C	A	500	PASS	GENE=FGFR4;CONSEQUENCE=intron_variant;EXPECTED=PASSENGER;NOTE=intronic_negative_control;SOMATIC	GT:AD:DP:AF	0/1:50,50:100:0.50
+chr12	25229898	tras_var03	G	A	500	PASS	GENE=KRAS;CONSEQUENCE=synonymous;EXPECTED=PASSENGER;NOTE=common_polymorphism_high_gnomAD_AF_APPROX_coord;SOMATIC	GT:AD:DP:AF	0/1:55,45:100:0.45

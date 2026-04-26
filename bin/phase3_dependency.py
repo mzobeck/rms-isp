@@ -27,15 +27,29 @@ def load_depmap(path: Path) -> dict[str, dict]:
     return out
 
 
+def load_expression(path: Path | None) -> dict[str, dict]:
+    if not path or not path.exists() or path.stat().st_size == 0:
+        return {}
+    out: dict[str, dict] = {}
+    with path.open() as fh:
+        reader = csv.DictReader((ln for ln in fh if not ln.startswith("##")), delimiter="\t")
+        for row in reader:
+            out[row["gene"].strip()] = row
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", required=True, type=Path)
     ap.add_argument("--depmap", required=True, type=Path)
+    ap.add_argument("--expression", type=Path, default=None,
+                    help="Optional OpenPedCan expression summary (output of bin/fetch_openpedcan_expression.py); fills the 0.15 expression weight in Phase 5.")
     ap.add_argument("--subtype", default="ALL", choices=["ALL", "FP", "FN", "UNKNOWN"])
     ap.add_argument("--out", required=True, type=Path)
     args = ap.parse_args()
 
     depmap = load_depmap(args.depmap)
+    expression = load_expression(args.expression)
 
     with args.inp.open() as fh:
         reader = csv.DictReader(fh, delimiter="\t")
@@ -46,6 +60,7 @@ def main() -> int:
         "depmap_n_lines", "depmap_chronos_all", "depmap_chronos_fp",
         "depmap_chronos_fn", "depmap_pct_essential", "dependency_score",
         "dependency_reason",
+        "expression_log2fc", "expression_zscore", "expression_score", "expression_reason",
     ]
     out_cols = in_cols + add_cols
 
@@ -100,6 +115,22 @@ def main() -> int:
             score = ONCOGENE_DRIVER_FLOOR
         r["dependency_score"] = f"{score:.3f}"
         r["dependency_reason"] = reason
+
+        # Expression layer (optional; only filled when --expression supplied)
+        e = expression.get(gene)
+        if e:
+            r["expression_log2fc"] = e.get("log2fc_rms_vs_other", "")
+            r["expression_zscore"] = e.get("expression_zscore", "")
+            r["expression_score"] = e.get("expression_score", "0.000")
+            r["expression_reason"] = (
+                f"{e.get('provenance','')}; mean log2(TPM+1) RMS={e.get('mean_log2tpm_rms','')} "
+                f"vs other={e.get('mean_log2tpm_other','')} (n_rms={e.get('n_rms','')})"
+            )
+        else:
+            r["expression_log2fc"] = ""
+            r["expression_zscore"] = ""
+            r["expression_score"] = "0.000"
+            r["expression_reason"] = "no expression data" if not expression else "gene not in expression summary"
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w", newline="") as fh:
