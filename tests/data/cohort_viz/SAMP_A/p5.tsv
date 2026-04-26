@@ -1,0 +1,4 @@
+sample_id	gene	confidence	drug	drug_mechanism
+SAMP_A	FGFR4	0.812	erdafitinib	pan_FGFR_inhibitor
+SAMP_A	FGFR4	0.755	futibatinib	pan_FGFR_inhibitor
+SAMP_A	NRAS	0.090	trametinib	MEK_inhibitor

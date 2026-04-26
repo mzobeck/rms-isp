@@ -1,0 +1,4 @@
+sample_id	study	subtype	pax_fusion	histology	n_muts	n_cnas	n_fusions	top_gene	top_event_type	top_event	top_drug	top_mechanism	top_confidence	top_call
+SAMP_A	rms_test_2026	FN	none	embryonal	2	0	0	FGFR4	snv	V550L	erdafitinib	pan_FGFR_inhibitor	0.812	DRIVER
+SAMP_B	rms_test_2026	FP	PAX3-FOXO1	alveolar	0	1	1	CDK4	cna	AMP	palbociclib	CDK4/6_inhibitor	0.701	DRIVER
+SAMP_C	rms_test_2026	FN	none	embryonal	1	0	0	NRAS	snv	Q61K	trametinib	MEK_inhibitor	0.654	DRIVER
