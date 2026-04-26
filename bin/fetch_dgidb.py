@@ -84,15 +84,40 @@ def normalize_drug_name(name: str) -> str:
 
 DROPPED_TYPES_FROM_NOISE = "rows with no DGIdb interactionType (catch-all 'interaction') are dropped because they flood the report with literature-cited but non-therapeutic drug-gene pairs (e.g. doxorubicin/MYOD1)."
 
+# Sources that are clinical-trial-listing databases rather than mechanistic
+# annotations. When an interaction has only such a source, the 'interaction' is
+# usually a co-occurrence in trial enrollment criteria (drug-X-given-to-patients-
+# with-gene-Y-mutation) rather than a mechanistic target relationship. The
+# motivating false positive: TP53 'activator' granisetron (a 5-HT3 anti-emetic)
+# sourced only from ClearityFoundationClinicalTrial. This filter drops only rows
+# whose ENTIRE source set is in this list; co-occurrence with any other source
+# keeps the row.
+LOW_TRUST_SOLE_SOURCES = {
+    "ClearityFoundationClinicalTrial",
+}
+DROPPED_TRIAL_ONLY_FROM_NOISE = (
+    f"rows whose only source is one of {sorted(LOW_TRUST_SOLE_SOURCES)} are "
+    "dropped because such databases list drugs and genes from the same "
+    "clinical trial without implying a mechanistic interaction."
+)
 
-def render_rows(payload: dict) -> tuple[list[dict], int]:
+
+def is_low_trust_sole(sources: list[str]) -> bool:
+    """True iff every source in the list is in LOW_TRUST_SOLE_SOURCES."""
+    if not sources:
+        return False
+    return all(s in LOW_TRUST_SOLE_SOURCES for s in sources)
+
+
+def render_rows(payload: dict) -> tuple[list[dict], int, int]:
     """Flatten DGIdb GraphQL payload into our drug_target_map schema.
 
-    Returns (rows, n_dropped_no_mechanism).
+    Returns (rows, n_dropped_no_mechanism, n_dropped_low_trust).
     """
     rows: list[dict] = []
     seen: set[tuple[str, str]] = set()
-    n_dropped = 0
+    n_dropped_mech = 0
+    n_dropped_low_trust = 0
     for gene_node in payload["data"]["genes"]["nodes"]:
         gene = gene_node["name"]
         for inter in gene_node.get("interactions", []):
@@ -103,7 +128,12 @@ def render_rows(payload: dict) -> tuple[list[dict], int]:
             types = sorted({t["type"] for t in inter.get("interactionTypes", []) if t.get("type")})
             if not types:
                 # No annotated mechanism. See DROPPED_TYPES_FROM_NOISE above.
-                n_dropped += 1
+                n_dropped_mech += 1
+                continue
+            sources = sorted({s["sourceDbName"] for s in inter.get("sources", []) if s.get("sourceDbName")})
+            if is_low_trust_sole(sources):
+                # Sole source is a clinical-trial listing. See DROPPED_TRIAL_ONLY_FROM_NOISE.
+                n_dropped_low_trust += 1
                 continue
             drug_norm = normalize_drug_name(drug_name)
             if (gene, drug_norm) in seen:
@@ -112,7 +142,6 @@ def render_rows(payload: dict) -> tuple[list[dict], int]:
             mechanism = "/".join(types)
             approved = bool(drug_obj.get("approved"))
             max_phase = "approved" if approved else "phase1"
-            sources = sorted({s["sourceDbName"] for s in inter.get("sources", []) if s.get("sourceDbName")})
             pmids = sorted({p["pmid"] for p in inter.get("publications", []) if p.get("pmid")})
             note_parts = [f"dgidb:{drug_obj.get('conceptId', '')}"]
             if sources:
@@ -127,7 +156,7 @@ def render_rows(payload: dict) -> tuple[list[dict], int]:
                 "pediatric_evidence": "none",
                 "notes": " | ".join(note_parts),
             })
-    return rows, n_dropped
+    return rows, n_dropped_mech, n_dropped_low_trust
 
 
 def write_tsv(rows: list[dict], out_path: Path, *, n_genes_queried: int) -> None:
@@ -160,8 +189,15 @@ def main() -> int:
     genes = args.gene or load_targets(args.targets_kb)
     print(f"querying DGIdb for {len(genes)} genes: {', '.join(genes[:5])}{'...' if len(genes) > 5 else ''}", file=sys.stderr)
     payload = query_dgidb(genes)
-    rows, n_dropped = render_rows(payload)
-    print(f"got {len(rows)} drug-gene interaction rows from DGIdb (dropped {n_dropped} mechanism-unannotated rows; {DROPPED_TYPES_FROM_NOISE})", file=sys.stderr)
+    rows, n_dropped_mech, n_dropped_low_trust = render_rows(payload)
+    print(
+        f"got {len(rows)} drug-gene interaction rows from DGIdb "
+        f"(dropped {n_dropped_mech} mechanism-unannotated rows; "
+        f"{DROPPED_TYPES_FROM_NOISE}) "
+        f"(dropped {n_dropped_low_trust} low-trust-only rows; "
+        f"{DROPPED_TRIAL_ONLY_FROM_NOISE})",
+        file=sys.stderr,
+    )
     if args.dry_run:
         w = csv.DictWriter(sys.stdout, fieldnames=OUT_COLS, delimiter="\t")
         w.writeheader()

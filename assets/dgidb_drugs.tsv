@@ -1,8 +1,8 @@
 ## DGIdb-sourced drug-target interactions (auto-generated; do NOT hand-edit)
 ## Source: https://dgidb.org/api/graphql
-## Generated: 2026-04-25 21:19 UTC
+## Generated: 2026-04-26 13:57 UTC
 ## Genes queried: 21
-## Rows: 198
+## Rows: 195
 ## Schema: gene\tdrug\tmechanism\tmax_phase\tpediatric_evidence\tnotes
 ## To regenerate: bin/fetch_dgidb.py
 ## Phase 4 unions this with assets/drug_target_map.tsv; the curated map wins on (gene, drug) collisions because its mechanism strings drive the case-study scorecard assertions.
@@ -73,7 +73,6 @@ FGFR4	fgf401	inhibitor	phase1	none	dgidb:chembl:CHEMBL3908979 | sources=ChEMBL
 FGFR4	hesperadin	inhibitor	phase1	none	dgidb:rxcui:1552358 | sources=DTC | pmid=19035792
 FGFR4	mpi-0479605	inhibitor	phase1	none	dgidb:iuphar.ligand:9399 | sources=GuideToPharmacology
 FGFR4	dovitinib	inhibitor	phase1	none	dgidb:ncit:C76199 | sources=CIViC,ClearityFoundationClinicalTrial
-FGFR4	enmd-2076	inhibitor	phase1	none	dgidb:iuphar.ligand:7885 | sources=ClearityFoundationClinicalTrial
 FGFR4	rogaratinib	inhibitor	phase1	none	dgidb:ncit:C112205 | sources=ChEMBL
 FGFR4	luvixasertib	inhibitor	phase1	none	dgidb:iuphar.ligand:11664 | sources=GuideToPharmacology
 FGFR4	xl-999	inhibitor	phase1	none	dgidb:chembl:CHEMBL5314391 | sources=ChEMBL
@@ -101,7 +100,6 @@ TP53	navtemadlin	inhibitor	phase1	none	dgidb:ncit:C116624 | sources=CKB-CORE,ChE
 TP53	multi-neo-epitope vaccine ose 2101	vaccine	phase1	none	dgidb:ncit:C26645 | sources=TALC
 TP53	siremadlin	inhibitor	phase1	none	dgidb:ncit:C116325 | sources=CKB-CORE,ChEMBL,TTD | pmid=34862243
 TP53	autologous dendritic cells transduced with wild-type p53 adenovirus vaccine	vaccine	phase1	none	dgidb:ncit:C148241 | sources=TALC
-TP53	granisetron	activator	approved	none	dgidb:rxcui:26237 | sources=ClearityFoundationClinicalTrial
 TP53	apg115	inhibitor	phase1	none	dgidb:chembl:CHEMBL4091801 | sources=ChEMBL
 CDK6	at-7519	inhibitor	phase1	none	dgidb:drugbank:DB08142 | sources=ChEMBL
 CDK6	palbociclib	inhibitor	approved	none	dgidb:rxcui:1601374 | sources=CancerCommons,ChEMBL,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial
@@ -154,7 +152,6 @@ PIK3CA	pi3k inhibitor bgt226	inhibitor	phase1	none	dgidb:ncit:C74073 | sources=T
 PIK3CA	panulisib	inhibitor	phase1	none	dgidb:ncit:C104292 | sources=CKB-CORE,ChEMBL | pmid=25700704
 PIK3CA	inavolisib	inhibitor	approved	none	dgidb:rxcui:2695422 | sources=CKB-CORE,ChEMBL,OncoKB | pmid=31699932,34544753,37916958
 PIK3CA	dactolisib	inhibitor	phase1	none	dgidb:ncit:C74072 | sources=CIViC,CKB-CORE,CancerCommons,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial,TALC | pmid=19029981,21966435,22543857
-PIK3CA	pi3k/mtor kinase inhibitor pf-04691502	inhibitor	phase1	none	dgidb:ncit:C84837 | sources=ClearityFoundationClinicalTrial
 PIK3CA	gedatolisib	inhibitor	phase1	none	dgidb:ncit:C91732 | sources=CKB-CORE,ChEMBL,ClearityFoundationBiomarkers,ClearityFoundationClinicalTrial,MyCancerGenome,MyCancerGenomeClinicalTrial | pmid=17314276,21325073,24823695
 PIK3CA	sar260301	inhibitor	phase1	none	dgidb:iuphar.ligand:8793 | sources=CancerCommons
 PIK3CA	sonolisib	inhibitor	phase1	none	dgidb:ncit:C78848 | sources=CKB-CORE,CancerCommons,ChEMBL,MyCancerGenome,MyCancerGenomeClinicalTrial,TALC | pmid=22693357
