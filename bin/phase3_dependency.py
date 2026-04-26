@@ -38,6 +38,24 @@ def load_expression(path: Path | None) -> dict[str, dict]:
     return out
 
 
+def _load_opentargets_lookup(efo_id: str, cache_dir: Path | None):
+    """Returns a callable gene_symbol -> dict | None, with in-memory memoization."""
+    import sys as _sys
+    _sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import opentargets_client as ot
+    cdir = cache_dir or ot.DEFAULT_CACHE_DIR
+    memo: dict[str, dict | None] = {}
+
+    def _lookup(symbol: str) -> dict | None:
+        if symbol in memo:
+            return memo[symbol]
+        result = ot.lookup_gene_disease(symbol, efo_id=efo_id, cache_dir=cdir)
+        memo[symbol] = result
+        return result
+
+    return _lookup
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", required=True, type=Path)
@@ -46,6 +64,16 @@ def main() -> int:
                     help="Optional OpenPedCan expression summary (output of bin/fetch_openpedcan_expression.py); fills the 0.15 expression weight in Phase 5.")
     ap.add_argument("--subtype", default="ALL", choices=["ALL", "FP", "FN", "UNKNOWN"])
     ap.add_argument("--out", required=True, type=Path)
+    ap.add_argument("--opentargets-efo-id", default="",
+                    help="EFO ID for the disease (e.g., EFO_0002918 for "
+                         "rhabdomyosarcoma). When set, phase 3 looks up "
+                         "OpenTargets gene-disease association score and "
+                         "known-drug count per gene; when empty, the columns "
+                         "stay empty. v0.17 informational; not in confidence "
+                         "formula yet.")
+    ap.add_argument("--opentargets-cache-dir", type=Path, default=None,
+                    help="Cache dir for OpenTargets responses. "
+                         "Default: <repo>/data/opentargets_cache.")
     args = ap.parse_args()
 
     depmap = load_depmap(args.depmap)
@@ -61,8 +89,15 @@ def main() -> int:
         "depmap_chronos_fn", "depmap_pct_essential", "dependency_score",
         "dependency_reason",
         "expression_log2fc", "expression_zscore", "expression_score", "expression_reason",
+        "opentargets_score", "opentargets_disease",
     ]
     out_cols = in_cols + add_cols
+
+    # OpenTargets lookup is optional; lazy-imported so the phase script does
+    # not pull urllib unnecessarily when the flag is empty.
+    ot_lookup = _load_opentargets_lookup(
+        args.opentargets_efo_id, args.opentargets_cache_dir,
+    ) if args.opentargets_efo_id else None
 
     chronos_field = {
         "ALL": "mean_chronos_all",
@@ -131,6 +166,19 @@ def main() -> int:
             r["expression_zscore"] = ""
             r["expression_score"] = "0.000"
             r["expression_reason"] = "no expression data" if not expression else "gene not in expression summary"
+
+        # OpenTargets gene-disease association (informational; not in formula).
+        if ot_lookup is not None and gene:
+            ot = ot_lookup(gene)
+            if ot:
+                r["opentargets_score"] = f"{ot['association_score']:.3f}"
+                r["opentargets_disease"] = ot.get("matched_disease_name", "")
+            else:
+                r["opentargets_score"] = ""
+                r["opentargets_disease"] = ""
+        else:
+            r["opentargets_score"] = ""
+            r["opentargets_disease"] = ""
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w", newline="") as fh:
