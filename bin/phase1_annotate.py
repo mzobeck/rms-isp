@@ -23,12 +23,13 @@ from __future__ import annotations
 
 import argparse
 import csv
-import re
 import sys
 from pathlib import Path
 
-
-HOTSPOT_RE = re.compile(r"(?<![A-Za-z0-9])([A-Z]\d+[A-Z*X])(?![A-Za-z0-9])")
+# Make sibling annotators package importable when run as a script.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from annotators import Variant, get_annotator  # noqa: E402
+from annotators.curated_vcf import HOTSPOT_RE, extract_hotspot  # noqa: E402  # re-exported for backwards compat
 PROTEIN_ALTERING_CONSEQUENCES = {
     "missense", "missense_variant",
     "stop_gained", "stop_lost",
@@ -81,11 +82,6 @@ def load_targets_kb(path: Path) -> dict[str, dict]:
     return kb
 
 
-def extract_hotspot(note: str) -> str:
-    m = HOTSPOT_RE.search(note or "")
-    return m.group(1) if m else ""
-
-
 def classify_snv(consequence: str, gene_kb: dict | None, hgvsp_short: str) -> tuple[str, str, float]:
     if gene_kb is None:
         return ("OFF_TARGET", "gene not in target KB", 0.0)
@@ -126,8 +122,15 @@ def classify_fusion(gene_role: str | None, partner: str, gene_kb: dict | None) -
     return ("VUS", f"fusion involving {gene_kb['role']} gene; biological role uncertain", 0.4)
 
 
-def annotate_vcf(vcf_path: Path, sample_id: str, kb: dict[str, dict]) -> list[dict]:
-    rows: list[dict] = []
+def annotate_vcf(vcf_path: Path, sample_id: str, kb: dict[str, dict],
+                 annotator) -> list[dict]:
+    """Parse a VCF, run it through the annotator, classify each SNV.
+
+    The annotator fills in (gene, consequence, hgvsp_short); classify_snv()
+    then turns those into a DRIVER/VUS/PASSENGER call. Output column contract
+    is unchanged from v0.11.
+    """
+    parsed: list[tuple[Variant, str]] = []  # (variant, vid)
     with vcf_path.open() as fh:
         for line in fh:
             line = line.rstrip("\n")
@@ -137,25 +140,35 @@ def annotate_vcf(vcf_path: Path, sample_id: str, kb: dict[str, dict]) -> list[di
             if len(parts) < 8:
                 continue
             chrom, pos, vid, ref, alt, _qual, _filt, info = parts[:8]
-            kv = parse_info(info)
-            gene = kv.get("GENE", "")
-            consequence = kv.get("CONSEQUENCE", "")
-            note = kv.get("NOTE", "")
-            hgvsp_short = extract_hotspot(note)
-            gene_kb = kb.get(gene)
-            call, reason, vscore = classify_snv(consequence, gene_kb, hgvsp_short)
-            rows.append({
-                "sample_id": sample_id, "event_id": vid, "event_type": "snv",
-                "chrom": chrom, "pos": pos, "ref": ref, "alt": alt,
-                "gene": gene,
-                "uniprot": gene_kb["uniprot"] if gene_kb else "",
-                "role": gene_kb["role"] if gene_kb else "",
-                "consequence": consequence, "hgvsp_short": hgvsp_short,
-                "copy_number": "", "fusion_partner": "",
-                "is_target": "1" if gene_kb else "0",
-                "call": call, "reason": reason,
-                "variant_score": f"{vscore:.3f}",
-            })
+            try:
+                pos_int = int(pos)
+            except ValueError:
+                continue
+            parsed.append((
+                Variant(chrom=chrom, pos=pos_int, ref=ref, alt=alt,
+                        info=parse_info(info)),
+                vid,
+            ))
+
+    annotations = annotator.annotate_batch([v for v, _ in parsed])
+
+    rows: list[dict] = []
+    for (v, vid), ann in zip(parsed, annotations):
+        gene = ann.gene
+        gene_kb = kb.get(gene)
+        call, reason, vscore = classify_snv(ann.consequence, gene_kb, ann.hgvsp_short)
+        rows.append({
+            "sample_id": sample_id, "event_id": vid, "event_type": "snv",
+            "chrom": v.chrom, "pos": str(v.pos), "ref": v.ref, "alt": v.alt,
+            "gene": gene,
+            "uniprot": gene_kb["uniprot"] if gene_kb else "",
+            "role": gene_kb["role"] if gene_kb else "",
+            "consequence": ann.consequence, "hgvsp_short": ann.hgvsp_short,
+            "copy_number": "", "fusion_partner": "",
+            "is_target": "1" if gene_kb else "0",
+            "call": call, "reason": reason,
+            "variant_score": f"{vscore:.3f}",
+        })
     return rows
 
 
@@ -229,11 +242,27 @@ def main() -> int:
     ap.add_argument("--targets-kb", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--sample-id", default="TOY_TUMOR")
+    ap.add_argument("--annotator", choices=["curated", "vep_rest"], default="curated",
+                    help="Variant annotator backend. 'curated' reads gene/"
+                         "consequence from VCF INFO (toys, cBioPortal output). "
+                         "'vep_rest' calls Ensembl VEP REST.")
+    ap.add_argument("--vep-cache-dir", type=Path, default=None,
+                    help="Cache dir for vep_rest annotator. "
+                         "Default: <repo>/data/vep_cache.")
+    ap.add_argument("--disease", default="RMS",
+                    help="Reserved for future OncoKB / AlphaMissense backends; "
+                         "currently ignored.")
     args = ap.parse_args()
+
+    annotator = get_annotator(
+        args.annotator,
+        cache_dir=args.vep_cache_dir,
+        disease=args.disease,
+    )
 
     kb = load_targets_kb(args.targets_kb)
     rows: list[dict] = []
-    rows.extend(annotate_vcf(args.vcf, args.sample_id, kb))
+    rows.extend(annotate_vcf(args.vcf, args.sample_id, kb, annotator))
     if args.cna and args.cna.exists() and args.cna.stat().st_size > 0:
         rows.extend(annotate_cna(args.cna, args.sample_id, kb))
     if args.fusion and args.fusion.exists() and args.fusion.stat().st_size > 0:
