@@ -82,7 +82,19 @@ def load_targets_kb(path: Path) -> dict[str, dict]:
     return kb
 
 
-def classify_snv(consequence: str, gene_kb: dict | None, hgvsp_short: str) -> tuple[str, str, float]:
+def classify_snv(
+    consequence: str,
+    gene_kb: dict | None,
+    hgvsp_short: str,
+    oncogenic: str = "",
+) -> tuple[str, str, float]:
+    """Classify an SNV given consequence + optional OncoKB oncogenic call.
+
+    OncoKB lift: an "Oncogenic" or "Likely Oncogenic" call from OncoKB elevates
+    the variant to DRIVER even if it's not on our hand-curated hotspot list.
+    "Likely Neutral" does not currently override, since OncoKB is conservative
+    on these calls and the existing consequence-based logic is fine for them.
+    """
     if gene_kb is None:
         return ("OFF_TARGET", "gene not in target KB", 0.0)
     cons = (consequence or "").lower()
@@ -92,6 +104,10 @@ def classify_snv(consequence: str, gene_kb: dict | None, hgvsp_short: str) -> tu
         return ("DRIVER", f"LoF in TSG ({cons})", 1.0)
     if is_protein_altering and hgvsp_short and hgvsp_short in gene_kb["hotspots"]:
         return ("DRIVER", f"hotspot {hgvsp_short}", 1.0)
+    # OncoKB lift: trusted second-pass driver call for variants that miss our
+    # curated hotspot list.
+    if is_protein_altering and oncogenic in ("Oncogenic", "Likely Oncogenic"):
+        return ("DRIVER", f"OncoKB {oncogenic}", 1.0)
     if is_protein_altering and gene_kb["hotspots"]:
         return ("VUS", f"protein-altering ({cons}) in target gene; not a known hotspot", 0.4)
     if is_protein_altering:
@@ -156,7 +172,9 @@ def annotate_vcf(vcf_path: Path, sample_id: str, kb: dict[str, dict],
     for (v, vid), ann in zip(parsed, annotations):
         gene = ann.gene
         gene_kb = kb.get(gene)
-        call, reason, vscore = classify_snv(ann.consequence, gene_kb, ann.hgvsp_short)
+        call, reason, vscore = classify_snv(
+            ann.consequence, gene_kb, ann.hgvsp_short, oncogenic=ann.oncogenic,
+        )
         rows.append({
             "sample_id": sample_id, "event_id": vid, "event_type": "snv",
             "chrom": v.chrom, "pos": str(v.pos), "ref": v.ref, "alt": v.alt,
@@ -242,21 +260,31 @@ def main() -> int:
     ap.add_argument("--targets-kb", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--sample-id", default="TOY_TUMOR")
-    ap.add_argument("--annotator", choices=["curated", "vep_rest"], default="curated",
-                    help="Variant annotator backend. 'curated' reads gene/"
-                         "consequence from VCF INFO (toys, cBioPortal output). "
-                         "'vep_rest' calls Ensembl VEP REST.")
+    ap.add_argument("--annotator", default="curated",
+                    help="Variant annotator backend or comma-separated chain. "
+                         "Single names: 'curated' (reads gene/consequence from "
+                         "VCF INFO; toys), 'vep_rest' (Ensembl VEP REST), "
+                         "'oncokb' (OncoKB second-pass; requires prior pass). "
+                         "Chain example: 'vep_rest,oncokb'.")
     ap.add_argument("--vep-cache-dir", type=Path, default=None,
                     help="Cache dir for vep_rest annotator. "
                          "Default: <repo>/data/vep_cache.")
+    ap.add_argument("--oncokb-cache-dir", type=Path, default=None,
+                    help="Cache dir for oncokb annotator. "
+                         "Default: <repo>/data/oncokb_cache.")
+    ap.add_argument("--oncokb-tumor-type", default="RMS",
+                    help="OncoTree code or disease name passed to OncoKB. "
+                         "Default: RMS. RMS-relevant codes: RMS, ERMS, ARMS, PLRMS.")
     ap.add_argument("--disease", default="RMS",
-                    help="Reserved for future OncoKB / AlphaMissense backends; "
-                         "currently ignored.")
+                    help="Generic disease pass-through. OncoKB uses "
+                         "--oncokb-tumor-type if set, else falls back to this.")
     args = ap.parse_args()
 
     annotator = get_annotator(
         args.annotator,
         cache_dir=args.vep_cache_dir,
+        oncokb_cache_dir=args.oncokb_cache_dir,
+        oncokb_tumor_type=args.oncokb_tumor_type,
         disease=args.disease,
     )
 

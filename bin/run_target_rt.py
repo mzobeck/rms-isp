@@ -15,6 +15,7 @@ Each sample takes well under a second; all 13 finish in seconds.
 from __future__ import annotations
 
 import csv
+import os
 import subprocess
 import sys
 from collections import Counter
@@ -52,11 +53,13 @@ def run_pipeline(sample: dict) -> dict | None:
     p5_md = sdir / f"{sid}.report.md"
 
     print(f"  pipeline ...", file=sys.stderr)
+    # Auto-append OncoKB to the annotator chain if the user has a token in env.
+    annotator_chain = "vep_rest,oncokb" if os.environ.get("ONCOKB_TOKEN") else "vep_rest"
     run(["python3", "bin/phase1_annotate.py",
          "--vcf", vcf, "--cna", cna, "--fusion", fusion,
          "--targets-kb", "assets/targets_kb.tsv",
          "--sample-id", sid, "--out", str(p1),
-         "--annotator", "vep_rest"])
+         "--annotator", annotator_chain])
     run(["python3", "bin/phase2_structure.py", "--in", str(p1), "--out", str(p2)])
     phase3_cmd = ["python3", "bin/phase3_dependency.py", "--in", str(p2),
                   "--depmap", "assets/depmap_rms_summary.tsv",

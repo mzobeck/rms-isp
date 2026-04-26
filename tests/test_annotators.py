@@ -13,8 +13,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "bin"))
 
 from annotators import Variant, get_annotator  # noqa: E402
-from annotators.base import VariantAnnotation  # noqa: E402
+from annotators.base import VariantAnnotation, _Chain  # noqa: E402
 from annotators.curated_vcf import CuratedVCFAnnotator, extract_hotspot  # noqa: E402
+from annotators.oncokb import OncoKBAnnotator  # noqa: E402
 from annotators.vep_rest import (  # noqa: E402
     BATCH_SIZE,
     VEPRestAnnotator,
@@ -38,6 +39,36 @@ class TestFactory(unittest.TestCase):
     def test_unknown_raises(self):
         with self.assertRaises(ValueError):
             get_annotator("not_a_real_backend")
+
+    def test_get_oncokb_uses_env_token(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+             mock.patch.dict("os.environ", {"ONCOKB_TOKEN": "env-token"}, clear=False):
+            ann = get_annotator("oncokb", oncokb_cache_dir=Path(tmp))
+            self.assertIsInstance(ann, OncoKBAnnotator)
+            self.assertEqual(ann.token, "env-token")
+
+    def test_chain_returns_chain_instance(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ann = get_annotator(
+                "vep_rest,oncokb",
+                cache_dir=Path(tmp) / "vep",
+                oncokb_cache_dir=Path(tmp) / "oncokb",
+                oncokb_token="x",
+            )
+            self.assertIsInstance(ann, _Chain)
+            self.assertEqual(len(ann.members), 2)
+            self.assertIsInstance(ann.members[0], VEPRestAnnotator)
+            self.assertIsInstance(ann.members[1], OncoKBAnnotator)
+
+    def test_chain_passes_oncokb_tumor_type(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ann = get_annotator(
+                "oncokb",
+                oncokb_cache_dir=Path(tmp),
+                oncokb_token="x",
+                oncokb_tumor_type="ERMS",
+            )
+            self.assertEqual(ann.tumor_type, "ERMS")
 
 
 class TestCuratedVCFAnnotator(unittest.TestCase):
@@ -233,6 +264,140 @@ class TestVEPRestAnnotator(unittest.TestCase):
     def test_batch_size_constant_is_reasonable(self):
         # Sanity: Ensembl documents 200 as the batch limit.
         self.assertEqual(BATCH_SIZE, 200)
+
+
+def _oncokb_response(oncogenic: str, effect: str) -> dict:
+    return {"oncogenic": oncogenic, "mutationEffect": {"knownEffect": effect}}
+
+
+class TestOncoKBAnnotator(unittest.TestCase):
+    def _prior(self) -> tuple[list[Variant], list[VariantAnnotation]]:
+        variants = [
+            Variant("18", 70522538, "C", "T"),
+            Variant("17", 7675088, "G", "A"),
+            Variant("3", 178917478, "T", "C"),
+        ]
+        prior = [
+            VariantAnnotation(gene="FGFR4", consequence="missense_variant",
+                              hgvsp_short="V550L", source="vep_rest"),
+            VariantAnnotation(gene="TP53", consequence="missense_variant",
+                              hgvsp_short="R175H", source="vep_rest"),
+            # Empty hgvsp -> ineligible, should pass through untouched.
+            VariantAnnotation(gene="PIK3CA", consequence="intron_variant",
+                              hgvsp_short="", source="vep_rest"),
+        ]
+        return variants, prior
+
+    def test_no_token_passes_through(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ann = OncoKBAnnotator(cache_dir=Path(tmp), token=None)
+            ann.token = ""  # explicit override of any env-leaked value
+            variants, prior = self._prior()
+            with mock.patch.dict("os.environ", {}, clear=True):
+                result = ann.annotate_with_prior(variants, prior)
+            self.assertEqual(result, prior)
+
+    def test_with_token_lifts_oncogenic(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ann = OncoKBAnnotator(cache_dir=Path(tmp), token="abc",
+                                   tumor_type="RMS")
+            variants, prior = self._prior()
+            canned = [
+                _oncokb_response("Likely Oncogenic", "Gain-of-function"),
+                _oncokb_response("Oncogenic", "Loss-of-function"),
+            ]
+            response_body = json.dumps(canned).encode()
+            with mock.patch("annotators.oncokb.urllib.request.urlopen") as m_open:
+                m_open.return_value.__enter__.return_value = io.BytesIO(response_body)
+                result = ann.annotate_with_prior(variants, prior)
+
+            self.assertEqual(m_open.call_count, 1)
+            # Eligible entries got augmented.
+            self.assertEqual(result[0].oncogenic, "Likely Oncogenic")
+            self.assertEqual(result[0].mutation_effect, "Gain-of-function")
+            self.assertEqual(result[0].source, "vep_rest+oncokb")
+            self.assertEqual(result[1].oncogenic, "Oncogenic")
+            # Ineligible (empty hgvsp_short) was NOT sent to OncoKB and stays put.
+            self.assertEqual(result[2], prior[2])
+
+    def test_cache_hit_avoids_network(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ann = OncoKBAnnotator(cache_dir=Path(tmp), token="abc",
+                                   tumor_type="RMS")
+            cached_path = Path(tmp) / "FGFR4__V550L__RMS.json"
+            cached_path.write_text(json.dumps(
+                _oncokb_response("Likely Oncogenic", "Gain-of-function")))
+
+            variants = [Variant("18", 70522538, "C", "T")]
+            prior = [VariantAnnotation(gene="FGFR4", consequence="missense_variant",
+                                        hgvsp_short="V550L", source="vep_rest")]
+            with mock.patch("annotators.oncokb.urllib.request.urlopen") as m_open:
+                result = ann.annotate_with_prior(variants, prior)
+
+            self.assertEqual(m_open.call_count, 0)
+            self.assertEqual(result[0].oncogenic, "Likely Oncogenic")
+
+    def test_network_failure_passes_prior_through(self):
+        import urllib.error
+        with tempfile.TemporaryDirectory() as tmp:
+            ann = OncoKBAnnotator(cache_dir=Path(tmp), token="abc")
+            variants = [Variant("18", 70522538, "C", "T")]
+            prior = [VariantAnnotation(gene="FGFR4", consequence="missense_variant",
+                                        hgvsp_short="V550L", source="vep_rest")]
+            with mock.patch("annotators.oncokb.urllib.request.urlopen",
+                            side_effect=urllib.error.URLError("oncokb down")):
+                result = ann.annotate_with_prior(variants, prior)
+            self.assertEqual(result, prior)
+
+
+class TestChainAnnotators(unittest.TestCase):
+    def test_chain_runs_first_pass_then_augments(self):
+        from annotators.base import _Chain
+
+        class FakeFirst:
+            def annotate_batch(self, variants):
+                return [VariantAnnotation(gene="FGFR4", consequence="missense_variant",
+                                           hgvsp_short="V550L", source="fake_first")
+                        for _ in variants]
+
+        class FakeSecond:
+            def annotate_with_prior(self, variants, prior):
+                return [VariantAnnotation(
+                    gene=p.gene, consequence=p.consequence, hgvsp_short=p.hgvsp_short,
+                    source=p.source + "+fake_second",
+                    oncogenic="Oncogenic", mutation_effect="Gain-of-function",
+                ) for p in prior]
+
+        chain = _Chain([FakeFirst(), FakeSecond()])
+        result = chain.annotate_batch([Variant("1", 1, "A", "T")])
+        self.assertEqual(result[0].oncogenic, "Oncogenic")
+        self.assertEqual(result[0].source, "fake_first+fake_second")
+
+    def test_classify_snv_lift_on_oncokb_oncogenic(self):
+        # If OncoKB calls a non-hotspot missense Oncogenic, classify_snv lifts
+        # to DRIVER. Critical to v0.13 behavior.
+        sys.path.insert(0, str(REPO_ROOT / "bin"))
+        from phase1_annotate import classify_snv
+
+        # FGFR4 has hotspots in the targets KB.
+        gene_kb = {"hotspots": {"V550L"}, "lof_target": False,
+                   "amp_target": False, "del_target": False, "role": "oncogene"}
+
+        # Variant not on hotspot list, but OncoKB-Oncogenic -> DRIVER.
+        call, reason, score = classify_snv(
+            "missense_variant", gene_kb, "Y367C", oncogenic="Likely Oncogenic",
+        )
+        self.assertEqual(call, "DRIVER")
+        self.assertEqual(score, 1.0)
+        self.assertIn("OncoKB", reason)
+
+        # Same variant without OncoKB call -> VUS.
+        call, reason, score = classify_snv("missense_variant", gene_kb, "Y367C")
+        self.assertEqual(call, "VUS")
+
+        # On-hotspot missense always DRIVER, with or without OncoKB.
+        call, reason, score = classify_snv("missense_variant", gene_kb, "V550L")
+        self.assertEqual(call, "DRIVER")
 
 
 class TestPhase1Integration(unittest.TestCase):
