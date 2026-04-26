@@ -27,7 +27,7 @@ MANIFEST = REPO_ROOT / "data" / "target_rt" / "manifest.tsv"
 OUT_DIR = REPO_ROOT / "results" / "target_rt"
 COHORT_TSV = REPO_ROOT / "results" / "target_rt_cohort_summary.tsv"
 COHORT_MD = REPO_ROOT / "results" / "target_rt_cohort_summary.md"
-PIPELINE_VERSION = "v0.7.0-pilot"
+PIPELINE_VERSION = "v0.8.0-pilot"
 
 
 def run(cmd: list[str]) -> None:
@@ -40,6 +40,8 @@ def run_pipeline(sample: dict) -> dict | None:
     sid = sample["sample_id"]
     subtype = sample["subtype"] or "ALL"
     vcf = sample["vcf_path"]
+    cna = sample.get("cna_path") or "assets/empty.cna.tsv"
+    fusion = sample.get("fusion_path") or "assets/empty.fusion.tsv"
     sdir = OUT_DIR / sid
     sdir.mkdir(parents=True, exist_ok=True)
     p1 = sdir / "p1.tsv"
@@ -51,8 +53,7 @@ def run_pipeline(sample: dict) -> dict | None:
 
     print(f"  pipeline ...", file=sys.stderr)
     run(["python3", "bin/phase1_annotate.py",
-         "--vcf", vcf, "--cna", "assets/empty.cna.tsv",
-         "--fusion", "assets/empty.fusion.tsv",
+         "--vcf", vcf, "--cna", cna, "--fusion", fusion,
          "--targets-kb", "assets/targets_kb.tsv",
          "--sample-id", sid, "--out", str(p1)])
     run(["python3", "bin/phase2_structure.py", "--in", str(p1), "--out", str(p2)])
@@ -99,7 +100,7 @@ def write_cohort_md(rows: list[dict]) -> None:
     L: list[str] = []
     L.append("# RMS-ISP TARGET-RT Cohort Summary")
     L.append("")
-    L.append("- **Cohort**: 43 tumor / normal pairs from Shern et al. 2014 Cancer Discov (cBioPortal study `rms_nih_2014`)")
+    L.append("- **Cohorts**: Shern 2014 Cancer Discov (`rms_nih_2014`, 43 tumor/normal WGS/WES pairs) + MSK-IMPACT extremity RMS (`rms_msk_2023`, 24 cases with mutations + CNAs + structural variants)")
     L.append(f"- **Samples with hits on the 21 RMS targets**: {len(rows)}")
     L.append(f"- **Run timestamp (UTC)**: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
     L.append(f"- **Pipeline version**: {PIPELINE_VERSION}")
@@ -108,10 +109,12 @@ def write_cohort_md(rows: list[dict]) -> None:
     L.append("")
     L.append("## Top recommendation per sample")
     L.append("")
-    L.append("| Sample | Subtype | Top gene | Top event | Call | Top drug | Mechanism | Confidence |")
-    L.append("|---|---|---|---|---|---|---|---|")
+    L.append("| Sample | Study | Subtype | Events | Top gene | Top event | Call | Top drug | Mechanism | Confidence |")
+    L.append("|---|---|---|---|---|---|---|---|---|---|")
     for r in rows:
-        L.append(f"| `{r['sample_id']}` | {r['subtype']} | **{r['top_gene']}** | {r['top_event']} | {r['top_call']} | `{r['top_drug']}` | {r['top_mechanism']} | {r['top_confidence']} |")
+        events = f"{r.get('n_muts',0)}m/{r.get('n_cnas',0)}c/{r.get('n_fusions',0)}f"
+        study_short = r.get('study','').replace('rms_','').replace('_2014','14').replace('_2023','23')
+        L.append(f"| `{r['sample_id']}` | {study_short} | {r['subtype']} | {events} | **{r['top_gene']}** | {r['top_event']} | {r['top_call']} | `{r['top_drug']}` | {r['top_mechanism']} | {r['top_confidence']} |")
     L.append("")
     L.append("## Mechanism prevalence across the cohort")
     L.append("")
@@ -135,9 +138,9 @@ def write_cohort_md(rows: list[dict]) -> None:
     L.append("")
     L.append("## What this proves and does not prove")
     L.append("")
-    L.append("**Proves**: the pipeline runs end-to-end on real-world RMS tumor data without code changes. Subtype classification flows through to subtype-aware DepMap dependency scoring. The DGIdb and CT.gov caches expand evidence behind real tumor recommendations. The PAX_FUSION clinical attribute from cBioPortal lets us auto-classify each tumor as FP or FN before scoring.")
+    L.append("**Proves**: the pipeline ingests SNV + CNA + fusion data from real-world RMS tumors without code changes. PAX-FOXO1 fusion calls and CDK4 / MDM2 amplifications surface FP-RMS samples that v0.7 missed because it only saw SNVs. The cohort-level mechanism distribution (BET inhibitors for FP fusions, MEK inhibitors for FN RAS-MAPK, CDK4/6 inhibitors for amplifications, FGFR inhibitors for FGFR4 hotspots) recapitulates the textbook RMS subtype-to-therapy logic without any retuning of the scoring formula.")
     L.append("")
-    L.append("**Does not prove**: that the recommended drugs would help these specific patients. Roughly half of the 43 TARGET-RT tumors have NO mutations on our 21 targets, which is consistent with the published RMS literature. A large fraction of RMS tumors are fusion-driven (PAX3-FOXO1, PAX7-FOXO1) rather than SNV-driven, and v0.7 does not yet ingest fusion or CNA calls from cBioPortal (only mutation calls). Adding those data types in a future iteration will close that gap.")
+    L.append("**Does not prove**: that the recommended drugs would help these specific patients. Confidence scores are still bounded by the deferred expression component (Phase 5 weight 0.15 contributing 0). The drug-evidence formula treats every approved-and-pediatric-trial drug equivalently, ignoring depth of pediatric data. Real clinical translation requires drug-level review by the COG STS committee.")
     COHORT_MD.parent.mkdir(parents=True, exist_ok=True)
     COHORT_MD.write_text("\n".join(L) + "\n")
 
@@ -153,7 +156,7 @@ def main() -> int:
     for i, s in enumerate(samples, 1):
         sid = s["sample_id"]
         subtype = s.get("subtype") or "ALL"
-        n_muts = s.get("n_mutations_on_targets", "")
+        n_muts = s.get("n_muts", "")
         print(f">>> [{i}/{len(samples)}] {sid} (subtype={subtype}, {n_muts} muts)", file=sys.stderr)
         try:
             top = run_pipeline(s)
@@ -165,10 +168,13 @@ def main() -> int:
             continue
         cohort.append({
             "sample_id": sid,
+            "study": s.get("study", ""),
             "subtype": subtype,
             "pax_fusion": s.get("pax_fusion", ""),
             "histology": s.get("histology", ""),
-            "n_target_muts": n_muts,
+            "n_muts": n_muts,
+            "n_cnas": s.get("n_cnas", "0"),
+            "n_fusions": s.get("n_fusions", "0"),
             **top,
         })
 

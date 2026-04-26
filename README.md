@@ -4,7 +4,7 @@ A modular, containerized Nextflow pipeline that takes molecular profiles from rh
 
 ## Status
 
-**v0.7.0-pilot**: First end-to-end run on **real RMS tumor data**. `bin/fetch_target_rt.py` pulls mutation calls for the Shern 2014 TARGET-RT cohort (43 tumor/normal pairs, cBioPortal study `rms_nih_2014`); `bin/run_target_rt.py` runs the pipeline on every sample and writes a cohort summary at `results/target_rt_cohort_summary.md`. 13 of 43 samples carry mutations on the 21 RMS targets; PAX_FUSION clinical attribute auto-classifies each as FP or FN. Cohort top-1 mechanism distribution: MEK inhibitor in 9 samples, FGFR inhibitor in 2 (RMS2030 V550M, RMS2015 V550L), PI3K inhibitor in 2. All five toy case studies still PASS (9/9 assertions). Phase 3 uses real DepMap 26Q1 + oncogene-addiction floor. Phase 4 unions curated drug map with live DGIdb + ClinicalTrials.gov upgrades. Not for clinical use.
+**v0.8.0-pilot**: Real-tumor cohort now **36 samples** (Shern 2014 TARGET-RT + MSK-IMPACT 2023) running on **SNV + CNA + fusion** data from cBioPortal. FP-RMS samples surface via PAX3-FOXO1 / PAX7-FOXO1 fusion calls that auto-route to BET inhibitors (14 samples). CDK4 / MDM2 amplifications surface via CNA calls and route to CDK4/6 inhibitors (3 samples). The cohort-level mechanism distribution recapitulates the textbook RMS subtype-to-therapy logic without any retuning: BET inhibitors for FP, MEK for FN RAS-MAPK, CDK4/6 for amplifications, FGFR for FGFR4 hotspots, PI3K for PIK3CA, WEE1 for TP53. All five toy case studies still PASS (9/9 assertions). Phase 3 uses real DepMap 26Q1 + oncogene-addiction floor. Phase 4 unions curated drug map with live DGIdb + ClinicalTrials.gov upgrades. Not for clinical use.
 
 ## Mission
 

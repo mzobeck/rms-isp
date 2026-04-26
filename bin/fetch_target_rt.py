@@ -1,26 +1,23 @@
 #!/usr/bin/env python3
 """
-Fetch real RMS tumor mutation calls from the TARGET-RT cohort published on
-cBioPortal (study rms_nih_2014, the Shern et al. 2014 Cancer Discov cohort:
-43 tumor / normal whole-genome or whole-exome pairs).
+Fetch real RMS tumor data from cBioPortal and write per-sample inputs in our
+pipeline's VCF + CNA TSV + fusion TSV format.
 
-Source: https://www.cbioportal.org/api/. Public, no auth.
+Default cohort: rms_nih_2014 (Shern 2014 Cancer Discov, 43 tumor/normal WGS/WES
+pairs) plus rms_msk_2023 (MSK-IMPACT targeted sequencing of 24 extremity RMS
+cases with CNA and structural-variant calls).
 
-For each sample, writes a synthetic VCF in our toy-VCF format (with GENE,
-CONSEQUENCE, NOTE in INFO) plus a per-sample row in a sample manifest.
-Subtype (FP vs FN) is auto-classified from cBioPortal's PAX_FUSION clinical
-attribute when available.
+For each sample, writes whichever of {VCF, CNA TSV, fusion TSV} the source
+study has. Subtype is auto-classified from the PAX_FUSION clinical attribute
+when present, otherwise from any PAX-FOXO1 fusion call (FP) vs absence of
+fusion calls (defaults to ALL).
 
-Outputs land under data/target_rt/ which is gitignored. Only the cohort
-manifest is committed to the repo (under results/target_rt_manifest.tsv when
-the runner is invoked).
+Outputs land under data/target_rt/ which is gitignored. The combined cohort
+manifest is what bin/run_target_rt.py reads.
 
 Usage:
-    bin/fetch_target_rt.py                    # fetch all 43 samples
-    bin/fetch_target_rt.py --limit 5          # fetch first 5 with target hits
-
-The pipeline can then be run per sample via main.nf, or all-at-once via
-bin/run_target_rt.sh.
+    bin/fetch_target_rt.py
+    bin/fetch_target_rt.py --studies rms_nih_2014,rms_msk_2023
 """
 from __future__ import annotations
 
@@ -28,7 +25,6 @@ import argparse
 import csv
 import json
 import sys
-import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,9 +32,6 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CBIOPORTAL = "https://www.cbioportal.org/api"
-STUDY_ID = "rms_nih_2014"
-MUTATION_PROFILE = "rms_nih_2014_mutations"
-SAMPLE_LIST = "rms_nih_2014_all"
 
 # cBioPortal mutationType -> our pipeline's CONSEQUENCE vocabulary
 CONSEQUENCE_MAP = {
@@ -61,6 +54,14 @@ CONSEQUENCE_MAP = {
     "Translation_Start_Site":"start_lost",
 }
 
+# cBioPortal CNA discrete alteration codes -> our event vocabulary
+CNA_MAP = {
+    -2: "homozygous_deletion",
+    -1: "focal_loss",
+    1:  "focal_gain",
+    2:  "amplification",
+}
+
 
 def http_get(url: str) -> dict | list:
     req = urllib.request.Request(url, headers={"Accept": "application/json"})
@@ -68,7 +69,7 @@ def http_get(url: str) -> dict | list:
         return json.loads(r.read())
 
 
-def http_post(url: str, body: dict) -> list:
+def http_post(url: str, body: dict) -> list | dict:
     req = urllib.request.Request(
         url, data=json.dumps(body).encode(),
         headers={"Content-Type": "application/json", "Accept": "application/json"},
@@ -97,12 +98,19 @@ def load_target_entrez(targets_kb: Path, gene_effect_csv: Path) -> dict[str, str
     return out
 
 
+def list_profiles(study: str) -> dict[str, str]:
+    """Return {alteration_type: profile_id} for the study."""
+    out: dict[str, str] = {}
+    for p in http_get(f"{CBIOPORTAL}/studies/{study}/molecular-profiles"):
+        out[p.get("molecularAlterationType", "")] = p.get("molecularProfileId", "")
+    return out
+
+
 def fetch_samples(study: str) -> list[dict]:
     return http_get(f"{CBIOPORTAL}/studies/{study}/samples")
 
 
 def fetch_clinical(study: str) -> dict[str, dict]:
-    """Return {sample_id: {attribute_id: value}}."""
     rows = http_get(f"{CBIOPORTAL}/studies/{study}/clinical-data?clinicalDataType=SAMPLE")
     out: dict[str, dict] = {}
     for r in rows:
@@ -111,38 +119,56 @@ def fetch_clinical(study: str) -> dict[str, dict]:
     return out
 
 
-def fetch_mutations(profile: str, sample_list: str, entrez_ids: list[str]) -> list[dict]:
+def fetch_mutations(profile: str, study: str, entrez_ids: list[str]) -> list[dict]:
     return http_post(
         f"{CBIOPORTAL}/molecular-profiles/{profile}/mutations/fetch?projection=DETAILED",
-        {"sampleListId": sample_list, "entrezGeneIds": [int(e) for e in entrez_ids]},
+        {"sampleListId": f"{study}_all", "entrezGeneIds": [int(e) for e in entrez_ids]},
     )
 
 
-def classify_subtype(clinical: dict) -> str:
-    """Map cBioPortal PAX_FUSION value to our --subtype param."""
+def fetch_cnas(profile: str, study: str, entrez_ids: list[str]) -> list[dict]:
+    return http_post(
+        f"{CBIOPORTAL}/molecular-profiles/{profile}/discrete-copy-number/fetch?discreteCopyNumberEventType=ALL&projection=DETAILED",
+        {"sampleListId": f"{study}_all", "entrezGeneIds": [int(e) for e in entrez_ids]},
+    )
+
+
+def fetch_svs(profile: str) -> list[dict]:
+    return http_post(
+        f"{CBIOPORTAL}/structural-variant/fetch",
+        {"molecularProfileIds": [profile]},
+    )
+
+
+def classify_subtype(clinical: dict, fusion_calls: list[dict]) -> str:
+    """First check PAX_FUSION clinical attribute, then fall back to fusion calls."""
     pax = (clinical.get("PAX_FUSION") or "").upper()
     if "PAX3" in pax or "PAX7" in pax or "POSITIVE" in pax or pax == "FP":
         return "FP"
-    if "NEGATIVE" in pax or "NONE" in pax or pax == "FN":
+    if "NEGATIVE" in pax or pax == "FN":
         return "FN"
+    # Fall back to fusion calls: any PAX-FOXO1 -> FP
+    for sv in fusion_calls:
+        s1 = (sv.get("site1HugoSymbol") or "").upper()
+        s2 = (sv.get("site2HugoSymbol") or "").upper()
+        if {s1, s2} & {"PAX3", "PAX7"} and ("FOXO1" in {s1, s2}):
+            return "FP"
     return "ALL"
 
 
 def write_vcf(sample_id: str, mutations: list[dict], out_path: Path) -> int:
-    """Write a per-sample VCF in our toy-VCF format. Returns mutation count."""
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    lines: list[str] = []
-    lines.append("##fileformat=VCFv4.2")
-    lines.append(f"##fileDate={datetime.now(timezone.utc).strftime('%Y%m%d')}")
-    lines.append(f"##source=RMS-ISP fetch_target_rt.py from cBioPortal study {STUDY_ID}")
-    lines.append("##reference=GRCh37 (cBioPortal/TARGET-RT default; coordinates emitted as-is)")
-    lines.append('##INFO=<ID=GENE,Number=1,Type=String,Description="Affected gene symbol">')
-    lines.append('##INFO=<ID=CONSEQUENCE,Number=1,Type=String,Description="Variant consequence">')
-    lines.append('##INFO=<ID=NOTE,Number=1,Type=String,Description="Curator note (carries proteinChange for hotspot extraction)">')
-    lines.append('##INFO=<ID=SOMATIC,Number=0,Type=Flag,Description="Somatic variant">')
-    lines.append('##INFO=<ID=SOURCE,Number=1,Type=String,Description="Original cBioPortal mutation row source">')
-    lines.append('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">')
-    lines.append(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{sample_id}")
+    lines: list[str] = [
+        "##fileformat=VCFv4.2",
+        f"##fileDate={datetime.now(timezone.utc).strftime('%Y%m%d')}",
+        f"##source=RMS-ISP fetch_target_rt.py from cBioPortal",
+        "##reference=GRCh37 (cBioPortal default; coordinates emitted as-is)",
+        '##INFO=<ID=GENE,Number=1,Type=String,Description="Affected gene symbol">',
+        '##INFO=<ID=CONSEQUENCE,Number=1,Type=String,Description="Variant consequence">',
+        '##INFO=<ID=NOTE,Number=1,Type=String,Description="Curator note (carries proteinChange)">',
+        '##INFO=<ID=SOMATIC,Number=0,Type=Flag,Description="Somatic variant">',
+        f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{sample_id}",
+    ]
     for i, m in enumerate(mutations, 1):
         chrom = f"chr{m.get('chr','')}" if not str(m.get('chr','')).startswith("chr") else m.get('chr','')
         pos = m.get("startPosition", "")
@@ -151,93 +177,185 @@ def write_vcf(sample_id: str, mutations: list[dict], out_path: Path) -> int:
         gene = (m.get("gene") or {}).get("hugoGeneSymbol", "")
         mtype = m.get("mutationType", "")
         consequence = CONSEQUENCE_MAP.get(mtype, mtype.lower() or "unknown")
-        protein_change = m.get("proteinChange") or ""
-        # Strip leading "p." if present so Phase 1's regex picks the AA change cleanly
-        protein_change = protein_change.lstrip("p.").strip()
-        note = f"{protein_change}_targetrt_{m.get('mutationStatus','SOMATIC')}".replace(" ", "_") if protein_change else f"targetrt_{mtype}"
-        info = f"GENE={gene};CONSEQUENCE={consequence};NOTE={note};SOMATIC;SOURCE=cbioportal"
-        lines.append(f"{chrom}\t{pos}\trms2014_var{i:03d}\t{ref}\t{alt}\t.\tPASS\t{info}\tGT\t0/1")
+        protein_change = (m.get("proteinChange") or "").lstrip("p.").strip()
+        note = (f"{protein_change}_targetrt" if protein_change else f"targetrt_{mtype}").replace(" ", "_")
+        info = f"GENE={gene};CONSEQUENCE={consequence};NOTE={note};SOMATIC"
+        lines.append(f"{chrom}\t{pos}\trms_var{i:03d}\t{ref}\t{alt}\t.\tPASS\t{info}\tGT\t0/1")
     out_path.write_text("\n".join(lines) + "\n")
     return len(mutations)
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--out-dir", type=Path,
-                    default=REPO_ROOT / "data" / "target_rt",
-                    help="Per-sample VCF output directory (gitignored).")
-    ap.add_argument("--manifest", type=Path,
-                    default=REPO_ROOT / "data" / "target_rt" / "manifest.tsv")
-    ap.add_argument("--targets-kb", type=Path,
-                    default=REPO_ROOT / "assets" / "targets_kb.tsv")
-    ap.add_argument("--gene-effect", type=Path, default=Path("/tmp/depmap/gene_effect.csv"),
-                    help="Used for the SYMBOL -> Entrez ID mapping.")
-    ap.add_argument("--limit", type=int, default=0,
-                    help="If >0, only emit the first N samples that have at least one target hit.")
-    ap.add_argument("--include-untargeted", action="store_true",
-                    help="Also emit VCFs for samples with zero hits on our 21 targets.")
-    args = ap.parse_args()
+def write_cna_tsv(sample_id: str, cnas: list[dict], out_path: Path) -> int:
+    """Write CNA TSV in the format Phase 1 expects.
 
-    # 1. Get Entrez IDs for our targets (from DepMap header).
-    entrez = load_target_entrez(args.targets_kb, args.gene_effect)
-    print(f"loaded Entrez IDs for {len(entrez)} target genes", file=sys.stderr)
+    Filters to events where alteration is in CNA_MAP (i.e., -2/-1/+1/+2; drops 0).
+    """
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = ["## RMS-ISP CNA calls fetched from cBioPortal",
+             "sample_id\tgene\tevent\tcopy_number\tnotes"]
+    n = 0
+    for c in cnas:
+        alt = c.get("alteration")
+        if alt not in CNA_MAP:
+            continue
+        gene = (c.get("gene") or {}).get("hugoGeneSymbol", "")
+        if not gene:
+            continue
+        event = CNA_MAP[alt]
+        # cBioPortal discrete CN doesn't carry the absolute copy number
+        # for amplifications; record the alteration code as a proxy.
+        cn_proxy = {-2: "0", -1: "1", 1: "3", 2: "5"}.get(alt, "")
+        lines.append(f"{sample_id}\t{gene}\t{event}\t{cn_proxy}\tcbioportal_alt={alt}")
+        n += 1
+    out_path.write_text("\n".join(lines) + "\n")
+    return n
 
-    # 2. Pull samples + clinical + mutations.
-    samples = fetch_samples(STUDY_ID)
-    print(f"study {STUDY_ID}: {len(samples)} samples", file=sys.stderr)
-    clinical = fetch_clinical(STUDY_ID)
-    print(f"clinical attributes loaded for {len(clinical)} samples", file=sys.stderr)
-    mutations = fetch_mutations(MUTATION_PROFILE, SAMPLE_LIST, list(entrez.values()))
-    print(f"fetched {len(mutations)} mutation rows hitting our 21 targets", file=sys.stderr)
 
-    # 3. Bucket mutations by sample.
-    by_sample: dict[str, list[dict]] = {}
-    for m in mutations:
-        by_sample.setdefault(m["sampleId"], []).append(m)
+def write_fusion_tsv(sample_id: str, svs: list[dict], out_path: Path) -> int:
+    """Write fusion TSV in the format Phase 1 expects."""
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = ["## RMS-ISP fusion calls fetched from cBioPortal",
+             "sample_id\tgene_5p\tgene_3p\tfusion_name\tfusion_class\tnotes"]
+    n = 0
+    for sv in svs:
+        g5 = sv.get("site1HugoSymbol", "")
+        g3 = sv.get("site2HugoSymbol", "")
+        if not g5 or not g3 or g5 == g3:
+            continue  # skip intragenic SVs (e.g. MET-MET)
+        name = f"{g5}-{g3}"
+        cls = sv.get("variantClass") or "fusion"
+        notes = (sv.get("eventInfo") or "").replace("\n", " ")[:120]
+        lines.append(f"{sample_id}\t{g5}\t{g3}\t{name}\t{cls}\t{notes}")
+        n += 1
+    out_path.write_text("\n".join(lines) + "\n")
+    return n
 
-    # 4. Emit VCFs + manifest.
-    args.out_dir.mkdir(parents=True, exist_ok=True)
-    args.manifest.parent.mkdir(parents=True, exist_ok=True)
 
-    sample_order = sorted(samples, key=lambda s: -len(by_sample.get(s["sampleId"], [])))
-    if args.limit > 0:
-        sample_order = [s for s in sample_order if by_sample.get(s["sampleId"])][:args.limit]
-    elif not args.include_untargeted:
-        sample_order = [s for s in sample_order if by_sample.get(s["sampleId"])]
+def fetch_one_study(study: str, entrez: dict[str, str], out_dir: Path) -> list[dict]:
+    """Fetch all available data types from one cBioPortal study and emit
+    per-sample VCF + CNA TSV + fusion TSV. Returns manifest rows."""
+    print(f"\n=== {study} ===", file=sys.stderr)
+    profiles = list_profiles(study)
+    has_mut = "MUTATION_EXTENDED" in profiles
+    has_cna = "COPY_NUMBER_ALTERATION" in profiles
+    has_sv  = "STRUCTURAL_VARIANT" in profiles
+    print(f"  profiles: mut={has_mut} cna={has_cna} sv={has_sv}", file=sys.stderr)
+
+    samples = fetch_samples(study)
+    clinical = fetch_clinical(study)
+
+    muts: list[dict] = []
+    if has_mut:
+        muts = fetch_mutations(profiles["MUTATION_EXTENDED"], study, list(entrez.values()))
+        print(f"  mutations on targets: {len(muts)}", file=sys.stderr)
+    cnas: list[dict] = []
+    if has_cna:
+        cnas = fetch_cnas(profiles["COPY_NUMBER_ALTERATION"], study, list(entrez.values()))
+        cnas_nonzero = [c for c in cnas if c.get("alteration") in CNA_MAP]
+        print(f"  CNA events on targets: {len(cnas)} total ({len(cnas_nonzero)} non-diploid)", file=sys.stderr)
+    svs: list[dict] = []
+    if has_sv:
+        svs = fetch_svs(profiles["STRUCTURAL_VARIANT"])
+        print(f"  structural variants (study-wide): {len(svs)}", file=sys.stderr)
+
+    # Bucket by sample
+    by_mut: dict[str, list] = {}
+    for m in muts:
+        by_mut.setdefault(m["sampleId"], []).append(m)
+    by_cna: dict[str, list] = {}
+    for c in cnas:
+        by_cna.setdefault(c["sampleId"], []).append(c)
+    by_sv: dict[str, list] = {}
+    for sv in svs:
+        by_sv.setdefault(sv["sampleId"], []).append(sv)
 
     manifest_rows: list[dict] = []
-    for s in sample_order:
+    sample_dir = out_dir / study
+    sample_dir.mkdir(parents=True, exist_ok=True)
+
+    for s in samples:
         sid = s["sampleId"]
-        muts = by_sample.get(sid, [])
+        m_list = by_mut.get(sid, [])
+        c_list = by_cna.get(sid, [])
+        sv_list = by_sv.get(sid, [])
+        # Skip samples with no events on any target
+        n_any_cna = sum(1 for c in c_list if c.get("alteration") in CNA_MAP)
+        n_any_sv = sum(1 for sv in sv_list if sv.get("site1HugoSymbol") and sv.get("site2HugoSymbol") and sv["site1HugoSymbol"] != sv["site2HugoSymbol"])
+        if not (m_list or n_any_cna or n_any_sv):
+            continue
+
         clin = clinical.get(sid, {})
-        subtype = classify_subtype(clin)
-        vcf_path = args.out_dir / f"{sid}.vcf"
-        n = write_vcf(sid, muts, vcf_path)
+        subtype = classify_subtype(clin, sv_list)
+
+        vcf_path = sample_dir / f"{sid}.vcf"
+        cna_path = sample_dir / f"{sid}.cna.tsv"
+        fusion_path = sample_dir / f"{sid}.fusion.tsv"
+        n_mut = write_vcf(sid, m_list, vcf_path)
+        n_cna = write_cna_tsv(sid, c_list, cna_path)
+        n_sv = write_fusion_tsv(sid, sv_list, fusion_path)
+
         manifest_rows.append({
             "sample_id": sid,
+            "study": study,
             "subtype": subtype,
             "pax_fusion": clin.get("PAX_FUSION", ""),
             "histology": clin.get("HISTOLOGICAL_SUBTYPE", ""),
             "risk_group": clin.get("RISK_GROUP", ""),
             "tumor_location": clin.get("PRIMARY_TUMOR_LOCATION", ""),
-            "age": clin.get("AGE", ""),
-            "sex": clin.get("SEX", ""),
-            "tmb": clin.get("TMB_NONSYNONYMOUS", ""),
-            "n_mutations_on_targets": n,
+            "n_muts": n_mut,
+            "n_cnas": n_cna,
+            "n_fusions": n_sv,
             "vcf_path": str(vcf_path.relative_to(REPO_ROOT)),
+            "cna_path": str(cna_path.relative_to(REPO_ROOT)),
+            "fusion_path": str(fusion_path.relative_to(REPO_ROOT)),
         })
+    print(f"  emitted {len(manifest_rows)} samples with at least one event", file=sys.stderr)
+    return manifest_rows
 
-    cols = list(manifest_rows[0].keys()) if manifest_rows else []
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--studies", default="rms_nih_2014,rms_msk_2023",
+                    help="Comma-separated cBioPortal study IDs.")
+    ap.add_argument("--out-dir", type=Path,
+                    default=REPO_ROOT / "data" / "target_rt")
+    ap.add_argument("--manifest", type=Path,
+                    default=REPO_ROOT / "data" / "target_rt" / "manifest.tsv")
+    ap.add_argument("--targets-kb", type=Path,
+                    default=REPO_ROOT / "assets" / "targets_kb.tsv")
+    ap.add_argument("--gene-effect", type=Path, default=Path("/tmp/depmap/gene_effect.csv"))
+    args = ap.parse_args()
+
+    entrez = load_target_entrez(args.targets_kb, args.gene_effect)
+    print(f"loaded Entrez IDs for {len(entrez)} target genes", file=sys.stderr)
+
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    all_rows: list[dict] = []
+    for study in args.studies.split(","):
+        all_rows.extend(fetch_one_study(study.strip(), entrez, args.out_dir))
+
+    # Disambiguate sample IDs across studies if any collide
+    seen: dict[str, int] = {}
+    for r in all_rows:
+        sid = r["sample_id"]
+        if sid in seen:
+            seen[sid] += 1
+            r["sample_id"] = f"{sid}_{r['study']}"
+        else:
+            seen[sid] = 1
+
+    cols = list(all_rows[0].keys()) if all_rows else []
+    args.manifest.parent.mkdir(parents=True, exist_ok=True)
     with args.manifest.open("w", newline="") as fh:
-        fh.write(f"## TARGET-RT cohort manifest (auto-generated by bin/fetch_target_rt.py)\n")
-        fh.write(f"## Source: cBioPortal study {STUDY_ID} (Shern 2014 Cancer Discov)\n")
+        fh.write("## TARGET-RT + MSK-IMPACT cohort manifest (auto-generated by bin/fetch_target_rt.py)\n")
+        fh.write(f"## Studies: {args.studies}\n")
         fh.write(f"## Generated: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}\n")
-        fh.write(f"## Samples written: {len(manifest_rows)}\n")
+        fh.write(f"## Samples written: {len(all_rows)}\n")
         if cols:
             w = csv.DictWriter(fh, fieldnames=cols, delimiter="\t")
             w.writeheader()
-            w.writerows(manifest_rows)
-    print(f"wrote {len(manifest_rows)} VCFs + {args.manifest}", file=sys.stderr)
+            w.writerows(all_rows)
+    print(f"\nTOTAL: {len(all_rows)} samples written to {args.manifest}", file=sys.stderr)
     return 0
 
 
