@@ -55,7 +55,8 @@ def run_pipeline(sample: dict) -> dict | None:
     run(["python3", "bin/phase1_annotate.py",
          "--vcf", vcf, "--cna", cna, "--fusion", fusion,
          "--targets-kb", "assets/targets_kb.tsv",
-         "--sample-id", sid, "--out", str(p1)])
+         "--sample-id", sid, "--out", str(p1),
+         "--annotator", "vep_rest"])
     run(["python3", "bin/phase2_structure.py", "--in", str(p1), "--out", str(p2)])
     phase3_cmd = ["python3", "bin/phase3_dependency.py", "--in", str(p2),
                   "--depmap", "assets/depmap_rms_summary.tsv",
