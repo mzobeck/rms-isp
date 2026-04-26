@@ -32,7 +32,7 @@ Each phase is a Nextflow process that wraps a single Python script in `bin/`. In
 ### Phase 1: variant + CNA + fusion annotation
 `bin/phase1_annotate.py`, module `modules/phase1_variants/`
 
-Input: a VCF, an optional CNA TSV, an optional fusion TSV. The annotator joins each event against the curated 21-gene target knowledge base in `assets/targets_kb.tsv` and emits one row per event with a `variant_call` of DRIVER, VUS, or PASSENGER and a numeric `variant_score` on 0 to 1. Hotspot residues, loss-of-function-bearing TSGs, oncogenic amplifications, and homozygous deletions of TSGs all classify as drivers; everything else falls to VUS or PASSENGER. v0.12 routes SNV annotation through a pluggable backend (`bin/annotators/`): toy fixtures use the `curated` backend (reads GENE / CONSEQUENCE from VCF INFO; scorecard stays fast and offline), real-cohort runs use `vep_rest` (Ensembl VEP REST API with an on-disk cache under `data/vep_cache/`; no 50 GB local install). The pattern is documented in ADR 0003.
+Input: a VCF, an optional CNA TSV, an optional fusion TSV. The annotator joins each event against the curated 21-gene target knowledge base in `assets/targets_kb.tsv` and emits one row per event with a `variant_call` of DRIVER, VUS, or PASSENGER and a numeric `variant_score` on 0 to 1. Hotspot residues, loss-of-function-bearing TSGs, oncogenic amplifications, and homozygous deletions of TSGs all classify as drivers; everything else falls to VUS or PASSENGER. v0.12 routes SNV annotation through a pluggable backend chain (`bin/annotators/`): toy fixtures use the `curated` backend (reads GENE / CONSEQUENCE from VCF INFO; scorecard stays fast and offline), real-cohort runs use `vep_rest` (Ensembl VEP REST API with an on-disk cache under `data/vep_cache/`; no 50 GB local install). v0.13 adds `oncokb` as a second-pass augmenting backend: when `ONCOKB_TOKEN` is set, the cohort runner upgrades to `vep_rest,oncokb`, and OncoKB's oncogenic call lifts non-hotspot missense variants to DRIVER. The pattern is documented in ADR 0003.
 
 ### Phase 2: structural reference attachment
 `bin/phase2_structure.py`, module `modules/phase2_structure/`
@@ -68,7 +68,7 @@ A row's confidence is a fixed-weight linear combination of five component scores
 
 `confidence = sum over k of (weight_k * component_k)`. Weights sum to 1.0; the formula is defined in pilot plan §4 Aim 2 Phase 5 and copied verbatim into `bin/phase5_score.py`.
 
-As of v0.10 every component draws from live data: DepMap for dependency, OpenPedCan for expression, DGIdb for drug interactions, ClinicalTrials.gov for pediatric-evidence weighting. v0.12 added live VEP annotation for the variant component on real cohorts (toys keep their curated INFO for scorecard speed). The structural component is still curated rather than computed at scale; Boltz/Chai mutant-structure prediction is the GPU-gated v0.13+ priority.
+As of v0.10 every component draws from live data: DepMap for dependency, OpenPedCan for expression, DGIdb for drug interactions, ClinicalTrials.gov for pediatric-evidence weighting. v0.12 added live VEP annotation for the variant component on real cohorts; v0.13 added an OncoKB augmentation pass that lifts non-hotspot missense variants to DRIVER when OncoKB calls them oncogenic. Toys keep curated INFO for scorecard speed. The structural component is still curated rather than computed at scale; Boltz/Chai mutant-structure prediction is the GPU-gated future priority.
 
 The rigid scoring rule is part of the design. If a case study breaks, the fix is to repair the broken phase or its reference data, never to retune the weights. That discipline is recorded as Risk 6 in the pilot plan; v0.5 added `toy_fgfr4_only.vcf` and v0.9 added `toy_ras_mek.vcf` for exactly this reason (when an assertion failed, the response was a new fixture that pinned the broken behavior, not a weight change).
 
@@ -191,10 +191,11 @@ Three things to know when navigating:
 
 In rough priority order:
 
-1. **Real VEP for phase 1** (shipped v0.12 via REST API). `bin/annotators/vep_rest.py` calls Ensembl VEP REST and caches per-variant responses to `data/vep_cache/`. Local-CLI VEP (50 GB cache, full plugin support including REVEL / AlphaMissense / OncoKB local) remains a future option behind a separate annotator backend if rate limits or plugin needs ever bite.
+1. **Real VEP + OncoKB for phase 1** (shipped v0.12 + v0.13 via REST API). `bin/annotators/{vep_rest,oncokb}.py` form a chained annotator: VEP first, OncoKB second. Per-variant responses cache to `data/vep_cache/` and `data/oncokb_cache/`. OncoKB requires an academic API token (`ONCOKB_TOKEN` env var); without it, the chain falls back to VEP-only. Local-CLI VEP (50 GB cache, REVEL / AlphaMissense plugins) remains a future option behind a separate backend if rate limits or plugin needs ever bite.
 2. **Cohort-level visualizations** (shipped v0.11). Static SVG charts embedded in `results/target_rt_cohort_summary.md`: mechanism distribution, per-target druggability (gene by subtype, scales to any N), and a per-sample heatmap rendered for cohorts up to 100 samples. Implementation in `bin/cohort_visualize.py`.
-3. **Boltz-1 / Chai-1 mutant prediction in phase 2.** GPU-bound, gates on the `gpu` profile. Run on a shortlist of top-N target-drug pairs per tumor rather than every event.
-4. **Live OpenTargets in phase 4.** Was deferred at v0.6 because the v4 schema does not expose drugs directly on `Target`. Adds disease-association evidence to drug ranking.
+3. **Tier classification in phase 5.** Adds Tier 1 / Tier 2 / Tier 3 columns per the v2-expanded plan §5 definitions (Tier 1 = FDA-approved + >5% prevalence; Tier 2 = early-phase + >3%; Tier 3 = no agent). Generates an `STS_committee_portfolio.md` deliverable. Pure logic in phase 5; no new external services.
+4. **Live OpenTargets in phase 4.** Was deferred at v0.6 because the v4 GraphQL schema does not expose drugs directly on `Target`. Adds disease-association evidence to drug ranking.
+5. **Boltz-1 / Chai-1 mutant prediction in phase 2.** GPU-bound, gates on the `gpu` profile. Run on a shortlist of top-N target-drug pairs per tumor rather than every event.
 
 Eventually: the COG Molecular Characterization Initiative handoff (pilot plan §12), which is mostly a CCDI-to-internal-schema adapter plus dbGaP-authenticated compute and IRB.
 
