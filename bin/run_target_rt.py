@@ -244,6 +244,25 @@ def main() -> int:
         traceback.print_exc()
     write_cohort_md(cohort, viz=viz_status)
     print(f"wrote {COHORT_MD}", file=sys.stderr)
+
+    portfolio_path = REPO_ROOT / "results" / "target_rt_STS_committee_portfolio.md"
+    try:
+        sys.path.insert(0, str(REPO_ROOT / "bin"))
+        import cohort_portfolio
+        portfolio_status = cohort_portfolio.main(
+            cohort_tsv=COHORT_TSV,
+            target_rt_dir=OUT_DIR,
+            out_path=portfolio_path,
+            pipeline_version=PIPELINE_VERSION,
+        )
+        print(f"wrote {portfolio_path} "
+              f"({portfolio_status['n_portfolio_genes']} hypotheses; "
+              f"{dict(portfolio_status['tier_counts'])})", file=sys.stderr)
+    except Exception as exc:
+        import traceback
+        print(f"cohort_portfolio failed (continuing): {exc}", file=sys.stderr)
+        traceback.print_exc()
+
     print()
     print(COHORT_MD.read_text())
     return 0
